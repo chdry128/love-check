@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface HeaderProps {
   className?: string;
@@ -26,10 +27,11 @@ export function Header({ className, onGoHome }: HeaderProps) {
           </div>
           <span className="text-lg font-bold tracking-tight">LoveCheck</span>
         </button>
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-3">
           <span className="hidden sm:inline-block text-xs text-muted-foreground">
             Relationship Intelligence
           </span>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

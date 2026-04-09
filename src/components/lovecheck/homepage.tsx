@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useState, useSyncExternalStore, useEffect, useCallback } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,8 +16,298 @@ import {
   Brain,
   Lock,
   Zap,
+  ClipboardList,
+  Cpu,
+  Lightbulb,
+  Quote,
+  History,
+  Trash2,
+  RotateCcw,
 } from "lucide-react";
-import type { ToolSlug } from "@/types";
+import { cn } from "@/lib/utils";
+import type { ToolSlug, RiskLevel } from "@/types";
+import {
+  getHistory,
+  clearHistory,
+  type HistoryEntry,
+} from "@/lib/history";
+
+// ── Reduced-motion aware animation helpers ──────────────────
+
+// ── Risk level badge styling ───────────────────────────────
+
+const riskLevelConfig: Record<
+  RiskLevel,
+  { label: string; className: string }
+> = {
+  low: {
+    label: "Low Risk",
+    className:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+  },
+  moderate: {
+    label: "Moderate",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+  },
+  elevated: {
+    label: "Elevated",
+    className:
+      "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400",
+  },
+  high: {
+    label: "High Risk",
+    className:
+      "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+  },
+};
+
+function formatDate(iso: string): string {
+  const date = new Date(iso);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+// ── Past Results Section ────────────────────────────────────
+
+// Module-level cache for useSyncExternalStore (stable reference)
+const EMPTY_HISTORY: HistoryEntry[] = [];
+let historyCache: HistoryEntry[] = EMPTY_HISTORY;
+let historyCacheRaw: string = "";
+
+function getHistorySnapshot(): HistoryEntry[] {
+  if (typeof window === "undefined") return EMPTY_HISTORY;
+  try {
+    const raw = localStorage.getItem("lovecheck-history") ?? "";
+    if (raw !== historyCacheRaw) {
+      historyCacheRaw = raw;
+      historyCache = raw ? JSON.parse(raw).slice(0, 3) : EMPTY_HISTORY;
+    }
+    return historyCache;
+  } catch {
+    return EMPTY_HISTORY;
+  }
+}
+
+function getServerSnapshot(): HistoryEntry[] {
+  return EMPTY_HISTORY;
+}
+
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function PastResultsSection({
+  onStartTool,
+}: {
+  onStartTool: (slug: ToolSlug) => void;
+}) {
+  const history = useSyncExternalStore(
+    subscribeToStorage,
+    getHistorySnapshot,
+    getServerSnapshot
+  );
+
+  const handleClear = useCallback(() => {
+    clearHistory();
+    historyCache = EMPTY_HISTORY;
+    historyCacheRaw = "";
+  }, []);
+
+  if (history.length === 0) return null;
+
+  return (
+    <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <AnimatedSection>
+        <div className="rounded-xl border bg-card p-5 sm:p-6 space-y-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <History className="h-4 w-4 text-muted-foreground" />
+              <h2 className="text-base font-semibold">Your Past Results</h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClear}
+              className="text-xs text-muted-foreground hover:text-destructive gap-1.5 h-8 px-2.5"
+            >
+              <Trash2 className="h-3 w-3" />
+              Clear
+            </Button>
+          </div>
+
+          {/* Result list */}
+          <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+            {history.map((entry, idx) => {
+              const risk = entry.result.dominantPattern?.riskLevel ?? "low";
+              const config = riskLevelConfig[risk];
+              const patternName = entry.result.dominantPattern?.name ?? "Unknown Pattern";
+
+              return (
+                <div
+                  key={`${entry.savedAt}-${idx}`}
+                  className="flex items-center gap-3 rounded-lg border bg-muted/20 p-3 transition-all duration-200 hover:bg-muted/40"
+                >
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-medium truncate">
+                        {patternName}
+                      </span>
+                      <span
+                        className={cn(
+                          "shrink-0 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                          config.className
+                        )}
+                      >
+                        {config.label}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-muted-foreground">
+                      {formatDate(entry.savedAt)}
+                    </span>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onStartTool(entry.toolSlug as ToolSlug)}
+                    className="shrink-0 gap-1.5 text-xs h-8"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                    View Again
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </AnimatedSection>
+    </section>
+  );
+}
+
+// ── Reduced-motion aware animation helpers ──────────────────
+
+function fadeUpVariants(reduced: boolean) {
+  return {
+    hidden: reduced
+      ? { opacity: 1, y: 0 }
+      : { opacity: 0, y: 20 },
+    visible: reduced
+      ? { opacity: 1, y: 0 }
+      : { opacity: 1, y: 0 },
+  };
+}
+
+function staggerContainerVariants(reduced: boolean) {
+  return {
+    hidden: {},
+    visible: reduced
+      ? { transition: { staggerChildren: 0 } }
+      : { transition: { staggerChildren: 0.1 } },
+  };
+}
+
+function staggerChildVariants(reduced: boolean) {
+  return {
+    hidden: reduced
+      ? { opacity: 1, y: 0 }
+      : { opacity: 0, y: 16 },
+    visible: reduced
+      ? { opacity: 1, y: 0, transition: { duration: 0 } }
+      : { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+  };
+}
+
+function sectionTransition(reduced: boolean) {
+  return reduced
+    ? { duration: 0 }
+    : { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] };
+}
+
+// ── Animated Section wrapper ────────────────────────────────
+
+function AnimatedSection({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px 0px" });
+  const reduced = useReducedMotion();
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={fadeUpVariants(reduced)}
+      transition={sectionTransition(reduced)}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ── Animated Grid wrapper (for staggered children) ──────────
+
+function AnimatedGrid({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px 0px" });
+  const reduced = useReducedMotion();
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={staggerContainerVariants(reduced)}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function AnimatedGridItem({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.div variants={staggerChildVariants(reduced)} className={className}>
+      {children}
+    </motion.div>
+  );
+}
+
+// ── Data ────────────────────────────────────────────────────
 
 interface HomepageProps {
   onStartTool: (slug: ToolSlug) => void;
@@ -138,6 +430,51 @@ const patternExamples = [
   },
 ];
 
+const howItWorksSteps = [
+  {
+    number: "01",
+    icon: ClipboardList,
+    title: "Answer Questions",
+    description:
+      "Honest, thoughtful questions that adapt to your situation — no right or wrong answers, just your truth.",
+  },
+  {
+    number: "02",
+    icon: Cpu,
+    title: "Engine Analyzes Patterns",
+    description:
+      "Our pattern engine cross-references your answers against researched relationship dynamics in real time.",
+  },
+  {
+    number: "03",
+    icon: Lightbulb,
+    title: "Get Your Insights",
+    description:
+      "Receive a clear, compassionate breakdown of the patterns at play — with suggestions, not prescriptions.",
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      "It helped me see things I was actively avoiding. Not in a harsh way — more like a gentle mirror. I finally understood why I kept repeating the same cycle.",
+    initials: "A",
+    label: "Someone rebuilding after a difficult relationship",
+  },
+  {
+    quote:
+      "I went in skeptical but came out with real clarity. The questions were surprisingly deep — it felt like talking to someone who actually gets it.",
+    initials: "J",
+    label: "Someone navigating early-stage uncertainty",
+  },
+  {
+    quote:
+      "This didn't tell me what to do. It showed me what was actually happening. And honestly, that's exactly what I needed to hear.",
+    initials: "M",
+    label: "Someone questioning long-term compatibility",
+  },
+];
+
 const blogPreviews = [
   {
     title: "Why Most Relationship Advice Fails (And What Works Instead)",
@@ -159,231 +496,384 @@ const blogPreviews = [
   },
 ];
 
+// ── Component ───────────────────────────────────────────────
+
 export function Homepage({ onStartTool }: HomepageProps) {
   return (
-    <div className="fade-in">
+    <div>
       {/* ── Hero Section ──────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-rose-50/60 via-transparent to-transparent dark:from-rose-950/20 dark:via-transparent dark:to-transparent" />
         <div className="absolute inset-0 bg-grain" />
+
+        {/* Decorative floating gradient orbs */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-20 left-1/4 h-72 w-72 rounded-full bg-rose-200/30 blur-3xl dark:bg-rose-900/20"
+          style={{ animation: "orbFloat1 8s ease-in-out infinite" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-10 right-1/4 h-56 w-56 rounded-full bg-amber-200/20 blur-3xl dark:bg-amber-900/15"
+          style={{ animation: "orbFloat2 10s ease-in-out infinite" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-20 left-1/2 h-40 w-40 rounded-full bg-pink-200/20 blur-3xl dark:bg-pink-900/10"
+          style={{ animation: "orbFloat3 12s ease-in-out infinite" }}
+        />
+
         <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 sm:px-6 sm:pt-24 sm:pb-16">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
-              <Sparkles className="h-3 w-3" />
-              Relationship Intelligence Platform
+          <AnimatedSection>
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+                <Sparkles className="h-3 w-3" />
+                Relationship Intelligence Platform
+              </div>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+                See your relationship{" "}
+                <span className="text-gradient-warm">patterns</span> clearly
+              </h1>
+              <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                Answer a few honest questions and our adaptive engine maps out the
+                patterns at play — without judgment, without clinical language, just
+                clarity.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Button
+                  size="lg"
+                  className="gap-2 px-8 text-base rounded-xl h-12"
+                  onClick={() => onStartTool("relationship-risk-radar")}
+                >
+                  <Radar className="h-4 w-4" />
+                  Try Risk Radar — Free
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <span className="text-xs text-muted-foreground">
+                  3–5 min &middot; No account needed
+                </span>
+              </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              See your relationship{" "}
-              <span className="text-gradient-warm">patterns</span> clearly
-            </h1>
-            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
-              Answer a few honest questions and our adaptive engine maps out the
-              patterns at play — without judgment, without clinical language, just
-              clarity.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button
-                size="lg"
-                className="gap-2 px-8 text-base rounded-xl h-12"
-                onClick={() => onStartTool("relationship-risk-radar")}
-              >
-                <Radar className="h-4 w-4" />
-                Try Risk Radar — Free
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <span className="text-xs text-muted-foreground">
-                3–5 min &middot; No account needed
-              </span>
-            </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* ── Featured Tool ────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="slide-up">
-          <Card className="border-rose-200/60 bg-gradient-to-br from-rose-50/80 to-background overflow-hidden dark:from-rose-950/20 dark:to-background dark:border-rose-800/40">
-            <CardContent className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row gap-6">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-100 dark:bg-rose-900/40">
-                  <Radar className="h-7 w-7 text-rose-600 dark:text-rose-400" />
-                </div>
-                <div className="flex-1 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                    <h2 className="text-xl font-bold">Relationship Risk Radar</h2>
-                    <span className="inline-flex w-fit items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
-                      Available Now
-                    </span>
+        <AnimatedSection>
+          {/* Gradient border wrapper */}
+          <div className="rounded-xl bg-gradient-to-r from-rose-300/50 via-pink-300/40 to-rose-200/50 p-[1.5px] dark:from-rose-700/40 dark:via-pink-700/30 dark:to-rose-600/40">
+            <Card className="border-0 bg-gradient-to-br from-rose-50/90 to-background overflow-hidden dark:from-rose-950/30 dark:to-background rounded-[10px]">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row gap-6">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-100 dark:bg-rose-900/40">
+                    <Radar className="h-7 w-7 text-rose-600 dark:text-rose-400" />
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
-                    Our flagship tool adapts to your situation with smart routing
-                    questions. Whether you&apos;re starting something new, reflecting on
-                    the past, or trying to understand where things stand — the
-                    Risk Radar meets you where you are.
+                  <div className="flex-1 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      <h2 className="text-xl font-bold">Relationship Risk Radar</h2>
+                      <span className="relative inline-flex w-fit items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                        {/* Pulsing dot */}
+                        <span className="absolute -top-px -left-px flex h-2 w-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                        </span>
+                        <span className="ml-2.5">Available Now</span>
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
+                      Our flagship tool adapts to your situation with smart routing
+                      questions. Whether you&apos;re starting something new, reflecting on
+                      the past, or trying to understand where things stand — the
+                      Risk Radar meets you where you are.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                      <Button
+                        className="gap-2 rounded-lg"
+                        onClick={() => onStartTool("relationship-risk-radar")}
+                      >
+                        Start Now
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        6–8 questions &middot; ~3–5 min
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </AnimatedSection>
+      </section>
+
+      {/* ── How It Works ─────────────────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <div className="mb-8 text-center">
+            <h2 className="text-xl font-bold">How It Works</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Three simple steps to understanding your relationship patterns.
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <AnimatedGrid className="relative grid gap-6 sm:grid-cols-3">
+          {/* Connecting line (desktop only) */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-[16.6%] right-[16.6%] top-[52px] hidden h-px bg-gradient-to-r from-transparent via-border to-transparent sm:block"
+          />
+
+          {howItWorksSteps.map((step) => {
+            const StepIcon = step.icon;
+            return (
+              <AnimatedGridItem key={step.number}>
+                <div className="relative text-center space-y-3">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/5 ring-1 ring-primary/10">
+                    <StepIcon className="h-7 w-7 text-primary" />
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                    Step {step.number}
+                  </span>
+                  <h3 className="text-sm font-semibold">{step.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    {step.description}
                   </p>
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <Button
-                      className="gap-2 rounded-lg"
-                      onClick={() => onStartTool("relationship-risk-radar")}
-                    >
-                      Start Now
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Button>
-                    <span className="text-xs text-muted-foreground">
-                      6–8 questions &middot; ~3–5 min
-                    </span>
-                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </AnimatedGridItem>
+            );
+          })}
+        </AnimatedGrid>
       </section>
 
       {/* ── All Tools Grid ───────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="mb-6">
+        <AnimatedSection className="mb-6">
           <h2 className="text-xl font-bold">All Tools</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Each tool focuses on a different dimension of your relationships.
           </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        </AnimatedSection>
+
+        <AnimatedGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
-              <Card
-                key={tool.slug}
-                className={`group cursor-pointer transition-all duration-200 hover:shadow-md ${tool.borderColor}`}
-                onClick={() => {
-                  if (!tool.comingSoon) onStartTool(tool.slug);
-                }}
-              >
-                <CardContent className="p-4 sm:p-5">
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${tool.bgColor}`}
-                    >
-                      <Icon className={`h-5 w-5 ${tool.color}`} />
-                    </div>
-                    <div className="flex-1 min-w-0 space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-semibold truncate">
-                          {tool.name}
-                        </h3>
-                        {tool.comingSoon && (
-                          <span className="shrink-0 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                            Soon
-                          </span>
+              <AnimatedGridItem key={tool.slug}>
+                <Card
+                  className={cn(
+                    "group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
+                    tool.borderColor
+                  )}
+                  onClick={() => {
+                    if (!tool.comingSoon) onStartTool(tool.slug);
+                  }}
+                >
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={cn(
+                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105",
+                          tool.bgColor
                         )}
+                      >
+                        <Icon className={cn("h-5 w-5", tool.color)} />
                       </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                        {tool.tagline}
-                      </p>
-                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                        <span>{tool.category}</span>
-                        <span>&middot;</span>
-                        <span>{tool.time}</span>
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-semibold truncate">
+                            {tool.name}
+                          </h3>
+                          {tool.comingSoon && (
+                            <span className="shrink-0 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                              Soon
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {tool.tagline}
+                        </p>
+                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                          <span>{tool.category}</span>
+                          <span>&middot;</span>
+                          <span>{tool.time}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </AnimatedGridItem>
             );
           })}
-        </div>
+        </AnimatedGrid>
       </section>
 
       {/* ── Value Proposition ────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="mb-6 text-center">
+        <AnimatedSection className="mb-6 text-center">
           <h2 className="text-xl font-bold">Why LoveCheck is different</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Not a quiz. Not therapy. Just honest pattern recognition.
           </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        </AnimatedSection>
+
+        <AnimatedGrid className="grid gap-4 sm:grid-cols-2">
           {valueProps.map((prop) => {
             const Icon = prop.icon;
             return (
-              <div
-                key={prop.title}
-                className="rounded-xl border bg-card p-5 transition-all duration-200 hover:shadow-sm"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/5">
-                    <Icon className="h-4.5 w-4.5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold mb-1">{prop.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {prop.description}
-                    </p>
+              <AnimatedGridItem key={prop.title}>
+                <div className="rounded-xl border bg-card p-5 transition-all duration-200 hover:shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/5">
+                      <Icon className="h-4.5 w-4.5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold mb-1">{prop.title}</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {prop.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedGridItem>
             );
           })}
-        </div>
+        </AnimatedGrid>
       </section>
 
       {/* ── Pattern Examples ─────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="mb-6">
+        <AnimatedSection className="mb-6">
           <h2 className="text-xl font-bold">Patterns we identify</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Our engine looks for recurring relationship dynamics — not labels.
           </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        </AnimatedSection>
+
+        <AnimatedGrid className="grid gap-3 sm:grid-cols-2">
           {patternExamples.map((p) => (
-            <div
-              key={p.name}
-              className="rounded-xl border bg-card p-4 sm:p-5 transition-all duration-200 hover:shadow-sm"
-            >
-              <span
-                className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold mb-2 ${p.color}`}
-              >
-                {p.name}
-              </span>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {p.description}
-              </p>
-            </div>
+            <AnimatedGridItem key={p.name}>
+              <div className="rounded-xl border bg-card p-4 sm:p-5 transition-all duration-200 hover:shadow-sm">
+                <span
+                  className={cn(
+                    "inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold mb-2",
+                    p.color
+                  )}
+                >
+                  {p.name}
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {p.description}
+                </p>
+              </div>
+            </AnimatedGridItem>
           ))}
-        </div>
+        </AnimatedGrid>
+      </section>
+
+      {/* ── Testimonials ────────────────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection className="mb-6 text-center">
+          <h2 className="text-xl font-bold">What people are saying</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Real reflections from people who used LoveCheck to see more clearly.
+          </p>
+        </AnimatedSection>
+
+        <AnimatedGrid className="grid gap-4 sm:grid-cols-3">
+          {testimonials.map((t) => (
+            <AnimatedGridItem key={t.initials}>
+              <div className="group relative rounded-xl border bg-card p-5 transition-all duration-300 hover:shadow-md overflow-hidden">
+                {/* Subtle background pattern */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-[0.03] transition-opacity duration-300 group-hover:opacity-[0.06]"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+                    backgroundSize: "16px 16px",
+                  }}
+                />
+                <div className="relative space-y-3">
+                  <Quote className="h-5 w-5 text-primary/20" />
+                  <p className="text-sm text-muted-foreground leading-relaxed italic">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                      {t.initials}
+                    </div>
+                    <span className="text-[11px] text-muted-foreground/70">
+                      {t.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </AnimatedGridItem>
+          ))}
+        </AnimatedGrid>
       </section>
 
       {/* ── Blog Preview ─────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="mb-6">
+        <AnimatedSection className="mb-6">
           <h2 className="text-xl font-bold">From the Journal</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Perspectives on patterns, growth, and making sense of connections.
           </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        </AnimatedSection>
+
+        <AnimatedGrid className="grid gap-4 sm:grid-cols-3">
           {blogPreviews.map((post) => (
-            <div
-              key={post.title}
-              className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:shadow-sm cursor-pointer"
-            >
-              <div className="h-2 bg-gradient-to-r from-primary/20 to-primary/5" />
-              <div className="p-4 space-y-2">
-                <span className="inline-block text-[10px] font-semibold text-primary uppercase tracking-wider">
-                  {post.tag}
-                </span>
-                <h3 className="text-sm font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
-                  {post.excerpt}
-                </p>
+            <AnimatedGridItem key={post.title}>
+              <div className="group relative rounded-xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
+                {/* Hover gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/0 via-primary/0 to-primary/[0.04] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="relative h-2 bg-gradient-to-r from-primary/20 to-primary/5 transition-all duration-300 group-hover:from-primary/40 group-hover:to-primary/15" />
+                <div className="relative p-4 space-y-2">
+                  <span className="inline-block text-[10px] font-semibold text-primary uppercase tracking-wider">
+                    {post.tag}
+                  </span>
+                  <h3 className="text-sm font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                </div>
               </div>
-            </div>
+            </AnimatedGridItem>
           ))}
-        </div>
+        </AnimatedGrid>
       </section>
+
+      {/* ── Past Results History ──────────────────────── */}
+      <PastResultsSection onStartTool={onStartTool} />
+
+      {/* ── Orb Float Keyframes (via style tag) ─────────── */}
+      <style jsx global>{`
+        @media (prefers-reduced-motion: reduce) {
+          .animate-ping {
+            animation: none;
+          }
+        }
+        @keyframes orbFloat1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -20px) scale(1.05); }
+          66% { transform: translate(-15px, 10px) scale(0.97); }
+        }
+        @keyframes orbFloat2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-25px, 15px) scale(0.96); }
+          66% { transform: translate(20px, -10px) scale(1.04); }
+        }
+        @keyframes orbFloat3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(15px, 20px) scale(1.03); }
+          66% { transform: translate(-20px, -15px) scale(0.98); }
+        }
+      `}</style>
     </div>
   );
 }

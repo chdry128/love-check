@@ -10,6 +10,7 @@ import {
   Sparkles,
   Loader2,
   ShieldCheck,
+  Activity,
 } from "lucide-react";
 import { useLoveCheckStore } from "@/lib/store";
 import type { FinalResult } from "@/types";
@@ -19,6 +20,8 @@ import { ConfidenceChip } from "./confidence-chip";
 import { InsightCard } from "./insight-card";
 import { NextToolCard } from "./next-tool-card";
 import { ShareSection } from "./share-section";
+import { RiskMeter } from "./risk-meter";
+import { SignalBars } from "./signal-bars";
 import { motion } from "framer-motion";
 
 interface ResultPageProps {
@@ -86,6 +89,11 @@ export function ResultPage({ result }: ResultPageProps) {
                 {result.summary}
               </p>
             </div>
+
+            {/* Risk Meter Visualization */}
+            {result.dominantPattern && (
+              <RiskMeter riskLevel={result.dominantPattern.riskLevel} className="py-2" />
+            )}
 
             {/* Badges row */}
             <div className="flex flex-wrap items-center gap-2">
@@ -183,6 +191,23 @@ export function ResultPage({ result }: ResultPageProps) {
           </motion.div>
         )}
       </div>
+
+      {/* ── Signal Breakdown ──────────────────────────── */}
+      {Object.values(result.signals).some((v) => v !== 0) && (
+        <motion.div variants={item} className="mt-6">
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  Signal Breakdown
+                </h3>
+              </div>
+              <SignalBars signals={result.signals} />
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* ── Recommended Next Tools ───────────────────────── */}
       {result.recommendedTools.length > 0 && (

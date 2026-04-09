@@ -9,6 +9,7 @@ import { ToolFlow } from "@/components/lovecheck/tool-flow";
 import { ResultPage, ResultLoading } from "@/components/lovecheck/result-page";
 import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
+import { saveToHistory } from "@/lib/history";
 import type { ToolSlug, FinalResult } from "@/types";
 
 export default function Home() {
@@ -71,7 +72,14 @@ export default function Home() {
       const data = await res.json();
 
       if (data.success && data.data) {
-        setFinalResult(data.data as FinalResult);
+        const result = data.data as FinalResult;
+        setFinalResult(result);
+        // Save to localStorage history
+        try {
+          saveToHistory(result, currentTool);
+        } catch {
+          // History save is non-critical
+        }
       } else {
         setFinalResult(null);
       }

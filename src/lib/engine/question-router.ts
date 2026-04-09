@@ -98,21 +98,28 @@ export function getNextQuestion(
     return null;
   }
 
-  // Step 3: Get branch questions and find the next unanswered one
+  // Step 3: Navigate to the correct branch question by position.
+  // Position mapping: 0 = routing, 1..N = branch, N+1..N+M = universal, N+M+1 = final
   const branchQuestions = tree.branches[branchId] ?? [];
-  const unansweredBranch = branchQuestions.filter((q) => !answeredIds.has(q.id));
+  const branchIndex = currentIndex - 1; // subtract routing question
 
-  if (currentIndex < unansweredBranch.length) {
-    return unansweredBranch[currentIndex] ?? null;
+  if (branchIndex >= 0 && branchIndex < branchQuestions.length) {
+    const q = branchQuestions[branchIndex];
+    if (q && !answeredIds.has(q.id)) {
+      return q;
+    }
   }
 
-  // Step 4: Move to universal questions
+  // Step 4: Move to universal questions after all branch questions are done.
   const universalQuestions = tree.universalQuestions ?? [];
-  const unansweredUniversal = universalQuestions.filter((q) => !answeredIds.has(q.id));
-  const universalIndex = currentIndex - unansweredBranch.length;
+  const universalStart = 1 + branchQuestions.length; // after routing + all branch
+  const universalIndex = currentIndex - universalStart;
 
-  if (universalIndex < unansweredUniversal.length) {
-    return unansweredUniversal[universalIndex] ?? null;
+  if (universalIndex >= 0 && universalIndex < universalQuestions.length) {
+    const q = universalQuestions[universalIndex];
+    if (q && !answeredIds.has(q.id)) {
+      return q;
+    }
   }
 
   // Step 5: Return final question if it exists and hasn't been answered
@@ -134,7 +141,13 @@ export function getNextQuestion(
  */
 export function getTotalQuestionCount(tree: QuestionTree, branchId: string | null): number {
   let count = 1; // routing question
-  count += (tree.branches[branchId] ?? []).length;
+  if (branchId) {
+    count += (tree.branches[branchId] ?? []).length;
+  } else {
+    // Before branch is determined, estimate using the max branch length
+    const branchLengths = Object.values(tree.branches).map((b) => b.length);
+    count += branchLengths.length > 0 ? Math.max(...branchLengths) : 0;
+  }
   count += (tree.universalQuestions ?? []).length;
   if (tree.finalQuestion) count += 1;
   return count;

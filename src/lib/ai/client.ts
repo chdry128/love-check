@@ -1,4 +1,4 @@
-import aiSdk from "z-ai-web-dev-sdk";
+import ZAI from "z-ai-web-dev-sdk";
 import type { AIPayload, AIOutput } from "@/types";
 import { buildInsightPrompt } from "./prompts";
 
@@ -110,17 +110,18 @@ export async function enhanceResult(
     let rawResponse: string;
 
     try {
-      const llm = aiSdk.default ? aiSdk.default() : aiSdk();
-      rawResponse = await llm.chat({
+      const zai = await ZAI.create();
+      const completion = await zai.chat.completions.create({
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: "assistant", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        temperature: 0.7,
-        maxTokens: 500,
+        thinking: { type: "disabled" },
       }, {
-        signal: controller.signal as unknown as AbortSignal,
+        signal: controller.signal,
       });
+
+      rawResponse = completion.choices[0]?.message?.content ?? "";
 
       // Type-safe: ensure we have a string response
       if (typeof rawResponse !== "string" || !rawResponse.trim()) {
