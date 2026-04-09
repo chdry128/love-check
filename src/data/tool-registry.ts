@@ -1827,7 +1827,7 @@ export const toolRegistry: ToolConfig[] = [
   },
 
   // ════════════════════════════════════════════════════════════════
-  // 4. Compatibility Compass  (coming soon)
+  // 4. Compatibility Compass  (active)
   // ════════════════════════════════════════════════════════════════
   {
     slug: "compatibility-compass",
@@ -1835,72 +1835,1486 @@ export const toolRegistry: ToolConfig[] = [
     tagline: "Find out if your values, goals, and rhythms actually align.",
     description:
       "Love and compatibility aren't the same thing — and that's okay. This tool goes beyond chemistry to check whether you and your partner align on the things that matter long-term: values, lifestyle, communication style, and vision for the future.",
-    mode: "compare",
-    version: "0.1.0",
+    mode: "insight",
+    version: "1.0.0",
     icon: "Compass",
     color: "emerald",
-    estimatedQuestions: "12–15",
-    estimatedTime: "6–10 min",
+    estimatedQuestions: "7–9",
+    estimatedTime: "4–6 min",
     category: "Compatibility",
     featured: false,
-    comingSoon: true,
+    comingSoon: false,
     questionTree: {
+      // ── Routing Question ─────────────────────────────────────
       routingQuestion: {
         id: "cc-routing",
         kind: "routing",
         type: "single-choice",
-        text: "Coming soon — we're building this tool with care.",
+        text: "How well do you and this person align on the big picture stuff?",
+        subtitle:
+          "Think about values, life direction, and the things that really matter to you.",
         options: [
           {
-            id: "cc-placeholder",
-            label: "Stay tuned",
-            signals: {},
-            branchRef: "placeholder",
+            id: "cc-r-aligned",
+            label: "Pretty aligned — we see eye-to-eye on most important things",
+            description:
+              "We generally agree on the big decisions and what matters most.",
+            signals: {
+              clarity_low: -1,
+              future_ambiguity: -1,
+              repair_potential_high: 1,
+            },
+            weight: 1,
+            branchRef: "aligned",
+          },
+          {
+            id: "cc-r-some-gaps",
+            label: "Some alignment, some friction — we agree on the basics but differ on details",
+            description:
+              "The foundation is there, but there are real differences underneath.",
+            signals: {
+              clarity_low: 1,
+              boundary_friction: 1,
+              mixed_signals_high: 1,
+            },
+            weight: 1,
+            branchRef: "some-gaps",
+          },
+          {
+            id: "cc-r-uncertain",
+            label: "Not sure — we haven't really had the big conversations yet",
+            description:
+              "It feels good, but I don't actually know where they stand on the stuff that matters.",
+            signals: {
+              clarity_low: 2,
+              future_ambiguity: 2,
+              mixed_signals_high: 1,
+            },
+            weight: 1,
+            branchRef: "uncertain",
+          },
+          {
+            id: "cc-r-misaligned",
+            label: "Different directions honestly — that's what's been on my mind",
+            description:
+              "We're heading different places and it's becoming hard to ignore.",
+            signals: {
+              future_ambiguity: 2,
+              boundary_friction: 2,
+              clarity_low: 1,
+            },
+            weight: 1,
+            branchRef: "misaligned",
           },
         ],
+        required: true,
         sortOrder: 0,
       },
-      branches: {},
-      universalQuestions: [],
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Aligned ─────────────────────────────────────
+        aligned: [
+          {
+            id: "cc-a1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When it comes to how you spend your time, how well do your rhythms match?",
+            subtitle:
+              "Think about weekdays, weekends, social energy, and downtime preferences.",
+            branchId: "aligned",
+            sortOrder: 1,
+            options: [
+              {
+                id: "cc-a1-very-similar",
+                label: "Very similar — our natural rhythms line up without effort",
+                signals: {
+                  consistency_low: -1,
+                  boundary_friction: -1,
+                  repair_potential_high: 1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "cc-a1-mostly-compatible",
+                label: "Mostly compatible — small differences but nothing that causes tension",
+                signals: { consistency_low: -1 },
+                weight: 1,
+              },
+              {
+                id: "cc-a1-different-frequencies",
+                label: "Different frequencies — it takes coordination to sync up",
+                signals: { consistency_low: 1, boundary_friction: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "cc-a1-completely-different",
+                label: "Completely different — one of us is always adjusting",
+                signals: {
+                  consistency_low: 2,
+                  boundary_friction: 2,
+                  effort_imbalance: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-a2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How do you handle disagreements about plans or decisions?",
+            branchId: "aligned",
+            sortOrder: 2,
+            options: [
+              {
+                id: "cc-a2-easy-compromise",
+                label: "Easy compromise — we usually find a middle ground quickly",
+                signals: { repair_potential_high: 2, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "cc-a2-discuss-respectfully",
+                label: "We discuss it respectfully and usually work it out",
+                signals: { repair_potential_high: 1, trust_instability: -1 },
+                weight: 1,
+              },
+              {
+                id: "cc-a2-sometimes-tense",
+                label: "It can get tense, but we eventually figure it out",
+                signals: {
+                  repair_potential_high: 1,
+                  boundary_friction: 1,
+                  consistency_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-a2-avoid-or-capitulate",
+                label: "One of us usually avoids it or just gives in",
+                signals: {
+                  boundary_friction: 2,
+                  effort_imbalance: 1,
+                  follow_through_low: 1,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-a3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Can you be yourself fully around them — without filtering?",
+            branchId: "aligned",
+            sortOrder: 3,
+            options: [
+              {
+                id: "cc-a3-completely",
+                label: "Completely — I never feel like I need to hide or perform",
+                signals: {
+                  emotional_availability_low: -1,
+                  trust_instability: -1,
+                  repair_potential_high: 1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "cc-a3-mostly",
+                label: "Mostly — there are a few things I keep to myself",
+                signals: { boundary_friction: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "cc-a3-partially",
+                label: "Partially — I filter quite a bit around certain topics",
+                signals: {
+                  boundary_friction: 2,
+                  emotional_availability_low: 1,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-a3-rarely",
+                label: "Rarely — I feel like a version of myself around them",
+                signals: {
+                  boundary_friction: 3,
+                  emotional_availability_low: 2,
+                  trust_instability: 1,
+                  clarity_low: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Some Gaps ───────────────────────────────────
+        "some-gaps": [
+          {
+            id: "cc-sg1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What's the biggest area where you see a gap in how you approach life?",
+            branchId: "some-gaps",
+            sortOrder: 1,
+            options: [
+              {
+                id: "cc-sg1-social-life",
+                label: "Social life — one of us needs more people around, the other doesn't",
+                signals: { boundary_friction: 2, effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "cc-sg1-career-ambition",
+                label: "Career ambition — different levels of drive or different priorities",
+                signals: {
+                  future_ambiguity: 2,
+                  boundary_friction: 1,
+                  clarity_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-sg1-family-priorities",
+                label: "Family priorities — different timelines or visions for family life",
+                signals: {
+                  future_ambiguity: 2,
+                  clarity_low: 1,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-sg1-lifestyle-rhythm",
+                label: "Lifestyle rhythm — how we spend time, save money, or structure our days",
+                signals: {
+                  consistency_low: 2,
+                  boundary_friction: 1,
+                  effort_imbalance: 1,
+                },
+                weight: 1,
+              },
+            ],
+          },
+          {
+            id: "cc-sg2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Has this gap caused real friction, or is it more of a background difference?",
+            branchId: "some-gaps",
+            sortOrder: 2,
+            options: [
+              {
+                id: "cc-sg2-theoretical-only",
+                label: "Theoretical only — we're different but it hasn't come up yet",
+                signals: { clarity_low: 1, future_ambiguity: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "cc-sg2-occasional-tension",
+                label: "Occasional tension — it bubbles up sometimes but doesn't define us",
+                signals: {
+                  boundary_friction: 1,
+                  consistency_low: 1,
+                  repair_potential_high: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-sg2-recurring-issue",
+                label: "Recurring issue — it keeps coming up and we don't fully resolve it",
+                signals: {
+                  consistency_low: 2,
+                  boundary_friction: 2,
+                  clarity_low: 1,
+                  follow_through_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-sg2-constant-stress",
+                label: "Constant stress — it's a weight on the relationship most of the time",
+                signals: {
+                  consistency_low: 3,
+                  boundary_friction: 2,
+                  effort_imbalance: 2,
+                  follow_through_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-sg3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you feel like you're both willing to meet in the middle?",
+            branchId: "some-gaps",
+            sortOrder: 3,
+            options: [
+              {
+                id: "cc-sg3-both-willing",
+                label: "Both willing — we've already shown we can adjust for each other",
+                signals: { repair_potential_high: 2, effort_imbalance: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "cc-sg3-one-more-willing",
+                label: "One more willing — it's not totally equal, but the effort is there",
+                signals: {
+                  repair_potential_high: 1,
+                  effort_imbalance: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-sg3-resistance-growing",
+                label: "Resistance growing — one or both of us seem less willing to bend lately",
+                signals: {
+                  effort_imbalance: 2,
+                  consistency_low: 1,
+                  future_ambiguity: 1,
+                  follow_through_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-sg3-one-refuses",
+                label: "One refuses — it feels like there's no room for negotiation",
+                signals: {
+                  effort_imbalance: 3,
+                  boundary_friction: 3,
+                  future_ambiguity: 2,
+                  follow_through_low: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Uncertain ───────────────────────────────────
+        uncertain: [
+          {
+            id: "cc-uc1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What's stopped you from having the big conversations?",
+            branchId: "uncertain",
+            sortOrder: 1,
+            options: [
+              {
+                id: "cc-uc1-timing-doesnt-feel-right",
+                label: "Timing doesn't feel right — it's still early or the moment hasn't come",
+                signals: { clarity_low: 1, future_ambiguity: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "cc-uc1-fear-of-disagreement",
+                label: "Fear of disagreement — I'm worried what I'll find out",
+                signals: {
+                  clarity_low: 2,
+                  future_ambiguity: 2,
+                  mixed_signals_high: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-uc1-not-sure-where-things-stand",
+                label: "Not sure where things stand — I don't know if we're close enough for that yet",
+                signals: {
+                  clarity_low: 2,
+                  mixed_signals_high: 2,
+                  future_ambiguity: 2,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-uc1-tried-once-was-awkward",
+                label: "Tried once and it was awkward — it got deflected or shut down",
+                signals: {
+                  clarity_low: 3,
+                  future_ambiguity: 2,
+                  emotional_availability_low: 2,
+                  boundary_friction: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-uc2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How does the other person respond when you bring up something important?",
+            branchId: "uncertain",
+            sortOrder: 2,
+            options: [
+              {
+                id: "cc-uc2-engages-willingly",
+                label: "Engages willingly — they listen and share their own thoughts too",
+                signals: {
+                  emotional_availability_low: -1,
+                  repair_potential_high: 1,
+                  clarity_low: -1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "cc-uc2-listens-but-deflects",
+                label: "Listens but deflects — they acknowledge it without really going deep",
+                signals: {
+                  emotional_availability_low: 1,
+                  clarity_low: 1,
+                  consistency_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-uc2-gets-uncomfortable",
+                label: "Gets uncomfortable — the energy shifts and the conversation stalls",
+                signals: {
+                  emotional_availability_low: 2,
+                  clarity_low: 2,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-uc2-shuts-down",
+                label: "Shuts down — they change the subject or withdraw completely",
+                signals: {
+                  emotional_availability_low: 3,
+                  clarity_low: 3,
+                  boundary_friction: 2,
+                  future_ambiguity: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-uc3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you have a sense of whether they want the same things long-term?",
+            branchId: "uncertain",
+            sortOrder: 3,
+            options: [
+              {
+                id: "cc-uc3-yes-clear-sense",
+                label: "Yes — I have a clear sense and it feels aligned",
+                signals: {
+                  clarity_low: -1,
+                  future_ambiguity: -1,
+                  repair_potential_high: 1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "cc-uc3-some-vague-idea",
+                label: "Some vague idea — hints and assumptions but nothing concrete",
+                signals: { clarity_low: 1, future_ambiguity: 2, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "cc-uc3-not-really",
+                label: "Not really — I'm guessing and hoping more than knowing",
+                signals: {
+                  clarity_low: 2,
+                  future_ambiguity: 3,
+                  mixed_signals_high: 2,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-uc3-no-very-different",
+                label: "No — I suspect they want something very different",
+                signals: {
+                  clarity_low: 2,
+                  future_ambiguity: 3,
+                  boundary_friction: 2,
+                  trust_instability: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Misaligned ──────────────────────────────────
+        misaligned: [
+          {
+            id: "cc-ma1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Where do you feel the biggest disconnect in your visions for the future?",
+            branchId: "misaligned",
+            sortOrder: 1,
+            options: [
+              {
+                id: "cc-ma1-lifestyle-pace",
+                label: "Lifestyle and pace — how fast or slow we want life to move",
+                signals: {
+                  future_ambiguity: 2,
+                  boundary_friction: 2,
+                  consistency_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-ma1-career-vs-family",
+                label: "Career vs. family — different priorities about work and home life",
+                signals: {
+                  future_ambiguity: 2,
+                  boundary_friction: 2,
+                  clarity_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-ma1-location-living",
+                label: "Location and living — where we want to be and how we want to live",
+                signals: {
+                  future_ambiguity: 2,
+                  boundary_friction: 2,
+                  clarity_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-ma1-relationship-pace",
+                label: "Relationship pace — one of us wants more commitment, the other doesn't",
+                signals: {
+                  future_ambiguity: 3,
+                  mixed_signals_high: 2,
+                  clarity_low: 2,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "cc-ma2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Has this disconnect been a dealbreaker or something you've been working through?",
+            branchId: "misaligned",
+            sortOrder: 2,
+            options: [
+              {
+                id: "cc-ma2-actively-discussing",
+                label: "Actively discussing — we're talking about it openly",
+                signals: { repair_potential_high: 2, clarity_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "cc-ma2-hoping-it-resolves",
+                label: "Hoping it resolves — I've been waiting for things to naturally align",
+                signals: {
+                  future_ambiguity: 2,
+                  clarity_low: 1,
+                  follow_through_low: 1,
+                },
+                weight: 1,
+              },
+              {
+                id: "cc-ma2-been-avoiding-it",
+                label: "Been avoiding it — bringing it up feels too risky",
+                signals: {
+                  clarity_low: 3,
+                  future_ambiguity: 2,
+                  emotional_availability_low: 1,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-ma2-at-breaking-point",
+                label: "At breaking point — it's pushing the relationship to its limits",
+                signals: {
+                  future_ambiguity: 3,
+                  clarity_low: 3,
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "cc-ma3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you feel like you're changing yourself to fit the relationship?",
+            branchId: "misaligned",
+            sortOrder: 3,
+            options: [
+              {
+                id: "cc-ma3-not-at-all",
+                label: "Not at all — I'm still fully myself in this",
+                signals: {
+                  boundary_friction: -1,
+                  effort_imbalance: -1,
+                  trust_instability: -1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "cc-ma3-slightly",
+                label: "Slightly — small adjustments that feel reasonable",
+                signals: { boundary_friction: 1 },
+                weight: 1,
+              },
+              {
+                id: "cc-ma3-noticeably",
+                label: "Noticeably — I'm suppressing parts of who I am more than I'd like",
+                signals: {
+                  boundary_friction: 2,
+                  effort_imbalance: 2,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "cc-ma3-significantly",
+                label: "Significantly — I barely recognize myself sometimes",
+                signals: {
+                  boundary_friction: 3,
+                  effort_imbalance: 3,
+                  trust_instability: 2,
+                  emotional_availability_low: 1,
+                  clarity_low: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "cc-uni1",
+          kind: "universal",
+          type: "scale",
+          text: "On a scale of 1–5, how much do you enjoy the day-to-day with this person?",
+          subtitle: "1 = it often feels draining, 5 = it genuinely makes me happy",
+          sortOrder: 10,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "Draining",
+          maxLabel: "Genuinely happy",
+          options: [], // scale uses value
+        },
+        {
+          id: "cc-uni2",
+          kind: "universal",
+          type: "single-choice",
+          text: "When you imagine your life 3–5 years from now, does this person fit naturally into that picture?",
+          sortOrder: 11,
+          options: [
+            {
+              id: "cc-uni2-absolutely-probably",
+              label: "Absolutely — or at least probably",
+              signals: {
+                future_ambiguity: -2,
+                trust_instability: -1,
+                repair_potential_high: 1,
+              },
+              weight: 0.5,
+            },
+            {
+              id: "cc-uni2-maybe",
+              label: "Maybe — I can see it but there are question marks",
+              signals: {
+                future_ambiguity: 1,
+                clarity_low: 1,
+              },
+              weight: 1,
+            },
+            {
+              id: "cc-uni2-unsure",
+              label: "Unsure — I honestly don't know",
+              signals: {
+                future_ambiguity: 2,
+                clarity_low: 2,
+                mixed_signals_high: 1,
+              },
+              weight: 1.5,
+            },
+            {
+              id: "cc-uni2-probably-not",
+              label: "Probably not — and that's been weighing on me",
+              signals: {
+                future_ambiguity: 3,
+                clarity_low: 2,
+                trust_instability: 2,
+                boundary_friction: 1,
+              },
+              weight: 2,
+            },
+          ],
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "cc-final",
+        kind: "final",
+        type: "open-ended",
+        text: "Is there anything else about your compatibility that's been on your mind?",
+        subtitle:
+          "This is optional — sometimes the most important things don't fit into multiple choice.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
     },
   },
 
   // ════════════════════════════════════════════════════════════════
-  // 5. Red Flag Scanner  (coming soon)
+  // 5. Red Flag Scanner  (active)
   // ════════════════════════════════════════════════════════════════
   {
     slug: "red-flag-scanner",
     name: "Red Flag Scanner",
     tagline: "A quiet, honest look at the warning signs you might be overlooking.",
     description:
-      "Not every uncomfortable moment is a red flag — and not every red flag is obvious. This tool helps you distinguish between normal relationship friction and genuine warning signs, with clear, compassionate language and actionable guidance.",
-    mode: "deep-dive",
-    version: "0.1.0",
+      "Not every uncomfortable moment is a red flag — and not every red flag is obvious. This tool helps you distinguish between normal relationship friction and genuine warning signs, with clear, compassionate language and actionable guidance. This is a safe, non-judgmental space to check in with yourself.",
+    mode: "check",
+    version: "1.0.0",
     icon: "ShieldAlert",
-    color: "orange",
-    estimatedQuestions: "8–10",
+    color: "red",
+    estimatedQuestions: "7–9",
     estimatedTime: "4–6 min",
     category: "Safety",
     featured: false,
-    comingSoon: true,
+    comingSoon: false,
     questionTree: {
+      // ── Routing Question ─────────────────────────────────────
       routingQuestion: {
         id: "rfs-routing",
         kind: "routing",
         type: "single-choice",
-        text: "Coming soon — we're building this tool with care.",
+        text: "Something feels off, but you can't quite put your finger on it. What brought you here?",
+        subtitle:
+          "Whatever brought you here is valid. Take a moment and pick what feels closest.",
         options: [
           {
-            id: "rfs-placeholder",
-            label: "Stay tuned",
-            signals: {},
-            branchRef: "placeholder",
+            id: "rfs-r-specific",
+            label: "I've been noticing specific behaviors that worry me",
+            description:
+              "There are things this person does that make me uncomfortable, and I want to understand them better.",
+            signals: { boundary_friction: 1, consistency_low: 1 },
+            weight: 1,
+            branchRef: "specific-worries",
+          },
+          {
+            id: "rfs-r-others",
+            label: "My friends or family have expressed concern",
+            description:
+              "People who care about me have noticed something I might be too close to see.",
+            signals: { clarity_low: 1, mixed_signals_high: 1 },
+            weight: 1,
+            branchRef: "others-worried",
+          },
+          {
+            id: "rfs-r-rationalize",
+            label: "I keep rationalizing things that don't feel right",
+            description:
+              "I find myself making excuses for behavior I know, deep down, isn't okay.",
+            signals: { clarity_low: 2, trust_instability: 1 },
+            weight: 1,
+            branchRef: "rationalizing",
+          },
+          {
+            id: "rfs-r-gut",
+            label: "I just have a gut feeling — hard to explain",
+            description:
+              "I can't point to one thing, but my body and instincts are telling me something.",
+            signals: { trust_instability: 1, clarity_low: 1 },
+            weight: 1,
+            branchRef: "gut-feeling",
           },
         ],
+        required: true,
         sortOrder: 0,
       },
-      branches: {},
-      universalQuestions: [],
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Specific Worries ────────────────────────────
+        // User has identified concrete behaviors that concern them.
+        // Calibrated to distinguish between normal friction and
+        // genuinely problematic patterns (control, disrespect, isolation).
+        "specific-worries": [
+          {
+            id: "rfs-sw1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Which of these resonates most with what you've noticed?",
+            subtitle:
+              "There can be more than one — pick the one that weighs on you the most.",
+            branchId: "specific-worries",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rfs-sw1-inconsistent",
+                label: "Their behavior is unpredictable — hot one day, cold the next",
+                signals: { consistency_low: 3, mixed_signals_high: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-sw1-disrespect",
+                label: "They cross my boundaries or dismiss what matters to me",
+                signals: { boundary_friction: 3, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-sw1-controlling",
+                label: "They try to control situations, decisions, or who I spend time with",
+                signals: {
+                  boundary_friction: 3,
+                  trust_instability: 2,
+                  effort_imbalance: 2,
+                },
+                weight: 2,
+              },
+              {
+                id: "rfs-sw1-isolation",
+                label: "I feel like I'm being pulled away from my friends or support system",
+                signals: {
+                  boundary_friction: 2,
+                  trust_instability: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rfs-sw2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you bring up something that bothers you, how does the person respond?",
+            subtitle:
+              "Think about the pattern — not just one time, but most times.",
+            branchId: "specific-worries",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rfs-sw2-takes-seriously",
+                label: "They take it seriously and try to understand",
+                signals: {
+                  repair_potential_high: 3,
+                  trust_instability: -1,
+                  boundary_friction: -1,
+                },
+                weight: 1,
+              },
+              {
+                id: "rfs-sw2-dismisses",
+                label: "They dismiss it, minimize it, or tell me I'm overreacting",
+                signals: {
+                  boundary_friction: 2,
+                  emotional_availability_low: 2,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-sw2-defensive",
+                label: "They get defensive or hostile — and somehow it becomes my fault",
+                signals: {
+                  boundary_friction: 3,
+                  trust_instability: 2,
+                  repair_potential_high: -2,
+                  emotional_availability_low: 2,
+                },
+                weight: 2,
+              },
+              {
+                id: "rfs-sw2-gaslights",
+                label: "They deny it happened, question my memory, or make me doubt myself",
+                signals: {
+                  trust_instability: 3,
+                  clarity_low: 3,
+                  boundary_friction: 2,
+                  emotional_availability_low: 2,
+                },
+                weight: 2.5,
+              },
+            ],
+          },
+          {
+            id: "rfs-sw3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have there been moments where you felt unsafe — emotionally or physically?",
+            subtitle:
+              "This is a gentle check-in. Trust whatever comes up for you.",
+            branchId: "specific-worries",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rfs-sw3-never",
+                label: "No, I've always felt safe",
+                signals: {
+                  trust_instability: -1,
+                  emotional_availability_low: -1,
+                  boundary_friction: -1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-sw3-occasionally",
+                label: "Occasionally — a few uncomfortable moments, but nothing major",
+                signals: { boundary_friction: 1, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-sw3-several",
+                label: "Several times — there are situations I replay in my head",
+                signals: {
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  emotional_availability_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-sw3-frequently",
+                label: "Frequently — I've felt genuinely unsafe more than once",
+                signals: {
+                  trust_instability: 3,
+                  boundary_friction: 3,
+                  emotional_availability_low: 3,
+                },
+                weight: 2.5,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Others Worried ──────────────────────────────
+        // User's support network has noticed something. Explores whether
+        // the user can see it too, and how they respond to feedback.
+        "others-worried": [
+          {
+            id: "rfs-ow1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What have the people who care about you been saying?",
+            subtitle:
+              "Try to remember their exact words — sometimes the phrasing matters.",
+            branchId: "others-worried",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rfs-ow1-fine",
+                label: "They think I'm fine — they haven't really said anything",
+                signals: { clarity_low: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-ow1-subtle",
+                label: "Subtle things — 'You seem stressed lately' or 'Is everything okay?'",
+                signals: { consistency_low: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-ow1-direct",
+                label: "Direct concerns — 'I don't think they treat you right' or similar",
+                signals: {
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-ow1-urgent",
+                label: "Urgent worry — they've pleaded with me to take a hard look",
+                signals: {
+                  trust_instability: 3,
+                  boundary_friction: 2,
+                  clarity_low: 2,
+                  emotional_availability_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rfs-ow2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Did you notice these things before they pointed them out?",
+            subtitle:
+              "Sometimes we sense things before we're ready to admit them.",
+            branchId: "others-worried",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rfs-ow2-agreed",
+                label: "Yes — I'd already been thinking the same things",
+                signals: { clarity_low: 2, trust_instability: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-ow2-knew",
+                label: "Kind of — I had a sense something was off, but hadn't named it",
+                signals: { clarity_low: 1, trust_instability: 1, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-ow2-dismissed",
+                label: "I dismissed their concerns — told them they didn't understand",
+                signals: { clarity_low: 2, boundary_friction: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-ow2-dont-see",
+                label: "Honestly, I still don't see what they're seeing",
+                signals: { clarity_low: 1 },
+                weight: 0.5,
+              },
+            ],
+          },
+          {
+            id: "rfs-ow3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Has anyone said you seem different since being with this person?",
+            subtitle:
+              "Sometimes the people around us see changes we can't.",
+            branchId: "others-worried",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rfs-ow3-no",
+                label: "No — I feel like the same person",
+                signals: { trust_instability: -1, boundary_friction: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-ow3-slightly",
+                label: "Yes, slightly — maybe a bit more anxious or withdrawn",
+                signals: { emotional_availability_low: 1, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-ow3-noticeably",
+                label: "Yes, noticeably — I've pulled away from things I used to enjoy",
+                signals: {
+                  emotional_availability_low: 2,
+                  boundary_friction: 2,
+                  trust_instability: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-ow3-dramatically",
+                label: "Yes, dramatically — people barely recognize me anymore",
+                signals: {
+                  emotional_availability_low: 3,
+                  boundary_friction: 3,
+                  trust_instability: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Rationalizing ───────────────────────────────
+        // User recognizes they're making excuses. This branch helps
+        // them unpack *why* and whether it's self-protection or denial.
+        "rationalizing": [
+          {
+            id: "rfs-rz1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Which of these rationalizations have you caught yourself using?",
+            subtitle:
+              "Be gentle with yourself — these are incredibly common. That's why they work.",
+            branchId: "rationalizing",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rfs-rz1-stressed",
+                label: "\"They're just stressed right now — it'll pass\"",
+                signals: { consistency_low: 1, clarity_low: 1, follow_through_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-rz1-better",
+                label: "\"It gets better with time — we're still figuring things out\"",
+                signals: { consistency_low: 2, clarity_low: 1, trust_instability: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "rfs-rz1-different",
+                label: "\"Everyone's different — this is just how they express love\"",
+                signals: {
+                  clarity_low: 2,
+                  boundary_friction: 1,
+                  emotional_availability_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-rz1-demanding",
+                label: "\"I'm being too demanding — I should be grateful for what I have\"",
+                signals: {
+                  boundary_friction: 2,
+                  clarity_low: 2,
+                  trust_instability: 1,
+                  emotional_availability_low: 1,
+                },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "rfs-rz2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you push away a concern, what's usually your reason?",
+            subtitle:
+              "This isn't about judgment — it's about understanding your own patterns.",
+            branchId: "rationalizing",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rfs-rz2-rock-boat",
+                label: "I don't want to rock the boat — things are okay right now",
+                signals: { boundary_friction: 2, clarity_low: 1, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-rz2-change",
+                label: "They promised to change — and I believe them",
+                signals: {
+                  follow_through_low: 2,
+                  trust_instability: 1,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-rz2-good-outweighs",
+                label: "The good outweighs the bad — at least that's what I tell myself",
+                signals: {
+                  consistency_low: 2,
+                  clarity_low: 2,
+                  mixed_signals_high: 1,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-rz2-fear",
+                label: "Honestly? I'm afraid of being alone",
+                signals: {
+                  trust_instability: 2,
+                  boundary_friction: 1,
+                  emotional_availability_low: 1,
+                  clarity_low: 2,
+                },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "rfs-rz3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Has there been a moment where you realized you'd been making excuses?",
+            subtitle:
+              "Sometimes a comment, a memory, or just a quiet moment cracks things open.",
+            branchId: "rationalizing",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rfs-rz3-not-yet",
+                label: "Not yet, honestly — or I'm still working through it",
+                signals: { clarity_low: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-rz3-once-twice",
+                label: "Once or twice — brief flashes of clarity I quickly pushed away",
+                signals: { clarity_low: 2, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-rz3-several",
+                label: "Several moments — and they're getting harder to ignore",
+                signals: {
+                  clarity_low: 3,
+                  trust_instability: 2,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-rz3-many-times",
+                label: "Many, many times — and I'm starting to trust what I see",
+                signals: {
+                  clarity_low: 3,
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Gut Feeling ─────────────────────────────────
+        // User can't articulate specific concerns but their instincts
+        // are signaling something. This branch validates somatic
+        // awareness while gently probing for concrete patterns.
+        "gut-feeling": [
+          {
+            id: "rfs-gf1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What does your body tell you when you're around this person?",
+            subtitle:
+              "Your body often knows before your mind does. Pay attention to what you feel physically.",
+            branchId: "gut-feeling",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rfs-gf1-safe",
+                label: "Safe and calm — I can relax and be present",
+                signals: {
+                  trust_instability: -2,
+                  boundary_friction: -1,
+                  emotional_availability_low: -1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-gf1-comfortable",
+                label: "Comfortable sometimes, but not always",
+                signals: { trust_instability: 1, consistency_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-gf1-anxious",
+                label: "Anxious and alert — like I'm scanning for danger or signs of displeasure",
+                signals: {
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  emotional_availability_low: 1,
+                  clarity_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-gf1-tense",
+                label: "Tense and on edge — I feel like I'm walking on eggshells",
+                signals: {
+                  trust_instability: 3,
+                  boundary_friction: 3,
+                  emotional_availability_low: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rfs-gf2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have there been moments where your instinct said something wasn't right?",
+            subtitle:
+              "Think about the moments you dismissed or explained away.",
+            branchId: "gut-feeling",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rfs-gf2-no",
+                label: "No, not really — my gut hasn't raised any alarms",
+                signals: { trust_instability: -1, clarity_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-gf2-once-twice",
+                label: "Once or twice — but I told myself I was imagining it",
+                signals: { trust_instability: 1, clarity_low: 1, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-gf2-several",
+                label: "Several times — and each time I tried to talk myself out of it",
+                signals: {
+                  trust_instability: 2,
+                  clarity_low: 2,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-gf2-constantly",
+                label: "Constantly — my gut has been screaming for a while now",
+                signals: {
+                  trust_instability: 3,
+                  clarity_low: 3,
+                  boundary_friction: 2,
+                  consistency_low: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rfs-gf3",
+            kind: "branch",
+            type: "single-choice",
+            text: "How do you feel about this relationship compared to others you've had?",
+            subtitle:
+              "Comparison isn't always fair, but patterns across relationships can reveal a lot.",
+            branchId: "gut-feeling",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rfs-gf3-better",
+                label: "Better — this feels healthier than past connections",
+                signals: {
+                  trust_instability: -1,
+                  emotional_availability_low: -1,
+                  repair_potential_high: 1,
+                },
+                weight: 0.5,
+              },
+              {
+                id: "rfs-gf3-same",
+                label: "About the same — ups and downs like any relationship",
+                signals: { consistency_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rfs-gf3-worse",
+                label: "Worse in some ways — there are patterns I haven't seen before",
+                signals: {
+                  trust_instability: 2,
+                  boundary_friction: 2,
+                  consistency_low: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rfs-gf3-worst",
+                label: "The worst I've experienced — and that realization scares me",
+                signals: {
+                  trust_instability: 3,
+                  boundary_friction: 3,
+                  emotional_availability_low: 2,
+                  clarity_low: 2,
+                  consistency_low: 1,
+                },
+                weight: 2.5,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "rfs-uni1",
+          kind: "universal",
+          type: "single-choice",
+          text: "Is there anything you feel you can't talk about with this person?",
+          subtitle:
+            "In a healthy relationship, you should be able to say what's on your mind — even the hard stuff.",
+          sortOrder: 10,
+          options: [
+            {
+              id: "rfs-uni1-nothing",
+              label: "Nothing at all — I feel like I can be open about everything",
+              signals: {
+                trust_instability: -1,
+                clarity_low: -1,
+                emotional_availability_low: -1,
+              },
+              weight: 0.5,
+            },
+            {
+              id: "rfs-uni1-one-two",
+              label: "One or two things — topics I avoid to keep the peace",
+              signals: { boundary_friction: 1, clarity_low: 1, trust_instability: 1 },
+              weight: 1,
+            },
+            {
+              id: "rfs-uni1-several",
+              label: "Several topics — I've learned which things are off-limits",
+              signals: {
+                boundary_friction: 2,
+                clarity_low: 2,
+                trust_instability: 1,
+                emotional_availability_low: 1,
+              },
+              weight: 1.5,
+            },
+            {
+              id: "rfs-uni1-almost",
+              label: "Almost everything — I feel like I'm constantly editing myself",
+              signals: {
+                boundary_friction: 3,
+                clarity_low: 3,
+                trust_instability: 2,
+                emotional_availability_low: 2,
+              },
+              weight: 2,
+            },
+          ],
+        },
+        {
+          id: "rfs-uni2",
+          kind: "universal",
+          type: "scale",
+          text: "On a scale of 1–5, how often do you second-guess yourself around this person?",
+          subtitle:
+            "1 = never — I trust my own judgment, 5 = constantly — I barely recognize my own thoughts",
+          sortOrder: 11,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "Never",
+          maxLabel: "Constantly",
+          options: [], // scale uses value
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "rfs-final",
+        kind: "final",
+        type: "open-ended",
+        text: "This is a safe space. Is there anything else you'd like to get off your chest?",
+        subtitle:
+          "Sometimes the most important things don't fit into multiple choice. You don't have to share — but if you want to, we're here.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
     },
   },
 

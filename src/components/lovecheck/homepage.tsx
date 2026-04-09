@@ -432,7 +432,7 @@ const tools = [
     borderColor: "hover:border-red-200 dark:hover:border-red-800",
     category: "Safety",
     time: "4–6 min",
-    comingSoon: true,
+    comingSoon: false,
     comingSoonDescription:
       "take a quiet, honest look at the warning signs you might be rationalizing or overlooking",
   },
@@ -786,7 +786,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold">All Tools</h2>
             <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-              7 active
+              9 active
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">

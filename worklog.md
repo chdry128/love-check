@@ -327,3 +327,54 @@ All tools use the existing engine pipeline (no engine modules modified):
 4. **Real-world tuning** — Adjust signal thresholds based on actual user answer distributions
 5. **Mobile PWA** — Service worker and manifest for offline capability
 6. **SEO metadata** — Add per-tool and per-blog-post metadata in layout.tsx
+
+---
+Task ID: 9
+Agent: orchestrator
+Task: Implement Compatibility Compass as fully functional 8th tool
+
+Work Log:
+- Replaced Compatibility Compass placeholder in `src/data/tool-registry.ts` with a complete question tree
+- Updated metadata: mode "compare" → "insight", version "0.1.0" → "1.0.0", estimatedQuestions "12–15" → "7–9", estimatedTime "6–10 min" → "4–6 min", comingSoon false → true (fixed to false)
+- Fixed hyphenated branch key `some-gaps` → `"some-gaps"` (quotes required for JS object literal)
+- Question tree structure:
+  - 1 routing question with 4 branches (aligned, some-gaps, uncertain, misaligned)
+  - 4 adaptive branches × 3 questions each = 12 branch questions
+  - 2 universal questions (1 scale, 1 single-choice)
+  - 1 optional open-ended final question
+  - Total: 6 questions per session (1 routing + 3 branch + 2 universal + optional final)
+- Signals used: clarity_low, consistency_low, effort_imbalance, future_ambiguity, emotional_availability_low, repair_potential_high, boundary_friction, mixed_signals_high, trust_instability, follow_through_low
+- Did NOT modify any engine modules (src/lib/engine/) or types (src/types/index.ts)
+- ESLint: Zero errors
+
+Stage Summary:
+- Compatibility Compass is now fully functional — 8 of 9 tools are active
+- Only Red Flag Scanner remains as "Coming Soon" placeholder
+
+---
+Task ID: 10
+Agent: orchestrator
+Task: Implement Red Flag Scanner as fully functional 9th (final) tool
+
+Work Log:
+- Replaced Red Flag Scanner placeholder in `src/data/tool-registry.ts` with a complete question tree
+- Updated metadata: mode "deep-dive" → "check", version "0.1.0" → "1.0.0", color "orange" → "red", estimatedQuestions "8–10" → "7–9", comingSoon true → false
+- Question tree structure:
+  - 1 routing question with 4 branches (specific-worries, others-worried, rationalizing, gut-feeling)
+  - 4 adaptive branches × 3 questions each = 12 branch questions
+  - 2 universal questions (1 single-choice about topics you can't discuss, 1 scale about second-guessing)
+  - 1 optional open-ended final question
+  - Total: 6 questions per session (1 routing + 3 branch + 2 universal + optional final)
+- Signals used: boundary_friction, trust_instability, emotional_availability_low, consistency_low, mixed_signals_high, effort_imbalance, clarity_low, repair_potential_high, follow_through_low
+- Signal calibration:
+  - Healthy answers receive low or negative signal values (e.g., trust_instability: -2, boundary_friction: -1)
+  - Moderately concerning answers receive mild positive values (1–2)
+  - High-risk answers receive strong positive values (2–3), with weights up to 2.5
+  - Gaslighting option (rfs-sw2-gaslights) has the highest weight at 2.5 with trust_instability: 3, clarity_low: 3
+- Safety-first tone: all question subtitles use validating, non-alarmist language; final question explicitly frames the space as "safe"; questions about emotional/physical safety use gentle phrasing ("gentle check-in")
+- Did NOT modify any engine modules (src/lib/engine/) or types (src/types/index.ts)
+- ESLint: Zero errors
+
+Stage Summary:
+- Red Flag Scanner is now fully functional — all 9 tools are active
+- Note: `src/components/lovecheck/homepage.tsx` still has `comingSoon: true` hardcoded for red-flag-scanner (line 435); this would need a separate update to reflect the new active status on the homepage UI
