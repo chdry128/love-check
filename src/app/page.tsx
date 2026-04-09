@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Homepage } from "@/components/lovecheck/homepage";
@@ -9,6 +9,8 @@ import { ToolFlow } from "@/components/lovecheck/tool-flow";
 import { ResultPage, ResultLoading } from "@/components/lovecheck/result-page";
 import { BlogPage } from "@/components/lovecheck/blog-page";
 import { BlogPostPage } from "@/components/lovecheck/blog-post-page";
+import { ScrollToTop } from "@/components/lovecheck/scroll-to-top";
+import { HistorySheet } from "@/components/lovecheck/history-sheet";
 import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
 import { saveToHistory } from "@/lib/history";
@@ -29,6 +31,8 @@ export default function Home() {
     setFinalResult,
     resetSession,
   } = useLoveCheckStore();
+
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Handle starting a tool (navigate to intro)
   const handleStartTool = useCallback(
@@ -102,6 +106,11 @@ export default function Home() {
     }
   }, [activeTool, answers, setIsLoading, setView, setFinalResult]);
 
+  // Handle opening journal/blog
+  const handleOpenJournal = useCallback(() => {
+    setView("blog");
+  }, [setView]);
+
   // Get tool config for intro
   const toolConfig = activeTool ? (() => {
     try {
@@ -113,7 +122,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header onGoHome={resetSession} />
+      <Header
+        onGoHome={resetSession}
+        onOpenJournal={handleOpenJournal}
+        onOpenHistory={() => setHistoryOpen(true)}
+      />
 
       <main className="flex-1">
         {view === "home" && <Homepage onStartTool={handleStartTool} />}
@@ -155,7 +168,15 @@ export default function Home() {
         )}
       </main>
 
-      <Footer />
+      <Footer onOpenJournal={handleOpenJournal} />
+
+      <ScrollToTop />
+
+      <HistorySheet
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        onStartTool={handleStartTool}
+      />
     </div>
   );
 }

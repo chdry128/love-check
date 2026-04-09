@@ -345,8 +345,6 @@ const tools = [
     category: "Self-Discovery",
     time: "5–8 min",
     comingSoon: false,
-    comingSoonDescription:
-      "explore another dimension of your relationships",
   },
   {
     slug: "communication-pattern-check" as ToolSlug,
@@ -417,10 +415,8 @@ const tools = [
     bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
     borderColor: "hover:border-emerald-200 dark:hover:border-emerald-800",
     category: "Compatibility",
-    time: "6–10 min",
-    comingSoon: true,
-    comingSoonDescription:
-      "discover if your values, goals, and daily rhythms truly align for a lasting connection",
+    time: "4–6 min",
+    comingSoon: false,
   },
   {
     slug: "red-flag-scanner" as ToolSlug,
@@ -433,8 +429,6 @@ const tools = [
     category: "Safety",
     time: "4–6 min",
     comingSoon: false,
-    comingSoonDescription:
-      "take a quiet, honest look at the warning signs you might be rationalizing or overlooking",
   },
 ];
 
@@ -609,10 +603,19 @@ const blogPreviews = [
 
 // ── Component ───────────────────────────────────────────────
 
+const toolCategories = ["All", "Self-Reflection", "Self-Discovery", "Communication", "Compatibility", "Safety"] as const;
+
+type ToolCategory = (typeof toolCategories)[number];
+
 export function Homepage({ onStartTool }: HomepageProps) {
   const [comingSoonTool, setComingSoonTool] = useState<ComingSoonTool | null>(null);
+  const [activeCategory, setActiveCategory] = useState<ToolCategory>("All");
   const openBlog = useLoveCheckStore((s) => s.openBlog);
   const setView = useLoveCheckStore((s) => s.setView);
+
+  const filteredTools = activeCategory === "All"
+    ? tools
+    : tools.filter((t) => t.category === activeCategory);
 
   function handleToolClick(tool: (typeof tools)[number]) {
     if (tool.comingSoon) {
@@ -781,8 +784,8 @@ export function Homepage({ onStartTool }: HomepageProps) {
       </section>
 
       {/* ── All Tools Grid ───────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <AnimatedSection className="mb-6">
+      <section id="tools" className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection className="mb-4">
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-bold">All Tools</h2>
             <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
@@ -794,8 +797,35 @@ export function Homepage({ onStartTool }: HomepageProps) {
           </p>
         </AnimatedSection>
 
+        {/* Category filter tabs */}
+        <div className="mb-6 flex flex-wrap gap-1.5">
+          {toolCategories.map((cat) => {
+            const count = cat === "All" ? tools.length : tools.filter((t) => t.category === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200",
+                  activeCategory === cat
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+              >
+                {cat}
+                <span className={cn(
+                  "ml-1.5 text-[10px]",
+                  activeCategory === cat ? "text-primary-foreground/70" : "text-muted-foreground/50"
+                )}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         <AnimatedGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {tools.map((tool) => {
+          {filteredTools.map((tool) => {
             const Icon = tool.icon;
             return (
               <AnimatedGridItem key={tool.slug}>
@@ -952,7 +982,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
       </section>
 
       {/* ── FAQ ────────────────────────────────────────── */}
-      <section className="mx-auto max-w-3xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <section id="faq" className="mx-auto max-w-3xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <HelpCircle className="h-5 w-5 text-rose-500" />
@@ -986,7 +1016,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
       </section>
 
       {/* ── Blog Preview ─────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <section id="journal" className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
           <h2
             className="text-xl font-bold cursor-pointer hover:text-primary transition-colors"
