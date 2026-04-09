@@ -3,8 +3,8 @@ import type {
   ToolSlug,
   Question,
   FinalResult,
-  AnswerPayload,
 } from "@/types";
+import { loadTool, getRoutingQuestion, getTotalQuestionCount } from "@/lib/engine";
 
 // ── View States ─────────────────────────────────────────────
 
@@ -45,11 +45,13 @@ interface LoveCheckState {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
 
-  // Reset
+  // Composite actions (single set() call for atomic updates)
+  startToolIntro: (slug: ToolSlug) => void;
+  beginToolFlow: () => void;
   resetSession: () => void;
 }
 
-export const useLoveCheckStore = create<LoveCheckState>((set) => ({
+export const useLoveCheckStore = create<LoveCheckState>((set, get) => ({
   // Navigation
   view: "home",
   setView: (view) => set({ view }),
@@ -84,7 +86,38 @@ export const useLoveCheckStore = create<LoveCheckState>((set) => ({
   isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
 
-  // Reset
+  // ── Composite Actions ────────────────────────────────────
+
+  /** Navigate to tool intro — sets activeTool and view in one update */
+  startToolIntro: (slug: ToolSlug) => {
+    set({ activeTool: slug, view: "tool-intro" });
+  },
+
+  /** Start the tool flow — initializes all session state in one update */
+  beginToolFlow: () => {
+    const { activeTool } = get();
+    if (!activeTool) return;
+
+    try {
+      const tool = loadTool(activeTool);
+      const routingQ = getRoutingQuestion(tool);
+      const total = getTotalQuestionCount(tool.questionTree, null);
+      set({
+        view: "tool-flow",
+        currentQuestion: routingQ,
+        answers: [],
+        branchId: null,
+        questionIndex: 0,
+        totalQuestions: total,
+        finalResult: null,
+        isLoading: false,
+      });
+    } catch {
+      set({ view: "home" });
+    }
+  },
+
+  /** Reset everything to initial state */
   resetSession: () =>
     set({
       view: "home",

@@ -86,406 +86,409 @@ export const toolRegistry: ToolConfig[] = [
         sortOrder: 0,
       },
 
-      // ── Branch: Early Stage ──────────────────────────────────
-      early: [
-        {
-          id: "rr-e1",
-          kind: "branch",
-          type: "single-choice",
-          text: "How consistent is their communication?",
-          subtitle:
-            "Think about the overall pattern, not just the best or worst days.",
-          branchId: "early",
-          sortOrder: 1,
-          options: [
-            {
-              id: "rr-e1-very",
-              label: "Very consistent — they reach out regularly",
-              signals: { consistency_low: 0, effort_imbalance: -1 },
-              weight: 0.5,
-            },
-            {
-              id: "rr-e1-mostly",
-              label: "Mostly consistent, with occasional gaps",
-              signals: { consistency_low: 1, mixed_signals_high: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-e1-unpredictable",
-              label: "Unpredictable — some days very engaged, others quiet",
-              signals: { consistency_low: 2, mixed_signals_high: 2 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-e1-volatile",
-              label: "All over the place — I never know what to expect",
-              signals: { consistency_low: 3, mixed_signals_high: 3 },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-e2",
-          kind: "branch",
-          type: "single-choice",
-          text: "How does this person respond when you express a need or feeling?",
-          branchId: "early",
-          sortOrder: 2,
-          options: [
-            {
-              id: "rr-e2-listens",
-              label: "They listen and respond with care",
-              signals: { repair_potential_high: 2, emotional_availability_low: -1 },
-              weight: 1,
-            },
-            {
-              id: "rr-e2-sometimes",
-              label: "Sometimes — depends on their mood",
-              signals: { emotional_availability_low: 1, consistency_low: 1 },
-              weight: 1.2,
-            },
-            {
-              id: "rr-e2-dismisses",
-              label: "They tend to brush it off or change the subject",
-              signals: { emotional_availability_low: 2, boundary_friction: 1 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-e2-defensive",
-              label: "They get defensive or make it about themselves",
-              signals: {
-                emotional_availability_low: 2,
-                repair_potential_high: -1,
-                boundary_friction: 2,
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Early Stage ──────────────────────────────────
+        early: [
+          {
+            id: "rr-e1",
+            kind: "branch",
+            type: "single-choice",
+            text: "How consistent is their communication?",
+            subtitle:
+              "Think about the overall pattern, not just the best or worst days.",
+            branchId: "early",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rr-e1-very",
+                label: "Very consistent — they reach out regularly",
+                signals: { consistency_low: 0, effort_imbalance: -1 },
+                weight: 0.5,
               },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-e3",
-          kind: "branch",
-          type: "scale",
-          text: "How clearly have they communicated what they want with you?",
-          subtitle: "1 = very unclear, 5 = completely clear",
-          branchId: "early",
-          sortOrder: 3,
-          min: 1,
-          max: 5,
-          step: 1,
-          minLabel: "Very unclear",
-          maxLabel: "Completely clear",
-          options: [], // scale uses value
-        },
-      ],
+              {
+                id: "rr-e1-mostly",
+                label: "Mostly consistent, with occasional gaps",
+                signals: { consistency_low: 1, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-e1-unpredictable",
+                label: "Unpredictable — some days very engaged, others quiet",
+                signals: { consistency_low: 2, mixed_signals_high: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-e1-volatile",
+                label: "All over the place — I never know what to expect",
+                signals: { consistency_low: 3, mixed_signals_high: 3 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-e2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How does this person respond when you express a need or feeling?",
+            branchId: "early",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rr-e2-listens",
+                label: "They listen and respond with care",
+                signals: { repair_potential_high: 2, emotional_availability_low: -1 },
+                weight: 1,
+              },
+              {
+                id: "rr-e2-sometimes",
+                label: "Sometimes — depends on their mood",
+                signals: { emotional_availability_low: 1, consistency_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "rr-e2-dismisses",
+                label: "They tend to brush it off or change the subject",
+                signals: { emotional_availability_low: 2, boundary_friction: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-e2-defensive",
+                label: "They get defensive or make it about themselves",
+                signals: {
+                  emotional_availability_low: 2,
+                  repair_potential_high: -1,
+                  boundary_friction: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-e3",
+            kind: "branch",
+            type: "scale",
+            text: "How clearly have they communicated what they want with you?",
+            subtitle: "1 = very unclear, 5 = completely clear",
+            branchId: "early",
+            sortOrder: 3,
+            min: 1,
+            max: 5,
+            step: 1,
+            minLabel: "Very unclear",
+            maxLabel: "Completely clear",
+            options: [], // scale uses value
+          },
+        ],
 
-      // ── Branch: Established ──────────────────────────────────
-      established: [
-        {
-          id: "rr-es1",
-          kind: "branch",
-          type: "single-choice",
-          text: "When disagreements happen, what usually follows?",
-          branchId: "established",
-          sortOrder: 1,
-          options: [
-            {
-              id: "rr-es1-repair",
-              label: "We talk it through and reconnect",
-              signals: { repair_potential_high: 3, trust_instability: -1 },
-              weight: 1,
-            },
-            {
-              id: "rr-es1-cool",
-              label: "One of us cools off, then we move on",
-              signals: { repair_potential_high: 1, emotional_availability_low: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-es1-same",
-              label: "We kind of make up, but the same issue keeps coming back",
-              signals: { consistency_low: 2, repair_potential_high: 1, follow_through_low: 1 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-es1-avoid",
-              label: "We avoid it or sweep it under the rug",
-              signals: {
-                consistency_low: 2,
-                repair_potential_high: -1,
-                trust_instability: 1,
+        // ── Branch: Established ──────────────────────────────────
+        established: [
+          {
+            id: "rr-es1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When disagreements happen, what usually follows?",
+            branchId: "established",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rr-es1-repair",
+                label: "We talk it through and reconnect",
+                signals: { repair_potential_high: 3, trust_instability: -1 },
+                weight: 1,
               },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-es2",
-          kind: "branch",
-          type: "single-choice",
-          text: "Do you feel like effort is balanced between you?",
-          branchId: "established",
-          sortOrder: 2,
-          options: [
-            {
-              id: "rr-es2-yes",
-              label: "Yes, it feels pretty even",
-              signals: { effort_imbalance: 0 },
-              weight: 0.5,
-            },
-            {
-              id: "rr-es2-mostly",
-              label: "Mostly, though it ebbs and flows",
-              signals: { effort_imbalance: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-es2-iamore",
-              label: "I think I give more than I get",
-              signals: { effort_imbalance: 2, follow_through_low: 1 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-es2-carrying",
-              label: "I feel like I'm carrying most of the weight",
-              signals: { effort_imbalance: 3, follow_through_low: 2, consistency_low: 1 },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-es3",
-          kind: "branch",
-          type: "single-choice",
-          text: "How secure do you feel about the future of this relationship?",
-          branchId: "established",
-          sortOrder: 3,
-          options: [
-            {
-              id: "rr-es3-very",
-              label: "Very secure — I can see a clear path forward",
-              signals: {
-                trust_instability: -1,
-                future_ambiguity: -1,
-                repair_potential_high: 2,
+              {
+                id: "rr-es1-cool",
+                label: "One of us cools off, then we move on",
+                signals: { repair_potential_high: 1, emotional_availability_low: 1 },
+                weight: 1,
               },
-              weight: 1,
-            },
-            {
-              id: "rr-es3-hopeful",
-              label: "Hopeful, though there are some uncertainties",
-              signals: { future_ambiguity: 1, clarity_low: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-es3-uncertain",
-              label: "Uncertain — I'm not sure where this is heading",
-              signals: { future_ambiguity: 2, clarity_low: 2 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-es3-anxious",
-              label: "Anxious — I worry a lot about whether we'll make it",
-              signals: {
-                future_ambiguity: 3,
-                trust_instability: 2,
-                clarity_low: 2,
+              {
+                id: "rr-es1-same",
+                label: "We kind of make up, but the same issue keeps coming back",
+                signals: { consistency_low: 2, repair_potential_high: 1, follow_through_low: 1 },
+                weight: 1.5,
               },
-              weight: 2,
-            },
-          ],
-        },
-      ],
+              {
+                id: "rr-es1-avoid",
+                label: "We avoid it or sweep it under the rug",
+                signals: {
+                  consistency_low: 2,
+                  repair_potential_high: -1,
+                  trust_instability: 1,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-es2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you feel like effort is balanced between you?",
+            branchId: "established",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rr-es2-yes",
+                label: "Yes, it feels pretty even",
+                signals: { effort_imbalance: 0 },
+                weight: 0.5,
+              },
+              {
+                id: "rr-es2-mostly",
+                label: "Mostly, though it ebbs and flows",
+                signals: { effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-es2-iamore",
+                label: "I think I give more than I get",
+                signals: { effort_imbalance: 2, follow_through_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-es2-carrying",
+                label: "I feel like I'm carrying most of the weight",
+                signals: { effort_imbalance: 3, follow_through_low: 2, consistency_low: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-es3",
+            kind: "branch",
+            type: "single-choice",
+            text: "How secure do you feel about the future of this relationship?",
+            branchId: "established",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rr-es3-very",
+                label: "Very secure — I can see a clear path forward",
+                signals: {
+                  trust_instability: -1,
+                  future_ambiguity: -1,
+                  repair_potential_high: 2,
+                },
+                weight: 1,
+              },
+              {
+                id: "rr-es3-hopeful",
+                label: "Hopeful, though there are some uncertainties",
+                signals: { future_ambiguity: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-es3-uncertain",
+                label: "Uncertain — I'm not sure where this is heading",
+                signals: { future_ambiguity: 2, clarity_low: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-es3-anxious",
+                label: "Anxious — I worry a lot about whether we'll make it",
+                signals: {
+                  future_ambiguity: 3,
+                  trust_instability: 2,
+                  clarity_low: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
 
-      // ── Branch: Unsure ───────────────────────────────────────
-      unsure: [
-        {
-          id: "rr-u1",
-          kind: "branch",
-          type: "single-choice",
-          text: "Do they ever make plans with you, or is it always last-minute?",
-          branchId: "unsure",
-          sortOrder: 1,
-          options: [
-            {
-              id: "rr-u1-plans",
-              label: "They plan ahead and follow through",
-              signals: { follow_through_low: -1, consistency_low: -1, effort_imbalance: -1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u1-sometimes",
-              label: "Sometimes — it's a mix",
-              signals: { follow_through_low: 1, consistency_low: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u1-rarely",
-              label: "Rarely — everything feels spontaneous or on their terms",
-              signals: { follow_through_low: 2, effort_imbalance: 2, consistency_low: 1 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-u1-never",
-              label: "Never — I'm always the one initiating",
-              signals: { follow_through_low: 3, effort_imbalance: 3 },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-u2",
-          kind: "branch",
-          type: "single-choice",
-          text: "How does it feel when you're apart for a while?",
-          branchId: "unsure",
-          sortOrder: 2,
-          options: [
-            {
-              id: "rr-u2-fine",
-              label: "Fine — I feel secure even when we're not in contact",
-              signals: { trust_instability: -1, consistency_low: -1 },
-              weight: 0.5,
-            },
-            {
-              id: "rr-u2-slight",
-              label: "A little uncertain, but I manage",
-              signals: { trust_instability: 1, mixed_signals_high: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u2-anxious",
-              label: "Anxious — I find myself checking for signs they still care",
-              signals: { trust_instability: 2, mixed_signals_high: 2, clarity_low: 1 },
-              weight: 1.5,
-            },
-            {
-              id: "rr-u2-ruminating",
-              label: "I spend a lot of energy overthinking and re-reading messages",
-              signals: {
-                trust_instability: 3,
-                mixed_signals_high: 3,
-                consistency_low: 2,
+        // ── Branch: Unsure ───────────────────────────────────────
+        unsure: [
+          {
+            id: "rr-u1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do they ever make plans with you, or is it always last-minute?",
+            branchId: "unsure",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rr-u1-plans",
+                label: "They plan ahead and follow through",
+                signals: { follow_through_low: -1, consistency_low: -1, effort_imbalance: -1 },
+                weight: 1,
               },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-u3",
-          kind: "branch",
-          type: "single-choice",
-          text: "Have they introduced you to the important people in their life?",
-          branchId: "unsure",
-          sortOrder: 3,
-          options: [
-            {
-              id: "rr-u3-yes",
-              label: "Yes — friends, family, or both",
-              signals: { clarity_low: -1, future_ambiguity: -1, trust_instability: -1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u3-some",
-              label: "Some — I've met a few people",
-              signals: { clarity_low: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u3-not-yet",
-              label: "Not yet, but they've mentioned it",
-              signals: { clarity_low: 2, future_ambiguity: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-u3-no",
-              label: "No — I'm not really part of that side of their life",
-              signals: { clarity_low: 3, future_ambiguity: 2, mixed_signals_high: 1 },
-              weight: 1.5,
-            },
-          ],
-        },
-      ],
+              {
+                id: "rr-u1-sometimes",
+                label: "Sometimes — it's a mix",
+                signals: { follow_through_low: 1, consistency_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-u1-rarely",
+                label: "Rarely — everything feels spontaneous or on their terms",
+                signals: { follow_through_low: 2, effort_imbalance: 2, consistency_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-u1-never",
+                label: "Never — I'm always the one initiating",
+                signals: { follow_through_low: 3, effort_imbalance: 3 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-u2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How does it feel when you're apart for a while?",
+            branchId: "unsure",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rr-u2-fine",
+                label: "Fine — I feel secure even when we're not in contact",
+                signals: { trust_instability: -1, consistency_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "rr-u2-slight",
+                label: "A little uncertain, but I manage",
+                signals: { trust_instability: 1, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-u2-anxious",
+                label: "Anxious — I find myself checking for signs they still care",
+                signals: { trust_instability: 2, mixed_signals_high: 2, clarity_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "rr-u2-ruminating",
+                label: "I spend a lot of energy overthinking and re-reading messages",
+                signals: {
+                  trust_instability: 3,
+                  mixed_signals_high: 3,
+                  consistency_low: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-u3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have they introduced you to the important people in their life?",
+            branchId: "unsure",
+            sortOrder: 3,
+            options: [
+              {
+                id: "rr-u3-yes",
+                label: "Yes — friends, family, or both",
+                signals: { clarity_low: -1, future_ambiguity: -1, trust_instability: -1 },
+                weight: 1,
+              },
+              {
+                id: "rr-u3-some",
+                label: "Some — I've met a few people",
+                signals: { clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-u3-not-yet",
+                label: "Not yet, but they've mentioned it",
+                signals: { clarity_low: 2, future_ambiguity: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-u3-no",
+                label: "No — I'm not really part of that side of their life",
+                signals: { clarity_low: 3, future_ambiguity: 2, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+            ],
+          },
+        ],
 
-      // ── Branch: Reflection (post-relationship) ───────────────
-      reflection: [
-        {
-          id: "rr-rf1",
-          kind: "branch",
-          type: "single-choice",
-          text: "Looking back, what would you say was the biggest source of tension?",
-          branchId: "reflection",
-          sortOrder: 1,
-          options: [
-            {
-              id: "rr-rf1-trust",
-              label: "Trust — I never fully felt like I could rely on them",
-              signals: { trust_instability: 3, consistency_low: 2, follow_through_low: 2 },
-              weight: 2,
-            },
-            {
-              id: "rr-rf1-effort",
-              label: "Effort — I felt like I was doing most of the work",
-              signals: { effort_imbalance: 3, follow_through_low: 2 },
-              weight: 2,
-            },
-            {
-              id: "rr-rf1-space",
-              label: "Space — we struggled with closeness vs. independence",
-              signals: { boundary_friction: 3, mixed_signals_high: 1 },
-              weight: 2,
-            },
-            {
-              id: "rr-rf1-clarity",
-              label: "Clarity — I never really knew where we stood",
-              signals: { clarity_low: 3, future_ambiguity: 3, mixed_signals_high: 2 },
-              weight: 2,
-            },
-          ],
-        },
-        {
-          id: "rr-rf2",
-          kind: "branch",
-          type: "single-choice",
-          text: "At your best moments, did you feel emotionally safe?",
-          branchId: "reflection",
-          sortOrder: 2,
-          options: [
-            {
-              id: "rr-rf2-mostly",
-              label: "Mostly — there were real good parts too",
-              signals: { repair_potential_high: 2, trust_instability: -1 },
-              weight: 1,
-            },
-            {
-              id: "rr-rf2-sometimes",
-              label: "Sometimes — but the bad moments overshadowed them",
-              signals: { repair_potential_high: 1, trust_instability: 1 },
-              weight: 1,
-            },
-            {
-              id: "rr-rf2-rarely",
-              label: "Rarely — I was always on edge",
-              signals: {
-                trust_instability: 2,
-                emotional_availability_low: 2,
-                boundary_friction: 1,
+        // ── Branch: Reflection (post-relationship) ───────────────
+        reflection: [
+          {
+            id: "rr-rf1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Looking back, what would you say was the biggest source of tension?",
+            branchId: "reflection",
+            sortOrder: 1,
+            options: [
+              {
+                id: "rr-rf1-trust",
+                label: "Trust — I never fully felt like I could rely on them",
+                signals: { trust_instability: 3, consistency_low: 2, follow_through_low: 2 },
+                weight: 2,
               },
-              weight: 1.5,
-            },
-            {
-              id: "rr-rf2-never",
-              label: "Not really — looking back, I don't think I was",
-              signals: {
-                trust_instability: 3,
-                emotional_availability_low: 3,
-                boundary_friction: 2,
+              {
+                id: "rr-rf1-effort",
+                label: "Effort — I felt like I was doing most of the work",
+                signals: { effort_imbalance: 3, follow_through_low: 2 },
+                weight: 2,
               },
-              weight: 2,
-            },
-          ],
-        },
-      ],
+              {
+                id: "rr-rf1-space",
+                label: "Space — we struggled with closeness vs. independence",
+                signals: { boundary_friction: 3, mixed_signals_high: 1 },
+                weight: 2,
+              },
+              {
+                id: "rr-rf1-clarity",
+                label: "Clarity — I never really knew where we stood",
+                signals: { clarity_low: 3, future_ambiguity: 3, mixed_signals_high: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "rr-rf2",
+            kind: "branch",
+            type: "single-choice",
+            text: "At your best moments, did you feel emotionally safe?",
+            branchId: "reflection",
+            sortOrder: 2,
+            options: [
+              {
+                id: "rr-rf2-mostly",
+                label: "Mostly — there were real good parts too",
+                signals: { repair_potential_high: 2, trust_instability: -1 },
+                weight: 1,
+              },
+              {
+                id: "rr-rf2-sometimes",
+                label: "Sometimes — but the bad moments overshadowed them",
+                signals: { repair_potential_high: 1, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "rr-rf2-rarely",
+                label: "Rarely — I was always on edge",
+                signals: {
+                  trust_instability: 2,
+                  emotional_availability_low: 2,
+                  boundary_friction: 1,
+                },
+                weight: 1.5,
+              },
+              {
+                id: "rr-rf2-never",
+                label: "Not really — looking back, I don't think I was",
+                signals: {
+                  trust_instability: 3,
+                  emotional_availability_low: 3,
+                  boundary_friction: 2,
+                },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+      },
 
       // ── Universal Questions (asked in every branch) ──────────
       universalQuestions: [

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,11 +9,10 @@ import { cn } from "@/lib/utils";
 import { useLoveCheckStore } from "@/lib/store";
 import {
   loadTool,
-  getRoutingQuestion,
   getNextQuestion,
   getTotalQuestionCount,
 } from "@/lib/engine";
-import type { Question, QuestionOption, ToolSlug } from "@/types";
+import type { QuestionOption, ToolSlug } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ToolFlowProps {
@@ -29,8 +28,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
     setBranchId,
     questionIndex,
     setQuestionIndex,
-    totalQuestions,
-    setTotalQuestions,
     currentQuestion,
     setCurrentQuestion,
     setView,
@@ -40,25 +37,8 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
   const [scaleValue, setScaleValue] = useState<number>(3);
   const [openText, setOpenText] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
-  const [initialized, setInitialized] = useState(false);
 
-  // Initialize tool on mount
-  if (!initialized) {
-    try {
-      const tool = loadTool(toolSlug);
-      const routingQ = getRoutingQuestion(tool);
-      setCurrentQuestion(routingQ);
-      setQuestionIndex(0);
-      setAnswers([]);
-      setBranchId(null);
-      setTotalQuestions(getTotalQuestionCount(tool.questionTree, null));
-      setInitialized(true);
-    } catch {
-      setView("home");
-    }
-  }
-
-  // Update total questions when branch changes
+  // Compute total questions (derived, no side effects)
   const currentTotal = useMemo(() => {
     try {
       const tool = loadTool(toolSlug);
@@ -68,24 +48,22 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
     }
   }, [branchId, toolSlug]);
 
-  // Keep totalQuestions in sync with computed value
-  if (totalQuestions !== currentTotal) {
-    setTotalQuestions(currentTotal);
-  }
+  const progressPercent = currentTotal > 0
+    ? Math.min(((questionIndex + 1) / currentTotal) * 100, 100)
+    : 0;
 
   const handleAnswer = useCallback(() => {
     if (!currentQuestion) return;
 
     const isAnswered =
       currentQuestion.type === "scale"
-        ? true // scale always has a value
+        ? true
         : currentQuestion.type === "open-ended"
           ? openText.trim().length > 0 || !currentQuestion.required
           : selectedOption !== null;
 
     if (!isAnswered) return;
 
-    // Build answer
     let optionId: string | string[] = "";
     let value: number | undefined;
 
@@ -98,24 +76,23 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
       optionId = selectedOption!;
     }
 
-    // Add the answer
     addAnswer({
       questionId: currentQuestion.id,
       optionId,
       value,
     });
 
-    // Set branch from routing question
+    let newBranchId = branchId;
     if (currentQuestion.kind === "routing" && selectedOption) {
       const option = currentQuestion.options.find(
         (o) => o.id === selectedOption
       );
       if (option?.branchRef) {
+        newBranchId = option.branchRef;
         setBranchId(option.branchRef);
       }
     }
 
-    // Advance to next question
     setIsAnimating(true);
     setTimeout(() => {
       try {
@@ -127,10 +104,7 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
 
         const nextQ = getNextQuestion(
           tool.questionTree,
-          branchId && currentQuestion.kind === "routing"
-            ? currentQuestion.options.find((o) => o.id === selectedOption)
-                ?.branchRef ?? branchId
-            : branchId,
+          newBranchId,
           questionIndex + 1,
           allAnswers
         );
@@ -142,7 +116,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
           setScaleValue(3);
           setOpenText("");
         } else {
-          // All questions answered
           onFinish();
         }
       } catch {
@@ -166,10 +139,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
     onFinish,
   ]);
 
-  const progressPercent = totalQuestions > 0
-    ? Math.min(((questionIndex + 1) / totalQuestions) * 100, 100)
-    : 0;
-
   const canProceed =
     currentQuestion?.type === "scale"
       ? true
@@ -190,13 +159,12 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
             Exit
           </button>
           <span className="text-xs text-muted-foreground">
-            {questionIndex + 1} of {totalQuestions}
+            {questionIndex + 1} of {currentTotal}
           </span>
         </div>
         <Progress value={progressPercent} className="h-1.5" />
       </div>
 
-      {/* Question card */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQuestion?.id ?? "empty"}
@@ -208,7 +176,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
           {currentQuestion && (
             <Card className="border-0 shadow-none bg-transparent">
               <CardContent className="p-0">
-                {/* Question kind indicator */}
                 {currentQuestion.kind === "routing" && (
                   <div className="mb-4">
                     <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
@@ -217,7 +184,14 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                   </div>
                 )}
 
-                {/* Question text */}
+                {currentQuestion.kind === "universal" && (
+                  <div className="mb-4">
+                    <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                      Quick check-in
+                    </span>
+                  </div>
+                )}
+
                 <h2 className="text-xl sm:text-2xl font-bold leading-tight mb-1.5">
                   {currentQuestion.text}
                 </h2>
@@ -227,7 +201,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                   </p>
                 )}
 
-                {/* Scale question */}
                 {currentQuestion.type === "scale" && (
                   <div className="space-y-4 mb-8">
                     <div className="flex justify-between text-xs text-muted-foreground">
@@ -263,20 +236,17 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                         }
                       )}
                     </div>
-                    <p className="text-center text-sm text-muted-foreground">
-                      Selected: <span className="font-semibold text-foreground">{scaleValue}</span>
-                    </p>
                   </div>
                 )}
 
-                {/* Open-ended question */}
                 {currentQuestion.type === "open-ended" && (
                   <div className="mb-8">
                     <textarea
                       value={openText}
                       onChange={(e) => setOpenText(e.target.value)}
                       placeholder="Share whatever feels right..."
-                      className="w-full min-h-[120px] rounded-xl border bg-card p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                      rows={4}
+                      className="w-full rounded-xl border bg-card p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
                     />
                     {!currentQuestion.required && (
                       <p className="mt-2 text-xs text-muted-foreground">
@@ -286,7 +256,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                   </div>
                 )}
 
-                {/* Choice options */}
                 {(currentQuestion.type === "single-choice" ||
                   currentQuestion.type === "multi-choice") && (
                   <div className="space-y-3 mb-8">
@@ -301,7 +270,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                   </div>
                 )}
 
-                {/* Continue button */}
                 <Button
                   size="lg"
                   className="w-full gap-2 rounded-xl h-12 text-base"
@@ -310,8 +278,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                 >
                   {isAnimating ? (
                     "Processing..."
-                  ) : !currentQuestion ? (
-                    "See Results"
                   ) : (
                     <>
                       Continue
@@ -327,8 +293,6 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
     </div>
   );
 }
-
-// ── Option Button ───────────────────────────────────────────
 
 interface OptionButtonProps {
   option: QuestionOption;

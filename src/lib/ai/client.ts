@@ -1,4 +1,4 @@
-import { createLLM } from "z-ai-web-dev-sdk";
+import aiSdk from "z-ai-web-dev-sdk";
 import type { AIPayload, AIOutput } from "@/types";
 import { buildInsightPrompt } from "./prompts";
 
@@ -110,7 +110,7 @@ export async function enhanceResult(
     let rawResponse: string;
 
     try {
-      const llm = createLLM();
+      const llm = aiSdk.default ? aiSdk.default() : aiSdk();
       rawResponse = await llm.chat({
         messages: [
           { role: "system", content: systemPrompt },

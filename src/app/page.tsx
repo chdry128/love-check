@@ -14,51 +14,51 @@ import type { ToolSlug, FinalResult } from "@/types";
 export default function Home() {
   const {
     view,
-    setView,
     activeTool,
-    setActiveTool,
     answers,
-    branchId,
     finalResult,
-    setFinalResult,
     isLoading,
+    startToolIntro,
+    beginToolFlow,
+    setView,
     setIsLoading,
+    setFinalResult,
     resetSession,
   } = useLoveCheckStore();
 
-  // Handle starting a tool
+  // Handle starting a tool (navigate to intro)
   const handleStartTool = useCallback(
     (slug: ToolSlug) => {
       try {
         const tool = loadTool(slug);
         if (tool.comingSoon) return;
-
-        setActiveTool(slug);
-        setView("tool-intro");
+        startToolIntro(slug);
       } catch {
         // Tool not found
       }
     },
-    [setActiveTool, setView]
+    [startToolIntro]
   );
 
   // Handle beginning the tool flow
   const handleBeginFlow = useCallback(() => {
-    setView("tool-flow");
-  }, [setView]);
+    beginToolFlow();
+  }, [beginToolFlow]);
 
   // Handle finishing the tool flow — submit to API
   const handleFinishFlow = useCallback(async () => {
-    if (!activeTool) return;
+    const currentTool = activeTool;
+    const currentAnswers = answers;
+    if (!currentTool) return;
 
     setIsLoading(true);
     setView("results");
 
     try {
       const payload = {
-        toolSlug: activeTool,
+        toolSlug: currentTool,
         sessionId: crypto.randomUUID(),
-        answers: answers,
+        answers: currentAnswers,
         timestamp: new Date().toISOString(),
       };
 
@@ -73,7 +73,6 @@ export default function Home() {
       if (data.success && data.data) {
         setFinalResult(data.data as FinalResult);
       } else {
-        // Fallback: show error state
         setFinalResult(null);
       }
     } catch {
@@ -103,9 +102,7 @@ export default function Home() {
           <ToolIntro
             tool={toolConfig}
             onStart={handleBeginFlow}
-            onBack={() => {
-              resetSession();
-            }}
+            onBack={resetSession}
           />
         )}
 

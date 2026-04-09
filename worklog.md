@@ -28,3 +28,24 @@ Stage Summary:
 - AI integration enhances results with 8-second timeout and graceful fallback
 - All 5 tools registered in the tool registry (4 showing "Coming Soon")
 - Architecture is extensible for Part 2 tools
+
+---
+Task ID: 2
+Agent: orchestrator
+Task: Fix parse error in tool-registry.ts — broken indentation/nesting in branches object
+
+Work Log:
+- Diagnosed parse error: `branches: {` wrapper was added around 4 branch arrays (early, established, unsure, reflection) inside questionTree, but indentation was broken
+- Root cause: branch array contents were at 8 spaces (same level as branch keys) instead of 10 spaces; array closings `],` were at 6 spaces (branches level) instead of 8 spaces; branches closing `},` was at 4 spaces (questionTree level) instead of 6 spaces; missing `},` to close the first tool config object
+- Fixed indentation of all question object content inside 4 branch arrays (added 2 spaces to ~385 lines across early/established/unsure/reflection branches)
+- Fixed array closing `],` indentation from 6→8 spaces for all 4 branches
+- Fixed branch separator comment indentation from 6→8 spaces
+- Fixed branches object closing `},` from 4→6 spaces
+- Added missing `  },` to close the first tool config object (relationship-risk-radar)
+- Verified: `bun run lint` passes with zero errors
+
+Stage Summary:
+- tool-registry.ts now parses correctly with proper QuestionTree structure
+- branches: { early: [...], established: [...], unsure: [...], reflection: [...] } correctly nested inside questionTree
+- universalQuestions and finalQuestion remain at the same level as branches (inside questionTree, outside branches)
+- All indentation is consistent and follows the nesting hierarchy
