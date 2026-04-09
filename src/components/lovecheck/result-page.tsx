@@ -144,8 +144,8 @@ export function ResultPage({ result }: ResultPageProps) {
         {/* Confetti decoration for low risk */}
         {isLowRisk && <LowRiskDecoration />}
 
-        <Card className="overflow-hidden border-0 shadow-lg" data-result-card>
-          <div className="h-2 bg-gradient-to-r from-primary/30 via-primary to-primary/30" />
+        <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-b from-card via-card to-muted/30" data-result-card>
+          <div className="h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
           <CardContent className="p-6 sm:p-8 space-y-5">
             {/* Title */}
             <div className="space-y-2">
@@ -182,7 +182,11 @@ export function ResultPage({ result }: ResultPageProps) {
             </div>
 
             {/* Personalized explanation */}
-            <div className="rounded-xl bg-muted/40 p-4 sm:p-5">
+            <div className="rounded-xl bg-muted/40 p-4 sm:p-5 border border-border/50">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Activity className="h-3.5 w-3.5 text-primary/60" />
+                <span className="text-xs font-semibold text-muted-foreground">Your Pattern Analysis</span>
+              </div>
               <p className="text-sm leading-relaxed whitespace-pre-line">
                 {result.personalizedExplanation}
               </p>
@@ -322,29 +326,19 @@ export function ResultPage({ result }: ResultPageProps) {
         <Button
           variant="outline"
           size="lg"
-          className="gap-2 rounded-xl"
-          onClick={resetSession}
-        >
-          <Home className="h-4 w-4" />
-          Back to Home
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className="gap-2 rounded-xl"
+          className="gap-2 rounded-xl hover:bg-primary/5"
           onClick={handleRetake}
         >
           <RotateCcw className="h-4 w-4" />
           Retake Assessment
         </Button>
         <Button
-          variant="outline"
           size="lg"
-          className="gap-2 rounded-xl"
+          className="gap-2 rounded-xl shadow-md shadow-primary/15"
           onClick={resetSession}
         >
-          <FileDown className="h-4 w-4" />
-          Start Fresh
+          <Home className="h-4 w-4" />
+          Explore All Tools
         </Button>
       </motion.div>
     </motion.div>
@@ -359,8 +353,8 @@ export function ResultLoading() {
       <div className="mb-6">
         <Skeleton className="h-4 w-20" />
       </div>
-      <Card className="border-0 shadow-lg">
-        <div className="h-2 bg-muted animate-pulse" />
+      <Card className="border-0 shadow-lg bg-gradient-to-b from-card via-card to-muted/30">
+        <div className="h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40 animate-pulse" />
         <CardContent className="p-6 sm:p-8 space-y-5">
           {/* Title skeleton */}
           <Skeleton className="h-8 w-64" />
@@ -389,7 +383,7 @@ export function ResultLoading() {
           <Skeleton className="h-24 w-full rounded-xl" />
 
           {/* AI Insight skeleton */}
-          <div className="rounded-xl bg-muted/40 p-4 sm:p-5 space-y-2">
+          <div className="rounded-xl bg-muted/40 p-4 sm:p-5 border border-border/50 space-y-2">
             <div className="flex items-center gap-1.5">
               <Skeleton className="h-3.5 w-3.5 rounded-sm" />
               <Skeleton className="h-3 w-16" />
@@ -424,9 +418,18 @@ export function ResultLoading() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Analyzing your patterns...
+      <div className="flex flex-col items-center justify-center gap-3 py-8">
+        {/* Animated heartbeat loader */}
+        <div className="relative h-12 w-12 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping" style={{ animationDuration: "1.5s" }} />
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          </div>
+        </div>
+        <div className="text-center">
+          <p className="text-sm font-medium text-foreground">Analyzing your patterns</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Cross-referencing signals and detecting dynamics...</p>
+        </div>
       </div>
     </div>
   );

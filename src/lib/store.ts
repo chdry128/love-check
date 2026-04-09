@@ -14,7 +14,8 @@ export type ViewState =
   | "tool-flow"
   | "results"
   | "blog"
-  | "blog-post";
+  | "blog-post"
+  | "pattern-library";
 
 // ── App Store ───────────────────────────────────────────────
 

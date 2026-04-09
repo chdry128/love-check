@@ -9,12 +9,14 @@ import { ToolFlow } from "@/components/lovecheck/tool-flow";
 import { ResultPage, ResultLoading } from "@/components/lovecheck/result-page";
 import { BlogPage } from "@/components/lovecheck/blog-page";
 import { BlogPostPage } from "@/components/lovecheck/blog-post-page";
+import { PatternLibrary } from "@/components/lovecheck/pattern-library";
 import { ScrollToTop } from "@/components/lovecheck/scroll-to-top";
 import { HistorySheet } from "@/components/lovecheck/history-sheet";
 import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
 import { saveToHistory } from "@/lib/history";
 import { analytics } from "@/lib/analytics";
+import { motion, AnimatePresence } from "framer-motion";
 import type { ToolSlug, FinalResult } from "@/types";
 
 export default function Home() {
@@ -126,46 +128,113 @@ export default function Home() {
         onGoHome={resetSession}
         onOpenJournal={handleOpenJournal}
         onOpenHistory={() => setHistoryOpen(true)}
+        onOpenPatterns={() => setView("pattern-library")}
       />
 
       <main className="flex-1">
-        {view === "home" && <Homepage onStartTool={handleStartTool} />}
+        <AnimatePresence mode="wait">
+          {view === "home" && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <Homepage onStartTool={handleStartTool} />
+            </motion.div>
+          )}
 
-        {view === "tool-intro" && toolConfig && (
-          <ToolIntro
-            tool={toolConfig}
-            onStart={handleBeginFlow}
-            onBack={resetSession}
-          />
-        )}
+          {view === "tool-intro" && toolConfig && (
+            <motion.div
+              key="tool-intro"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <ToolIntro
+                tool={toolConfig}
+                onStart={handleBeginFlow}
+                onBack={resetSession}
+              />
+            </motion.div>
+          )}
 
-        {view === "tool-flow" && activeTool && (
-          <ToolFlow toolSlug={activeTool} onFinish={handleFinishFlow} />
-        )}
+          {view === "tool-flow" && activeTool && (
+            <motion.div
+              key="tool-flow"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ToolFlow toolSlug={activeTool} onFinish={handleFinishFlow} />
+            </motion.div>
+          )}
 
-        {view === "blog" && <BlogPage />}
+          {view === "results" && (
+            <motion.div
+              key="results"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              {isLoading && <ResultLoading />}
+              {!isLoading && finalResult && <ResultPage result={finalResult} />}
+              {!isLoading && !finalResult && (
+                <div className="mx-auto max-w-lg px-4 py-16 text-center">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Something went wrong while processing your results.
+                  </p>
+                  <button
+                    onClick={resetSession}
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    Go back home
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          )}
 
-        {view === "blog-post" && <BlogPostPage />}
+          {view === "blog" && (
+            <motion.div
+              key="blog"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <BlogPage />
+            </motion.div>
+          )}
 
-        {view === "results" && (
-          <>
-            {isLoading && <ResultLoading />}
-            {!isLoading && finalResult && <ResultPage result={finalResult} />}
-            {!isLoading && !finalResult && (
-              <div className="mx-auto max-w-lg px-4 py-16 text-center">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Something went wrong while processing your results.
-                </p>
-                <button
-                  onClick={resetSession}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  Go back home
-                </button>
-              </div>
-            )}
-          </>
-        )}
+          {view === "blog-post" && (
+            <motion.div
+              key="blog-post"
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <BlogPostPage />
+            </motion.div>
+          )}
+
+          {view === "pattern-library" && (
+            <motion.div
+              key="pattern-library"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <PatternLibrary onStartTool={handleStartTool} onBack={resetSession} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       <Footer onOpenJournal={handleOpenJournal} />

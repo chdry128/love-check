@@ -16,6 +16,7 @@ import {
   MessagesSquare,
   Compass,
   ShieldAlert,
+  ShieldCheck,
   ArrowRight,
   Sparkles,
   Eye,
@@ -49,6 +50,7 @@ import {
 } from "@/components/lovecheck/coming-soon-modal";
 import { toast } from "sonner";
 import { useLoveCheckStore } from "@/lib/store";
+import { MoodCheckin } from "@/components/lovecheck/mood-checkin";
 
 // ── Reduced-motion aware animation helpers ──────────────────
 
@@ -662,6 +664,28 @@ export function Homepage({ onStartTool }: HomepageProps) {
         <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 sm:px-6 sm:pt-24 sm:pb-16">
           <AnimatedSection>
             <div className="mx-auto max-w-2xl text-center">
+              {/* Animated ECG Heartbeat Line */}
+              <div className="mb-6 flex justify-center" aria-hidden="true">
+                <svg
+                  viewBox="0 0 320 40"
+                  className="h-8 w-64 sm:w-80 opacity-30 dark:opacity-20"
+                  style={{ animation: "ecgFade 3s ease-in-out infinite" }}
+                >
+                  <polyline
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary"
+                    points="0,20 60,20 70,20 80,8 90,32 100,4 110,36 120,20 130,20 200,20 210,20 220,8 230,32 240,4 250,36 260,20 270,20 320,20"
+                    strokeDasharray="600"
+                    strokeDashoffset="600"
+                    style={{ animation: "ecgDraw 2.5s ease-out forwards" }}
+                  />
+                </svg>
+              </div>
+
               <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
                 <Sparkles className="h-3 w-3" />
                 Relationship Intelligence Platform
@@ -678,7 +702,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Button
                   size="lg"
-                  className="gap-2 px-8 text-base rounded-xl h-12"
+                  className="gap-2 px-8 text-base rounded-xl h-12 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 transition-shadow duration-300"
                   onClick={() => onStartTool("relationship-risk-radar")}
                 >
                   <Radar className="h-4 w-4" />
@@ -687,6 +711,24 @@ export function Homepage({ onStartTool }: HomepageProps) {
                 </Button>
                 <span className="text-xs text-muted-foreground">
                   3–5 min &middot; No account needed
+                </span>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground/60">
+                <span className="flex items-center gap-1">
+                  <Lock className="h-3 w-3" />
+                  100% Private
+                </span>
+                <span className="hidden sm:inline text-muted-foreground/30">·</span>
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Research-Based
+                </span>
+                <span className="hidden sm:inline text-muted-foreground/30">·</span>
+                <span className="flex items-center gap-1">
+                  <Zap className="h-3 w-3" />
+                  AI-Powered
                 </span>
               </div>
             </div>
@@ -740,6 +782,13 @@ export function Homepage({ onStartTool }: HomepageProps) {
               </CardContent>
             </Card>
           </div>
+        </AnimatedSection>
+      </section>
+
+      {/* ── Daily Mood Check-in ──────────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <MoodCheckin />
         </AnimatedSection>
       </section>
 

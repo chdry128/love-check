@@ -18,6 +18,44 @@ html {
   }
 }
 
+/* ── Global Scrollbar ─────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.82 0.01 80);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.68 0.02 50);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.35 0.01 50);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.02 50);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.82 0.01 80) transparent;
+}
+
+.dark * {
+  scrollbar-color: oklch(0.35 0.01 50) transparent;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

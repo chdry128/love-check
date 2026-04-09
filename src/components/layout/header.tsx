@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Heart, BookOpen, Grid3X3, History, Menu, X } from "lucide-react";
+import { Heart, BookOpen, Grid3X3, History, Menu, X, Layers } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,7 @@ interface HeaderProps {
   onGoHome?: () => void;
   onOpenJournal?: () => void;
   onOpenHistory?: () => void;
+  onOpenPatterns?: () => void;
 }
 
 const navLinks = [
@@ -22,6 +23,13 @@ const navLinks = [
     description: "All relationship tools",
   },
   {
+    label: "Patterns",
+    icon: Layers,
+    href: "#patterns",
+    description: "Pattern library & glossary",
+    action: "patterns" as const,
+  },
+  {
     label: "Journal",
     icon: BookOpen,
     href: "#journal",
@@ -29,11 +37,17 @@ const navLinks = [
   },
 ];
 
-export function Header({ className, onGoHome, onOpenJournal, onOpenHistory }: HeaderProps) {
+export function Header({ className, onGoHome, onOpenJournal, onOpenHistory, onOpenPatterns }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, action?: string) => {
     setMobileMenuOpen(false);
+
+    if (action === "patterns" && onOpenPatterns) {
+      onOpenPatterns();
+      return;
+    }
+
     if (href === "#journal" && onOpenJournal) {
       onOpenJournal();
       return;
@@ -80,7 +94,7 @@ export function Header({ className, onGoHome, onOpenJournal, onOpenHistory }: He
             return (
               <button
                 key={link.label}
-                onClick={() => handleNavClick(link.href)}
+                onClick={() => handleNavClick(link.href, link.action)}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-all duration-200"
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -142,7 +156,7 @@ export function Header({ className, onGoHome, onOpenJournal, onOpenHistory }: He
                 return (
                   <button
                     key={link.label}
-                    onClick={() => handleNavClick(link.href)}
+                    onClick={() => handleNavClick(link.href, link.action)}
                     className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-all"
                   >
                     <Icon className="h-4 w-4" />
