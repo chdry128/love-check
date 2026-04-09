@@ -1,9 +1,15 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore, useEffect, useCallback } from "react";
+import { useRef, useState, useSyncExternalStore, useCallback } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Radar,
   Heart,
@@ -23,6 +29,7 @@ import {
   History,
   Trash2,
   RotateCcw,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ToolSlug, RiskLevel } from "@/types";
@@ -31,6 +38,11 @@ import {
   clearHistory,
   type HistoryEntry,
 } from "@/lib/history";
+import {
+  ComingSoonModal,
+  type ComingSoonTool,
+} from "@/components/lovecheck/coming-soon-modal";
+import { toast } from "sonner";
 
 // ── Reduced-motion aware animation helpers ──────────────────
 
@@ -337,6 +349,8 @@ const tools = [
     category: "Self-Discovery",
     time: "5–8 min",
     comingSoon: true,
+    comingSoonDescription:
+      "understand your emotional patterns and how they shape the way you connect with others",
   },
   {
     slug: "communication-pattern-check" as ToolSlug,
@@ -349,6 +363,8 @@ const tools = [
     category: "Communication",
     time: "4–6 min",
     comingSoon: true,
+    comingSoonDescription:
+      "decode the way you and your partner actually talk and uncover hidden conversational patterns",
   },
   {
     slug: "compatibility-compass" as ToolSlug,
@@ -361,6 +377,8 @@ const tools = [
     category: "Compatibility",
     time: "6–10 min",
     comingSoon: true,
+    comingSoonDescription:
+      "discover if your values, goals, and daily rhythms truly align for a lasting connection",
   },
   {
     slug: "red-flag-scanner" as ToolSlug,
@@ -373,8 +391,44 @@ const tools = [
     category: "Safety",
     time: "4–6 min",
     comingSoon: true,
+    comingSoonDescription:
+      "take a quiet, honest look at the warning signs you might be rationalizing or overlooking",
   },
 ];
+
+const faqItems = [
+  {
+    question: "Is LoveCheck a therapy tool?",
+    answer:
+      "No. LoveCheck identifies relationship patterns — not diagnoses. It's designed as a self-reflection tool, not a substitute for professional therapy, counseling, or medical advice.",
+  },
+  {
+    question: "Do you store my answers?",
+    answer:
+      "No. Your answers stay entirely in your browser and are never sent to our servers. When you close the tab, they're gone. We don't use cookies, tracking pixels, or analytics.",
+  },
+  {
+    question: "How accurate are the results?",
+    answer:
+      "Our engine uses pattern detection with weighted signals and confidence scoring. Results are most reliable when you answer honestly and thoughtfully. The confidence level shown indicates how strongly the detected pattern matches your answers.",
+  },
+  {
+    question: "Can I retake the assessment?",
+    answer:
+      "Yes! Every time you start a new session, you begin fresh. We encourage retaking it periodically as your relationship evolves — you may notice different patterns over time.",
+  },
+  {
+    question: 'What does \"adaptive\" mean?',
+    answer:
+      "Our questions adapt based on your situation. The first routing question determines which branch of questions you'll see, so everyone's experience is unique.",
+  },
+  {
+    question: "Is this based on real research?",
+    answer:
+      "Yes. Our pattern detection engine draws on established frameworks from attachment theory, couples therapy research, and relationship science. However, it's designed for self-reflection — not clinical assessment.",
+  },
+];
+
 
 const valueProps = [
   {
@@ -499,6 +553,26 @@ const blogPreviews = [
 // ── Component ───────────────────────────────────────────────
 
 export function Homepage({ onStartTool }: HomepageProps) {
+  const [comingSoonTool, setComingSoonTool] = useState<ComingSoonTool | null>(null);
+
+  function handleToolClick(tool: (typeof tools)[number]) {
+    if (tool.comingSoon) {
+      toast("Coming soon!", {
+        description: `We're building ${tool.name} with care.`,
+      });
+      setComingSoonTool({
+        slug: tool.slug,
+        name: tool.name,
+        icon: tool.icon,
+        color: tool.color,
+        bgColor: tool.bgColor,
+        description: tool.comingSoonDescription ?? "explore another dimension of your relationships",
+      });
+    } else {
+      onStartTool(tool.slug);
+    }
+  }
+
   return (
     <div>
       {/* ── Hero Section ──────────────────────────────────── */}
@@ -666,9 +740,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
                     "group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
                     tool.borderColor
                   )}
-                  onClick={() => {
-                    if (!tool.comingSoon) onStartTool(tool.slug);
-                  }}
+                  onClick={() => handleToolClick(tool)}
                 >
                   <CardContent className="p-4 sm:p-5">
                     <div className="flex items-start gap-3">
@@ -815,6 +887,40 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedGrid>
       </section>
 
+      {/* ── FAQ ────────────────────────────────────────── */}
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection className="mb-6 text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <HelpCircle className="h-5 w-5 text-rose-500" />
+            <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Honest answers to the things people wonder about.
+          </p>
+        </AnimatedSection>
+
+        <AnimatedSection>
+          <div className="rounded-xl border bg-card p-2 sm:p-4">
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, idx) => (
+                <AccordionItem
+                  key={idx}
+                  value={`faq-${idx}`}
+                  className="px-3 sm:px-4"
+                >
+                  <AccordionTrigger className="text-sm font-medium hover:no-underline hover:text-primary transition-colors">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </AnimatedSection>
+      </section>
+
       {/* ── Blog Preview ─────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
@@ -850,6 +956,15 @@ export function Homepage({ onStartTool }: HomepageProps) {
 
       {/* ── Past Results History ──────────────────────── */}
       <PastResultsSection onStartTool={onStartTool} />
+
+      {/* ── Coming Soon Modal ──────────────────────────── */}
+      <ComingSoonModal
+        tool={comingSoonTool}
+        open={comingSoonTool !== null}
+        onOpenChange={(open) => {
+          if (!open) setComingSoonTool(null);
+        }}
+      />
 
       {/* ── Orb Float Keyframes (via style tag) ─────────── */}
       <style jsx global>{`

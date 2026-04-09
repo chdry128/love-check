@@ -1,13 +1,49 @@
 "use client";
 
+import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Heart, Shield, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Heart,
+  Shield,
+  BookOpen,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Github,
+  Bell,
+  ChevronDown,
+  ChevronUp,
+  Mail,
+  Check,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
+  const [newsletterOpen, setNewsletterOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = () => {
+    if (!email.trim()) return;
+    // Save to localStorage — no real backend
+    const stored = JSON.parse(localStorage.getItem("lovecheck-newsletter") || "[]");
+    stored.push({ email, timestamp: new Date().toISOString() });
+    localStorage.setItem("lovecheck-newsletter", JSON.stringify(stored));
+    setSubscribed(true);
+    setEmail("");
+    setTimeout(() => setSubscribed(false), 3000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSubscribe();
+  };
+
   return (
     <footer
       className={cn(
@@ -16,6 +52,78 @@ export function Footer({ className }: FooterProps) {
       )}
     >
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+        {/* ── Newsletter CTA Banner ─────────────────────────── */}
+        <div className="mb-6">
+          <button
+            onClick={() => setNewsletterOpen(!newsletterOpen)}
+            className="w-full group rounded-xl border border-dashed border-muted-foreground/25 hover:border-primary/40 bg-muted/20 hover:bg-muted/40 transition-all duration-200 p-4 text-left"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <Bell className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    Get notified when new tools launch
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Be the first to try new relationship insights
+                  </p>
+                </div>
+              </div>
+              {newsletterOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+              )}
+            </div>
+          </button>
+
+          <AnimatePresence>
+            {newsletterOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="mt-2 flex flex-col sm:flex-row gap-2 p-4 rounded-xl border bg-background">
+                  <div className="relative flex-1">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className="pl-9"
+                      disabled={subscribed}
+                    />
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handleSubscribe}
+                    disabled={subscribed || !email.trim()}
+                    className="gap-1.5 rounded-lg shrink-0"
+                  >
+                    {subscribed ? (
+                      <>
+                        <Check className="h-3.5 w-3.5" />
+                        Subscribed!
+                      </>
+                    ) : (
+                      "Subscribe"
+                    )}
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ── Main 3-Column Grid ───────────────────────────── */}
         <div className="grid gap-6 sm:grid-cols-3">
           {/* Brand */}
           <div className="space-y-3">
@@ -59,7 +167,40 @@ export function Footer({ className }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-5">
+        {/* ── Social Links Row ─────────────────────────────── */}
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <a
+            href="#"
+            aria-label="Twitter"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Twitter className="h-4 w-4" />
+          </a>
+          <a
+            href="#"
+            aria-label="Instagram"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Instagram className="h-4 w-4" />
+          </a>
+          <a
+            href="#"
+            aria-label="LinkedIn"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Linkedin className="h-4 w-4" />
+          </a>
+          <a
+            href="#"
+            aria-label="GitHub"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Github className="h-4 w-4" />
+          </a>
+        </div>
+
+        {/* ── Bottom Copyright ─────────────────────────────── */}
+        <div className="mt-6 border-t pt-5">
           <p className="text-center text-[11px] text-muted-foreground leading-relaxed">
             LoveCheck is not a substitute for professional therapy, counseling,
             or medical advice. If you are in an unsafe situation, please reach
@@ -67,7 +208,22 @@ export function Footer({ className }: FooterProps) {
             identifies patterns — not diagnoses.
           </p>
           <p className="mt-2 text-center text-[11px] text-muted-foreground/60">
-            &copy; {new Date().getFullYear()} LoveCheck. Built with care.
+            &copy; {new Date().getFullYear()} LoveCheck. Built with{" "}
+            <motion.span
+              className="inline-block text-red-500"
+              animate={{
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 1.2,
+                repeat: Infinity,
+                repeatDelay: 2,
+                ease: "easeInOut",
+              }}
+            >
+              ❤️
+            </motion.span>{" "}
+            and care.
           </p>
         </div>
       </div>
