@@ -126,6 +126,26 @@ export const adviceLibrary: AdviceCategory[] = [
         text: "Timing matters, but it shouldn't become an excuse for never having the conversation. There will never be a perfect moment — just a willing one.",
         appliesWhen: "User keeps postponing important talks",
       },
+      {
+        id: "cm-7",
+        text: "Silence isn't neutral. In a relationship, the things you don't say pile up just like the things you do. The absence of communication is itself a message.",
+        appliesWhen: "User or partner withdraws instead of communicating",
+      },
+      {
+        id: "cm-8",
+        text: "Sarcasm can be funny — and it can also be a shield. If you're using humor to say things you're afraid to say directly, your partner might be hearing the joke but missing the message.",
+        appliesWhen: "User relies on indirect or sarcastic communication",
+      },
+      {
+        id: "cm-9",
+        text: "A 20-minute conversation now can save you from a 6-month resentment spiral later. The cost of speaking up is always less than the cost of staying silent.",
+        appliesWhen: "User is weighing whether to bring something up",
+      },
+      {
+        id: "cm-10",
+        text: "Good communication isn't about never disagreeing — it's about disagreeing in a way that leaves both people feeling respected. The how matters as much as the what.",
+        appliesWhen: "User is navigating conflict or disagreement",
+      },
     ],
   },
 
@@ -262,6 +282,54 @@ export const adviceLibrary: AdviceCategory[] = [
         id: "gr-5",
         text: "Every relationship that taught you something — even the painful ones — was not a waste. You're carrying wisdom forward, not baggage. Unless you choose to.",
         appliesWhen: "User feels regret about a past relationship",
+      },
+    ],
+  },
+
+  // ── Attachment & Emotional Patterns ──────────────────────────
+  {
+    id: "attachment",
+    label: "Attachment & Emotional Patterns",
+    snippets: [
+      {
+        id: "at-1",
+        text: "Your attachment style isn't a life sentence — it's a starting point. With awareness and the right support, attachment patterns can evolve. Earned security is real, and it's achievable.",
+        appliesWhen: "User is worried about their attachment style being permanent",
+      },
+      {
+        id: "at-2",
+        text: "The need for reassurance isn't weakness — it's a signal that your attachment system is asking for something it didn't get enough of. The goal isn't to stop needing reassurance, but to learn how to meet some of that need yourself.",
+        appliesWhen: "User shows anxious-preoccupied patterns or seeks excessive reassurance",
+      },
+      {
+        id: "at-3",
+        text: "Independence and closeness aren't opposites — they're both essential. The sweet spot isn't choosing one over the other, but learning to move between them without panicking.",
+        appliesWhen: "User struggles to balance closeness and autonomy",
+      },
+      {
+        id: "at-4",
+        text: "If the idea of depending on someone feels dangerous, ask yourself: what happened the last time you truly needed someone and they weren't there? That memory might be running the show more than you realize.",
+        appliesWhen: "User shows dismissive-avoidant or self-reliance patterns",
+      },
+      {
+        id: "at-5",
+        text: "The anxious-avoidant trap isn't about one person being right and the other being wrong — it's about two people speaking different emotional languages. Both are trying to feel safe. Neither is going about it in a way that works.",
+        appliesWhen: "User is caught in a pursue-withdraw dynamic",
+      },
+      {
+        id: "at-6",
+        text: "Self-sabotage in relationships isn't self-destruction — it's self-protection gone into overdrive. Your nervous system learned that closeness equals danger. Unlearning that takes patience, not willpower.",
+        appliesWhen: "User shows fearful-avoidant or self-sabotaging patterns",
+      },
+      {
+        id: "at-7",
+        text: "You don't need to fix your attachment style before you deserve love. You deserve connection right now, patterns and all. The right person won't be scared off by your struggles — they'll meet you in them.",
+        appliesWhen: "User feels they need to be 'healed' before being lovable",
+      },
+      {
+        id: "at-8",
+        text: "If you've never had a safe relationship to learn from, you're not broken — you're untaught. That's different. And it means the right experiences can teach you something new at any age.",
+        appliesWhen: "User lacks models of healthy, secure relationships",
       },
     ],
   },

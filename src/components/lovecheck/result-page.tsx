@@ -283,9 +283,12 @@ export function ResultPage({ result }: ResultPageProps) {
             Recommended Next Steps
           </h3>
           <div className="grid gap-3 sm:grid-cols-2">
-            {result.recommendedTools.slice(0, 4).map((tool) => (
+            {result.recommendedTools
+              .filter((tool, idx, arr) => arr.findIndex((t) => t.slug === tool.slug) === idx)
+              .slice(0, 4)
+              .map((tool, idx) => (
               <NextToolCard
-                key={tool.slug}
+                key={`${tool.slug}-${idx}`}
                 tool={tool}
                 onStartTool={() => {
                   // Could navigate to tool, but only risk radar is implemented

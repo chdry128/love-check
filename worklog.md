@@ -146,3 +146,73 @@ LoveCheck Part 1 MVP is fully functional and significantly enhanced. The platfor
 4. **Improve signal extraction** — Some signals may need tuning for better pattern detection accuracy
 5. **Add Prisma/database persistence** — Move from localStorage to proper database for history
 6. **Mobile app PWA** — Add service worker and manifest for offline capability
+
+---
+Task ID: 4
+Agent: orchestrator
+Task: Implement Communication Pattern Check as fully functional second tool
+
+Work Log:
+- Added 3 new PatternId types to src/types/index.ts: stonewall-cycle, misaligned-expectations, communication-withdrawal
+- Replaced Communication Pattern Check placeholder in src/data/tool-registry.ts with full question tree:
+  - 1 routing question: "How would you describe the way you and your partner communicate?"
+  - 4 adaptive branches (direct, avoidant, passive_aggressive, improving) with 3 questions each
+  - 2 universal questions (partner understanding needs, communication closeness scale)
+  - 1 optional final open-ended question
+  - Total: 7 questions per path (1 routing + 3 branch + 2 universal + 1 final)
+  - All questions have 4 answer options with calibrated signal weights
+  - Signal calibration: healthy answers → 0 or negative, mixed → 1-2, problematic → 2-3
+- Added 3 communication-specific pattern rules to src/data/patterns.ts:
+  - Stonewall Cycle (elevated risk, weight 8) — pursue-withdraw dynamic during conflict
+  - Misaligned Expectations (moderate risk, weight 6) — different assumptions about communication
+  - Communication Withdrawal (high risk, weight 9) — progressive avoidance of important conversations
+- Added 4 new communication advice snippets to src/data/advice.ts (cm-7 through cm-10)
+- Updated src/components/lovecheck/homepage.tsx:
+  - Changed Communication Pattern Check comingSoon to false
+  - Removed "Soon" badge (now active like Risk Radar)
+  - Updated pattern examples to showcase new communication-specific patterns
+- Fixed accidental change to Attachment Style Lens entry (restored comingSoon: true)
+- ESLint passes with zero errors
+- Dev server compiling successfully
+
+Stage Summary:
+- Communication Pattern Check is now fully functional alongside Relationship Risk Radar
+- 2 of 5 tools are now active, 3 remain "Coming Soon"
+- All new patterns integrate with the existing engine pipeline automatically
+- Homepage updated to reflect the new active tool and relevant pattern examples
+- Question tree follows the same structure as Relationship Risk Radar for consistency
+
+---
+Task ID: 4
+Agent: attachment-style-lens-agent
+Task: Implement the Attachment Style Lens as a fully functional third tool
+
+Work Log:
+- Read worklog, tool-registry.ts, types/index.ts, patterns.ts, advice.ts, homepage.tsx to understand project architecture
+- Updated `src/types/index.ts` — Added `"anxious-avoidant-trap"` and `"self-reliance-shield"` to the PatternId union type (coexisting with stonewall-cycle, misaligned-expectations, communication-withdrawal added by parallel Communication Pattern Check agent)
+- Replaced Attachment Style Lens placeholder in `src/data/tool-registry.ts` with a complete question tree:
+  - Routing question: "In your closest relationships, which of these feels most familiar to you?" with 4 options
+  - Branch: "anxious-preoccupied" — 3 questions about fear of abandonment, reassurance-seeking, and hypervigilance
+  - Branch: "dismissive-avoidant" — 3 questions about independence-as-defense, discomfort with vulnerability, and emotional withdrawal
+  - Branch: "fearful-avoidant" — 3 questions about approach-avoidance conflict, post-conflict oscillation, and trust barriers
+  - Branch: "secure-base" — 3 questions about repair instincts, interdependence, and healthy space-giving
+  - 2 universal questions: emotional safety memory + self-awareness scale
+  - 1 optional final open-ended question about a recurring relationship moment
+  - Total: 6 questions per path (1 routing + 3 branch + 2 universal + 1 optional final)
+  - All signals use existing SignalKey types with calibrated weights (0.5–2.0)
+  - Set `comingSoon: false`, `version: "1.0.0"`, updated `estimatedQuestions: "6–8"`, `estimatedTime: "3–5 min"`
+- Updated `src/components/lovecheck/homepage.tsx` — Changed attachment-style-lens entry `comingSoon` from `true` to `false`, updated time from "5–8 min" to "3–5 min"
+- Added 2 new pattern rules to `src/data/patterns.ts`:
+  - `anxious-avoidant-trap` (riskLevel: elevated, weight: 8) — required: trust_instability: 3 + mixed_signals_high: 2
+  - `self-reliance-shield` (riskLevel: moderate, weight: 6) — required: emotional_availability_low: 4
+- Added new "Attachment & Emotional Patterns" advice category to `src/data/advice.ts` with 8 snippets (at-1 through at-8) covering: earned security, reassurance needs, closeness/autonomy balance, dependency fears, pursue-withdraw dynamics, self-sabotage as self-protection, being lovable as-is, and learning from safe relationships
+- Verified: `bun run lint` passes with zero errors
+- Verified: dev server compiles successfully with no errors
+
+Stage Summary:
+- Attachment Style Lens is now fully functional alongside Relationship Risk Radar
+- 4 adaptive branches based on attachment theory (Bowlby, Ainsworth, Levine/Heller, Main & Solomon)
+- Warm, non-clinical, self-reflective question tone throughout
+- Violet color palette maintained as configured in homepage
+- No engine pipeline modules modified — uses existing signal extraction, pattern detection, risk evaluation, and confidence scoring
+- No conflicts with parallel Communication Pattern Check agent (whose changes to types, tool-registry, and advice were already present and worked around)

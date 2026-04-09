@@ -5,13 +5,19 @@
 // ── Tool Configuration ──────────────────────────────────────
 
 export type ToolSlug =
+  // Part 1 tools
   | "relationship-risk-radar"
   | "attachment-style-lens"
   | "communication-pattern-check"
   | "compatibility-compass"
-  | "red-flag-scanner";
+  | "red-flag-scanner"
+  // Part 2 tools
+  | "texting-energy-match"
+  | "love-bombing-detector"
+  | "future-alignment-checker"
+  | "flirty-reply-coach";
 
-export type ToolMode = "insight" | "check" | "compare" | "deep-dive";
+export type ToolMode = "insight" | "check" | "compare" | "deep-dive" | "play";
 
 export interface ToolConfig {
   slug: ToolSlug;
@@ -80,6 +86,7 @@ export interface QuestionTree {
 // ── Signals & Patterns ──────────────────────────────────────
 
 export type SignalKey =
+  // Core signals (Part 1)
   | "clarity_low"
   | "consistency_low"
   | "effort_imbalance"
@@ -89,17 +96,48 @@ export type SignalKey =
   | "boundary_friction"
   | "mixed_signals_high"
   | "trust_instability"
-  | "follow_through_low";
+  | "follow_through_low"
+  // Part 2: Texting & Communication Dynamics
+  | "fast_intensity"
+  | "enthusiasm_mismatch"
+  | "dry_texting"
+  | "breadcrumbing_pattern"
+  | "pressure_signal"
+  | "future_promises_high";
 
 export type SignalMap = Partial<Record<SignalKey, number>>;
 
 export type PatternId =
+  // Core patterns (Part 1)
   | "hot-cold-loop"
   | "overgiver-dynamic"
   | "low-clarity-connection"
   | "strong-chemistry-weak-structure"
   | "boundary-friction-pattern"
-  | "repairable-but-uneven";
+  | "repairable-but-uneven"
+  | "stonewall-cycle"
+  | "misaligned-expectations"
+  | "communication-withdrawal"
+  | "anxious-avoidant-trap"
+  | "self-reliance-shield"
+  // Part 2: Texting patterns
+  | "balanced-texting-match"
+  | "overgiver-texting-dynamic"
+  | "high-interest-low-follow-through"
+  | "warm-but-casual-energy"
+  | "mixed-signal-thread"
+  | "breadcrumbing-risk"
+  // Part 2: Love Bombing patterns
+  | "fast-intensity-risk"
+  | "future-faking-signal"
+  | "intense-but-unstable"
+  | "pacing-pressure-pattern"
+  // Part 2: Future Alignment patterns
+  | "strong-alignment"
+  | "good-chemistry-some-friction"
+  | "uneven-long-term-alignment"
+  | "high-attraction-low-structural-fit"
+  | "future-mismatch";
 
 export type RiskLevel = "low" | "moderate" | "elevated" | "high";
 
@@ -173,7 +211,7 @@ export interface AIPayload {
   strengths: string[];
   risks: string[];
   userAnswers: AnswerPayload["answers"];
-  tone: "warm" | "neutral" | "cautious";
+  tone: "warm" | "neutral" | "cautious" | "playful";
   maxLength: number;
 }
 
@@ -237,4 +275,42 @@ export interface SEOMetadata {
   ogImage?: string;
   canonical?: string;
   keywords: string[];
+}
+
+// ── Analytics ──────────────────────────────────────────────
+
+export type AnalyticsEvent =
+  | "tool_viewed"
+  | "tool_started"
+  | "question_answered"
+  | "tool_completed"
+  | "result_viewed"
+  | "next_tool_clicked"
+  | "share_clicked"
+  | "copy_clicked"
+  | "ai_success"
+  | "ai_fallback"
+  | "blog_viewed";
+
+export interface AnalyticsEventPayload {
+  event: AnalyticsEvent;
+  toolSlug?: ToolSlug;
+  questionId?: string;
+  metadata?: Record<string, string | number | boolean>;
+  timestamp: number;
+}
+
+// ── Blog ───────────────────────────────────────────────────
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string[];
+  relatedTools: ToolSlug[];
+  publishedAt: string;
+  readTime: string;
+  seo: SEOMetadata;
 }

@@ -209,10 +209,11 @@ export function ShareSection({ text, className }: ShareSectionProps) {
         {socialButtons.map((btn) => {
           const Icon = btn.icon;
           return (
-            <button
+            <a
               key={btn.label}
-              type="button"
-              onClick={handleNativeShare}
+              href={btn.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className={cn(
                 "flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 btn.color,
@@ -224,7 +225,7 @@ export function ShareSection({ text, className }: ShareSectionProps) {
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className="truncate">{btn.label}</span>
-            </button>
+            </a>
           );
         })}
 

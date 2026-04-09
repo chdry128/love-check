@@ -361,10 +361,8 @@ const tools = [
     bgColor: "bg-amber-50 dark:bg-amber-950/30",
     borderColor: "hover:border-amber-200 dark:hover:border-amber-800",
     category: "Communication",
-    time: "4–6 min",
-    comingSoon: true,
-    comingSoonDescription:
-      "decode the way you and your partner actually talk and uncover hidden conversational patterns",
+    time: "3–5 min",
+    comingSoon: false,
   },
   {
     slug: "compatibility-compass" as ToolSlug,
@@ -465,10 +463,10 @@ const patternExamples = [
     color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   },
   {
-    name: "Overgiver Dynamic",
+    name: "Stonewall Cycle",
     description:
-      "When one person consistently carries more emotional weight than feels sustainable.",
-    color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+      "When one person withdraws and the other pursues, creating a painful and exhausting loop.",
+    color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300",
   },
   {
     name: "Low-Clarity Connection",
@@ -477,10 +475,10 @@ const patternExamples = [
     color: "bg-slate-100 text-slate-600 dark:bg-slate-800/30 dark:text-slate-300",
   },
   {
-    name: "Strong Chemistry, Weak Structure",
+    name: "Communication Withdrawal",
     description:
-      "When the sparks are real but the day-to-day reliability doesn't match.",
-    color: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
+      "When important conversations get progressively avoided, eroding connection over time.",
+    color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   },
 ];
 

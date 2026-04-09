@@ -174,6 +174,150 @@ export const patternRules: PatternRule[] = [
     safeSuggestion:
       'A single honest conversation about how you\'re experiencing the balance can shift things — your feelings about this are valid.',
   },
+  {
+    id: 'anxious-avoidant-trap',
+    name: 'Anxious-Avoidant Trap',
+    description:
+      'A classic attachment dynamic where one person pursues closeness and reassurance while the other withdraws — creating a painful cycle that reinforces both patterns.',
+    requiredSignals: {
+      trust_instability: 3,
+      mixed_signals_high: 2,
+    },
+    optionalSignals: {
+      boundary_friction: 2,
+      effort_imbalance: 1,
+      consistency_low: 1,
+      emotional_availability_low: 1,
+    },
+    riskLevel: 'elevated',
+    weight: 8,
+    summaryTemplate:
+      'Your answers suggest an anxious-avoidant dynamic — one of you may reach for closeness while the other pulls away, creating a cycle where neither person feels heard or met. The more one pursues, the more the other retreats, and vice versa.',
+    strengthsTemplate:
+      'The fact that you can see this pattern is a real strength. Most people trapped in this cycle don\'t even realize it\'s happening — they just feel frustrated and misunderstood.',
+    risksTemplate:
+      'Without awareness, this cycle tends to intensify over time. The anxious partner feels abandoned, the avoidant partner feels suffocated, and both end up proving their worst fears right.',
+    watchNextTemplate:
+      'Watch what happens after conflict — does one of you reach out while the other needs space? The pattern usually shows up most clearly in those moments.',
+    tryNextTemplate:
+      'Try our Communication Pattern Check to understand how this dynamic plays out in the way you actually talk to each other.',
+    safeSuggestion:
+      'Breaking this cycle starts with one person pausing — not to withdraw, but to notice. The book "Attached" by Amir Levine and Rachel Heller is a gentle, non-clinical starting point.',
+  },
+  {
+    id: 'self-reliance-shield',
+    name: 'Self-Reliance Shield',
+    description:
+      'A pattern where independence — normally a healthy quality — has become a protective barrier against vulnerability, emotional dependence, and the risk of being let down.',
+    requiredSignals: {
+      emotional_availability_low: 4,
+    },
+    optionalSignals: {
+      boundary_friction: 2,
+      consistency_low: 1,
+      effort_imbalance: 1,
+      trust_instability: 1,
+    },
+    riskLevel: 'moderate',
+    weight: 6,
+    summaryTemplate:
+      'Your responses suggest that self-reliance may be serving as a shield — you might be using independence to protect yourself from the vulnerability of truly needing someone. It\'s a strategy that probably served you well at some point, but it may now be limiting the depth of your connections.',
+    strengthsTemplate:
+      'Your independence and self-sufficiency are real assets — the world rewards those qualities. The question isn\'t whether they\'re useful, but whether they\'re blocking something you also want.',
+    risksTemplate:
+      'When self-reliance becomes a defense, it can quietly create distance in relationships — not through conflict, but through a ceiling on how close anyone is allowed to get.',
+    watchNextTemplate:
+      'Watch for the moment right after someone does something genuinely caring — do you let it in, or does a voice say "don\'t get used to this"?',
+    tryNextTemplate:
+      'Try our Attachment Style Lens to explore whether this pattern connects to earlier experiences of needing someone who wasn\'t there.',
+    safeSuggestion:
+      'Consider one small experiment: let someone help you with something this week — not because you can\'t do it yourself, but to practice receiving. Notice what comes up.',
+  },
+  {
+    id: 'stonewall-cycle',
+    name: 'Stonewall Cycle',
+    description:
+      'A pattern where one person withdraws or shuts down during conflict while the other pursues resolution, creating a painful and exhausting loop that rarely gets resolved.',
+    requiredSignals: {
+      emotional_availability_low: 4,
+    },
+    optionalSignals: {
+      trust_instability: 2,
+      boundary_friction: 2,
+      clarity_low: 1,
+    },
+    riskLevel: 'elevated',
+    weight: 8,
+    summaryTemplate:
+      'Your answers suggest a stonewalling dynamic — when things get tense, one of you pulls away while the other tries harder to connect. This pursue-withdraw cycle is one of the most common and exhausting communication patterns in relationships.',
+    strengthsTemplate:
+      'The fact that one person is still trying to connect shows there\'s care and investment in the relationship — even if the approach isn\'t working right now.',
+    risksTemplate:
+      'Over time, the pursuer burns out from chasing and the withdrawer feels increasingly pressured, which can push both people further apart.',
+    watchNextTemplate:
+      'Watch for whether the stonewalling happens more around specific topics — that can reveal what\'s really beneath the surface.',
+    tryNextTemplate:
+      'Try our Relationship Risk Radar for a broader view of how this pattern affects the overall health of your connection.',
+    safeSuggestion:
+      'Research by Dr. John Gottman shows that stonewalling is one of the strongest predictors of relationship breakdown — but it\'s also one of the most treatable with the right support. Couples therapy can make a real difference here.',
+  },
+  {
+    id: 'misaligned-expectations',
+    name: 'Misaligned Expectations',
+    description:
+      'A pattern where partners have fundamentally different assumptions about how communication should work — how often to check in, how deep conversations should go, or how quickly to address problems.',
+    requiredSignals: {
+      clarity_low: 4,
+      mixed_signals_high: 3,
+    },
+    optionalSignals: {
+      effort_imbalance: 2,
+      consistency_low: 1,
+    },
+    riskLevel: 'moderate',
+    weight: 6,
+    summaryTemplate:
+      'Your answers point to misaligned communication expectations — you and your partner may have different ideas about what "good communication" looks like, which creates frustration even when both of you are trying.',
+    strengthsTemplate:
+      'Misalignment doesn\'t mean incompatibility — it usually just means nobody has clearly defined what they need. That\'s fixable.',
+    risksTemplate:
+      'When expectations are unspoken, each person judges the other by their own internal standard, which leads to feeling unheard, uncared for, or inadequate.',
+    watchNextTemplate:
+      'Watch whether you\'ve ever actually discussed what good communication looks like for each of you — not just what\'s wrong, but what you both want.',
+    tryNextTemplate:
+      'Try our Compatibility Compass to explore whether deeper values and lifestyle differences might be driving the communication gap.',
+    safeSuggestion:
+      'Try this exercise: each of you writes down your top 3 communication needs (e.g., daily check-in texts, no phone during dinner, space before discussing conflict) and then share them. You might be surprised by how simple the gap really is.',
+  },
+  {
+    id: 'communication-withdrawal',
+    name: 'Communication Withdrawal',
+    description:
+      'A pattern where important conversations get progressively avoided over time, leaving both partners feeling disconnected, unheard, and emotionally distant without a clear breaking point.',
+    requiredSignals: {
+      clarity_low: 5,
+      consistency_low: 4,
+    },
+    optionalSignals: {
+      emotional_availability_low: 2,
+      trust_instability: 1,
+      follow_through_low: 1,
+    },
+    riskLevel: 'high',
+    weight: 9,
+    summaryTemplate:
+      'Your answers indicate significant communication withdrawal — important conversations seem to be getting avoided more and more, and the emotional distance may be growing without either of you fully realizing how far apart you\'ve drifted.',
+    strengthsTemplate:
+      'The fact that you\'re here, taking this check, suggests you haven\'t given up — and that awareness is a crucial first step.',
+    risksTemplate:
+      'Communication withdrawal is subtle because there\'s no explosion — just a quiet erosion. Over time, couples in this pattern often describe feeling like they\'re "roommates" rather than partners.',
+    watchNextTemplate:
+      'Watch for whether you\'ve started replacing real conversations with logistics — talking about schedules, errands, and plans while avoiding anything emotional.',
+    tryNextTemplate:
+      'Try our Attachment Style Lens to explore whether deeper attachment needs might be driving the withdrawal pattern.',
+    safeSuggestion:
+      'Start small. Instead of tackling the big things, try sharing one genuine feeling today — even something as simple as "I had a hard day and I just need a hug." Small openings can lead to bigger ones.',
+  },
 ];
 
 export function getPatternRule(id: string): PatternRule | undefined {
