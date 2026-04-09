@@ -333,4 +333,148 @@ export const adviceLibrary: AdviceCategory[] = [
       },
     ],
   },
+
+  // ── Texting & Digital Communication ────────────────────────
+  {
+    id: "texting",
+    label: "Texting & Digital Communication",
+    snippets: [
+      {
+        id: "tx-1",
+        text: "If you've re-read a text seventeen times looking for hidden meaning, the text isn't the problem — the uncertainty is. Your brain is trying to solve a puzzle that the other person may not even know they set.",
+        appliesWhen: "User is overanalyzing text messages",
+      },
+      {
+        id: "tx-2",
+        text: "Response time is not a love language. Some people live on their phones; others check them twice a day. Neither one means they care more or less — it means they have different digital habits.",
+        appliesWhen: "User is anxious about response time",
+      },
+      {
+        id: "tx-3",
+        text: "Dry texting doesn't always mean low interest. Some people express themselves through actions, not words. But if every conversation feels like pulling teeth, it's worth asking whether your communication styles are compatible — not whether one of you is wrong.",
+        appliesWhen: "User worries their partner's texting style means lack of interest",
+      },
+      {
+        id: "tx-4",
+        text: "Breadcrumbing is when someone gives you just enough contact to keep you hooked — a like, a late-night text, a 'thinking of you' — without ever stepping up to real effort. It's not romance. It's proximity management.",
+        appliesWhen: "User is receiving sporadic, low-effort contact",
+      },
+      {
+        id: "tx-5",
+        text: "Some conversations need to happen out loud. If a topic has been going back and forth over text for more than a day without resolution, pick up the phone. Tone carries 38% of emotional meaning — and emojis don't quite cover it.",
+        appliesWhen: "User is stuck in a text-based conflict or misunderstanding",
+      },
+      {
+        id: "tx-6",
+        text: "You're allowed to have digital boundaries. Not every message deserves an instant reply, and not every silence deserves an explanation. A healthy texting rhythm is one that feels sustainable for both people — not one driven by guilt or fear.",
+        appliesWhen: "User feels pressured to be constantly available via text",
+      },
+      {
+        id: "tx-7",
+        text: "Matching someone's energy doesn't mean becoming a copy of their communication style. It means meeting them where they are while staying true to how you naturally express yourself. If you have to shrink your warmth to match their coolness, that's not matching — that's masking.",
+        appliesWhen: "User tries to mirror a partner's texting style and loses themselves",
+      },
+      {
+        id: "tx-8",
+        text: "Reading between the lines is a useful skill — until it becomes a compulsion. Sometimes 'okay' just means okay. Sometimes a delayed reply means they were busy. Not every message has a subtext, and not every subtext is about you.",
+        appliesWhen: "User habitually reads hidden meanings into messages",
+      },
+    ],
+  },
+
+  // ── Pacing & Early Stage ──────────────────────────────────
+  {
+    id: "pacing",
+    label: "Pacing & Early Stage",
+    snippets: [
+      {
+        id: "pc-1",
+        text: "Excitement says 'I really like you and I want to know everything about you.' Love bombing says 'I already know everything about you and you're the only one who's ever understood me.' The first is about curiosity; the second is about possession. Learn the difference early.",
+        appliesWhen: "User is experiencing intense early relationship attention",
+      },
+      {
+        id: "pc-2",
+        text: "Healthy pacing doesn't mean playing games or pretending to be less interested than you are. It means letting connection build at a speed where trust can keep up — so that when you're finally vulnerable, you're doing it with someone who's earned it.",
+        appliesWhen: "User is unsure whether they're moving too fast",
+      },
+      {
+        id: "pc-3",
+        text: "If your gut says 'this is moving too fast,' listen — even if your heart says 'but it feels so good.' Your gut isn't trying to kill the vibe; it's trying to protect you from a dynamic you won't be able to sustain once the initial adrenaline wears off.",
+        appliesWhen: "User senses the pace is wrong but feels drawn in by excitement",
+      },
+      {
+        id: "pc-4",
+        text: "Future-faking is when someone sells you a beautiful vision of what's ahead — trips, milestones, a life together — without any real intention or plan to get there. The future they describe isn't a promise; it's a fantasy. And fantasies are free.",
+        appliesWhen: "User has been given grand promises about the future with little follow-through",
+      },
+      {
+        id: "pc-5",
+        text: "Your instincts about intensity aren't paranoia — they're pattern recognition. If something feels too much too soon, it might be because your nervous system has been here before and it remembers how the story ends. Trust that memory.",
+        appliesWhen: "User feels overwhelmed by early intensity but doubts themselves",
+      },
+      {
+        id: "pc-6",
+        text: "A foundation built fast is rarely built well. The best relationships aren't the ones that start with fireworks — they're the ones where both people are willing to be patient while something real takes root. You can't rush a foundation and then expect the house to hold.",
+        appliesWhen: "User feels pressure to commit or escalate quickly",
+      },
+      {
+        id: "pc-7",
+        text: "A grand gesture followed by weeks of inconsistency isn't passion — it's a cycle. What sustains a relationship isn't what someone does on the best day; it's what they do on an ordinary Tuesday when nobody's watching.",
+        appliesWhen: "User is impressed by occasional grand gestures despite everyday inconsistency",
+      },
+      {
+        id: "pc-8",
+        text: "When someone's words and actions don't match, always believe the actions. Words are easy, free, and forgettable. Behavior is a choice — and it's the only reliable predictor of what someone will do next.",
+        appliesWhen: "User notices a gap between what their partner says and what they do",
+      },
+    ],
+  },
+
+  // ── Values & Future ──────────────────────────────────────
+  {
+    id: "values_future",
+    label: "Values & Future",
+    snippets: [
+      {
+        id: "vf-1",
+        text: "The conversations worth having early aren't the fun ones — they're the ones that feel slightly uncomfortable. Kids, money, religion, where to live, what commitment means. You don't need agreement on day one, but you do need honesty about where you both stand.",
+        appliesWhen: "User is starting a new relationship and needs to discuss important topics",
+      },
+      {
+        id: "vf-2",
+        text: "Having different values isn't automatically a dealbreaker — but refusing to talk about them is. You can work with differences. You can't work with avoidance. If someone won't engage with the hard topics, that avoidance is itself a value — and it's one you should pay attention to.",
+        appliesWhen: "User and partner have differing values but open communication",
+      },
+      {
+        id: "vf-3",
+        text: "Different life timelines are one of the most common sources of relationship pain — and one of the most overlooked. If one of you is ready for marriage in a year and the other isn't sure about ever, that's not a small difference. It's a tectonic plate. And pretending it doesn't exist won't stop the earthquake.",
+        appliesWhen: "User and partner have different timelines for major life decisions",
+      },
+      {
+        id: "vf-4",
+        text: "A dealbreaker is something you genuinely cannot live with long-term. A preference is something you'd rather not, but can bend on. The trouble is that under the spell of chemistry, almost everything starts to look like a preference. Give it time before you reclassify your non-negotiables.",
+        appliesWhen: "User is considering compromising on something important",
+      },
+      {
+        id: "vf-5",
+        text: "Talking about the future doesn't have to feel like a contract negotiation. You can be curious and exploratory — 'I've been thinking about what I want my life to look like in a few years, and I'm curious about your vision too.' Pressure kills honesty. Curiosity invites it.",
+        appliesWhen: "User wants to discuss the future but fears creating pressure",
+      },
+      {
+        id: "vf-6",
+        text: "Chemistry without compatibility is like a gorgeous house on a broken foundation. You can love the view, enjoy the space, and still know that it won't stand the test of time. Good chemistry gets you in the door. Shared values are what keep you there.",
+        appliesWhen: "User has strong chemistry but suspects underlying incompatibility",
+      },
+      {
+        id: "vf-7",
+        text: "Alignment isn't something you find — it's something you build, one honest conversation at a time. It starts with knowing your own values clearly enough to articulate them, and having the courage to ask whether the person you're with shares them.",
+        appliesWhen: "User wants to build future alignment in a developing relationship",
+      },
+      {
+        id: "vf-8",
+        text: "Asking hard questions isn't being negative — it's being serious. If someone makes you feel like you're killing the mood by bringing up values, timing, or expectations, ask yourself why honest conversation feels threatening to them. The answer is usually revealing.",
+        appliesWhen: "User feels shut down when trying to discuss important relationship topics",
+      },
+    ],
+  },
 ];

@@ -1903,4 +1903,2092 @@ export const toolRegistry: ToolConfig[] = [
       universalQuestions: [],
     },
   },
+
+  // ════════════════════════════════════════════════════════════════
+  // 6. Texting Energy Match  (active)
+  // ════════════════════════════════════════════════════════════════
+  {
+    slug: "texting-energy-match",
+    name: "Texting Energy Match",
+    tagline: "See if your texting vibes are actually aligned.",
+    description:
+      "Texting says more than we realize — it reveals effort, enthusiasm, and emotional investment. This tool reads between the lines of your texting dynamic to help you understand whether you're both on the same wavelength or if the energy gap is telling you something important.",
+    mode: "insight",
+    version: "1.0.0",
+    icon: "MessageCircle",
+    color: "teal",
+    estimatedQuestions: "6–8",
+    estimatedTime: "3–5 min",
+    category: "Communication",
+    featured: false,
+    comingSoon: false,
+    questionTree: {
+      // ── Routing Question ─────────────────────────────────────
+      routingQuestion: {
+        id: "tem-routing",
+        kind: "routing",
+        type: "single-choice",
+        text: "How would you describe the texting dynamic between you?",
+        subtitle:
+          "Go with your gut — the vibe you feel most days, not just the best or worst ones.",
+        options: [
+          {
+            id: "tem-r-balanced",
+            label: "Pretty balanced — we match each other's energy",
+            description:
+              "It feels natural. Neither of us is always chasing or always pulling away.",
+            signals: { enthusiasm_mismatch: -1, effort_imbalance: -1 },
+            weight: 1,
+            branchRef: "balanced",
+          },
+          {
+            id: "tem-r-overinvested",
+            label: "I feel like I'm more invested in the conversation",
+            description:
+              "I initiate more, type more, and wait more than they probably realize.",
+            signals: { effort_imbalance: 2, enthusiasm_mismatch: 2 },
+            weight: 1,
+            branchRef: "overinvested",
+          },
+          {
+            id: "tem-r-casual",
+            label: "Pretty casual — we text but it's not a big thing",
+            description:
+              "Neither of us is glued to our phone. We talk when we talk.",
+            signals: { dry_texting: 1, breadcrumbing_pattern: 1 },
+            weight: 1,
+            branchRef: "casual",
+          },
+          {
+            id: "tem-r-uncertain",
+            label: "Honestly, I can never tell where they're at",
+            description:
+              "Some days they're super engaged, other days they're barely there. It keeps me guessing.",
+            signals: { mixed_signals_high: 2, consistency_low: 2 },
+            weight: 1,
+            branchRef: "uncertain",
+          },
+        ],
+        required: true,
+        sortOrder: 0,
+      },
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Balanced ────────────────────────────────────
+        balanced: [
+          {
+            id: "tem-b1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When one of you sends a longer, more personal message, how does the other usually respond?",
+            branchId: "balanced",
+            sortOrder: 1,
+            options: [
+              {
+                id: "tem-b1-match",
+                label: "They match the energy — we go back and forth with real substance",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-b1-acknowledge",
+                label: "They acknowledge it but keep their response shorter",
+                signals: { enthusiasm_mismatch: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-b1-surface",
+                label: "They kind of skim past the deep part and keep it light",
+                signals: { enthusiasm_mismatch: 2, dry_texting: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-b1-ignore",
+                label: "They often don't respond to the emotional part at all",
+                signals: { enthusiasm_mismatch: 3, dry_texting: 2, consistency_low: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-b2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How often do you find yourself re-reading their messages for hidden meaning?",
+            branchId: "balanced",
+            sortOrder: 2,
+            options: [
+              {
+                id: "tem-b2-never",
+                label: "Rarely — I usually take their messages at face value",
+                signals: { mixed_signals_high: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-b2-occasionally",
+                label: "Occasionally — but I catch myself and move on",
+                signals: { mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-b2-sometimes",
+                label: "Sometimes — especially when their tone feels off",
+                signals: { mixed_signals_high: 2, consistency_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-b2-often",
+                label: "Often — I analyze the tone, the timing, the word choice",
+                signals: { mixed_signals_high: 3, consistency_low: 2, trust_instability: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-b3",
+            kind: "branch",
+            type: "scale",
+            text: "How much does your texting dynamic reflect how you feel about the relationship overall?",
+            subtitle: "1 = texting is just texting, 5 = texting tells me everything",
+            branchId: "balanced",
+            sortOrder: 3,
+            min: 1,
+            max: 5,
+            step: 1,
+            minLabel: "Just texting",
+            maxLabel: "Tells me everything",
+            options: [], // scale uses value
+          },
+        ],
+
+        // ── Branch: Overinvested ────────────────────────────────
+        overinvested: [
+          {
+            id: "tem-o1",
+            kind: "branch",
+            type: "single-choice",
+            text: "After you send a message, how long does it typically take them to reply?",
+            branchId: "overinvested",
+            sortOrder: 1,
+            options: [
+              {
+                id: "tem-o1-quick",
+                label: "Pretty quickly — they're usually responsive",
+                signals: { effort_imbalance: -1, consistency_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-o1-hours",
+                label: "A few hours, which is fine — people are busy",
+                signals: { effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-o1-variable",
+                label: "It varies a lot — sometimes minutes, sometimes the next day",
+                signals: { consistency_low: 2, effort_imbalance: 2, breadcrumbing_pattern: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-o1-rarely",
+                label: "They rarely initiate and often take a long time to get back to me",
+                signals: { effort_imbalance: 3, breadcrumbing_pattern: 3, dry_texting: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-o2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When they do text back, how does it usually feel?",
+            branchId: "overinvested",
+            sortOrder: 2,
+            options: [
+              {
+                id: "tem-o2-warm",
+                label: "Warm and engaged — they show they're happy to hear from me",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-o2-fine",
+                label: "Fine — they respond, but it's often short or practical",
+                signals: { dry_texting: 2, enthusiasm_mismatch: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "tem-o2-one-word",
+                label: "Low-effort — lots of one-word replies or emojis with no substance",
+                signals: { dry_texting: 3, effort_imbalance: 2, enthusiasm_mismatch: 3 },
+                weight: 1.8,
+              },
+              {
+                id: "tem-o2-guilt",
+                label: "Like they're doing me a favor — it carries a hint of guilt or obligation",
+                signals: { dry_texting: 2, effort_imbalance: 3, pressure_signal: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-o3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you ever find yourself sending follow-up texts just to keep the conversation going?",
+            subtitle: "No judgment — most of us have been there.",
+            branchId: "overinvested",
+            sortOrder: 3,
+            options: [
+              {
+                id: "tem-o3-rarely",
+                label: "Rarely — if they go quiet, I let it be",
+                signals: { effort_imbalance: -1, pressure_signal: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-o3-occasionally",
+                label: "Occasionally — just a quick check-in or meme",
+                signals: { effort_imbalance: 1, pressure_signal: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-o3-often",
+                label: "More than I'd like to admit — I hate the silence",
+                signals: { effort_imbalance: 2, pressure_signal: 2, consistency_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-o3-always",
+                label: "Constantly — I feel like I'm always the one keeping it alive",
+                signals: { effort_imbalance: 3, pressure_signal: 2, breadcrumbing_pattern: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Casual ──────────────────────────────────────
+        casual: [
+          {
+            id: "tem-c1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you don't hear from them for a day or two, how does that feel?",
+            branchId: "casual",
+            sortOrder: 1,
+            options: [
+              {
+                id: "tem-c1-fine",
+                label: "Totally fine — we both have our own lives",
+                signals: { consistency_low: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-c1-slight",
+                label: "A tiny bit off, but nothing major",
+                signals: { consistency_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-c1-wonder",
+                label: "I start wondering if they're losing interest",
+                signals: { consistency_low: 2, breadcrumbing_pattern: 1, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-c1-anxious",
+                label: "It makes me anxious — I check their socials to see if they're active",
+                signals: { consistency_low: 2, breadcrumbing_pattern: 2, mixed_signals_high: 2, trust_instability: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-c2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Does the casualness feel mutual — like you're both on the same page about how much you text?",
+            branchId: "casual",
+            sortOrder: 2,
+            options: [
+              {
+                id: "tem-c2-yes",
+                label: "Yes — neither of us expects daily check-ins",
+                signals: { effort_imbalance: -1, mixed_signals_high: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-c2-mostly",
+                label: "Mostly, but sometimes I wish they'd reach out first",
+                signals: { effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-c2-not-sure",
+                label: "I'm not sure — I can't tell if they're genuinely casual or just not that into texting me",
+                signals: { mixed_signals_high: 2, breadcrumbing_pattern: 1, dry_texting: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-c2-no",
+                label: "No — I want to text more but I don't want to seem clingy",
+                signals: { effort_imbalance: 2, dry_texting: 1, pressure_signal: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-c3",
+            kind: "branch",
+            type: "scale",
+            text: "How well does the way you text match the kind of connection you actually want?",
+            subtitle: "1 = texting doesn't matter to me, 5 = I wish we texted differently",
+            branchId: "casual",
+            sortOrder: 3,
+            min: 1,
+            max: 5,
+            step: 1,
+            minLabel: "Doesn't matter",
+            maxLabel: "Wish it were different",
+            options: [], // scale uses value
+          },
+        ],
+
+        // ── Branch: Uncertain ───────────────────────────────────
+        uncertain: [
+          {
+            id: "tem-u1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What does a typical week of texting look like with this person?",
+            branchId: "uncertain",
+            sortOrder: 1,
+            options: [
+              {
+                id: "tem-u1-consistent",
+                label: "Fairly consistent — some days more than others, but there's a rhythm",
+                signals: { consistency_low: -1, mixed_signals_high: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-u1-rollercoaster",
+                label: "A rollercoaster — amazing one day, ghost-like the next",
+                signals: { mixed_signals_high: 3, consistency_low: 3, breadcrumbing_pattern: 1 },
+                weight: 1.8,
+              },
+              {
+                id: "tem-u1-push-pull",
+                label: "They come on strong for a few days, then go quiet — then come back",
+                signals: { mixed_signals_high: 2, breadcrumbing_pattern: 3, fast_intensity: 1 },
+                weight: 2,
+              },
+              {
+                id: "tem-u1-mia",
+                label: "They disappear for stretches and then pop back in like nothing happened",
+                signals: { breadcrumbing_pattern: 3, consistency_low: 3, mixed_signals_high: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "tem-u2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When they send a long, thoughtful message after being distant, what's your honest reaction?",
+            branchId: "uncertain",
+            sortOrder: 2,
+            options: [
+              {
+                id: "tem-u2-happy",
+                label: "Happy — I appreciate it and it feels genuine",
+                signals: { mixed_signals_high: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-u2-cautious",
+                label: "Cautiously optimistic — but part of me wonders how long it'll last",
+                signals: { mixed_signals_high: 1, trust_instability: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-u2-anxious",
+                label: "A rush of relief mixed with anxiety — like I've been holding my breath",
+                signals: { mixed_signals_high: 2, trust_instability: 2, breadcrumbing_pattern: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-u2-resentful",
+                label: "Honest truth? Kind of resentful — I wish they were like this all the time",
+                signals: { mixed_signals_high: 2, consistency_low: 2, effort_imbalance: 2 },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "tem-u3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have you ever changed how you text (shorter, less eager, more casual) to match their energy?",
+            subtitle: "Like mirroring them to avoid seeming too interested.",
+            branchId: "uncertain",
+            sortOrder: 3,
+            options: [
+              {
+                id: "tem-u3-no",
+                label: "No — I text how I want to text",
+                signals: { pressure_signal: -1, effort_imbalance: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "tem-u3-once",
+                label: "Maybe once or twice — I caught myself doing it",
+                signals: { pressure_signal: 1, effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "tem-u3-often",
+                label: "Yeah, I do it pretty often — I don't want to come off too strong",
+                signals: { pressure_signal: 2, effort_imbalance: 2, enthusiasm_mismatch: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "tem-u3-always",
+                label: "Constantly — I carefully calculate every message I send",
+                signals: { pressure_signal: 3, effort_imbalance: 2, mixed_signals_high: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "tem-uni1",
+          kind: "universal",
+          type: "single-choice",
+          text: "After a good texting exchange, do you feel more connected or more confused?",
+          sortOrder: 10,
+          options: [
+            {
+              id: "tem-uni1-connected",
+              label: "More connected — good conversations make me feel closer to them",
+              signals: { repair_potential_high: 1, mixed_signals_high: -1 },
+              weight: 0.5,
+            },
+            {
+              id: "tem-uni1-same",
+              label: "About the same — texting doesn't really change how I feel",
+              signals: { dry_texting: 1 },
+              weight: 1,
+            },
+            {
+              id: "tem-uni1-more-confused",
+              label: "More confused — sometimes good texts leave me with more questions",
+              signals: { mixed_signals_high: 2, clarity_low: 1 },
+              weight: 1.5,
+            },
+            {
+              id: "tem-uni1-exhausted",
+              label: "Honestly? Exhausted — I overthink everything they said afterward",
+              signals: { mixed_signals_high: 3, consistency_low: 2, trust_instability: 1 },
+              weight: 2,
+            },
+          ],
+        },
+        {
+          id: "tem-uni2",
+          kind: "universal",
+          type: "scale",
+          text: "How honestly can you say what you actually feel over text?",
+          subtitle: "1 = I hold back a lot, 5 = I'm completely myself",
+          sortOrder: 11,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "I hold back a lot",
+          maxLabel: "Completely myself",
+          options: [], // scale uses value
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "tem-final",
+        kind: "final",
+        type: "open-ended",
+        text: "Is there a specific text exchange — recent or old — that's been on your mind?",
+        subtitle:
+          "Optional, but sometimes the message that sticks with you is the one that matters most.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
+    },
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  // 7. Love Bombing Detector  (active)
+  // ════════════════════════════════════════════════════════════════
+  {
+    slug: "love-bombing-detector",
+    name: "Love Bombing Detector",
+    tagline: "Learn to spot the difference between excitement and overload.",
+    description:
+      "Not all intensity is love — and not all love bombing starts with bad intentions. This tool helps you observe patterns in how a connection began and evolved, so you can distinguish between genuine enthusiasm and the kind of intensity that often fades or shifts in ways that leave you questioning everything.",
+    mode: "check",
+    version: "1.0.0",
+    icon: "ShieldAlert",
+    color: "orange",
+    estimatedQuestions: "6–8",
+    estimatedTime: "3–5 min",
+    category: "Safety",
+    featured: false,
+    comingSoon: false,
+    questionTree: {
+      // ── Routing Question ─────────────────────────────────────
+      routingQuestion: {
+        id: "lbd-routing",
+        kind: "routing",
+        type: "single-choice",
+        text: "How would you describe the beginning of this connection?",
+        subtitle:
+          "Think about the first few weeks — what was the energy like?",
+        options: [
+          {
+            id: "lbd-r-intense",
+            label: "Very intense — everything happened fast",
+            description:
+              "They came on strong: constant attention, big declarations, lots of future talk.",
+            signals: { fast_intensity: 3, future_promises_high: 1 },
+            weight: 1,
+            branchRef: "intense-start",
+          },
+          {
+            id: "lbd-r-gradual",
+            label: "Gradual — it built up naturally over time",
+            description:
+              "Things unfolded at a comfortable pace. No big rush.",
+            signals: { fast_intensity: -1, consistency_low: -1 },
+            weight: 1,
+            branchRef: "gradual",
+          },
+          {
+            id: "lbd-r-reconsidering",
+            label: "I'm reconsidering — some things from the beginning feel different now",
+            description:
+              "Looking back, I'm starting to question whether the early intensity was genuine.",
+            signals: { mixed_signals_high: 2, trust_instability: 2 },
+            weight: 1,
+            branchRef: "reconsidering",
+          },
+          {
+            id: "lbd-r-post-bombing",
+            label: "The intensity faded — and now things feel really different",
+            description:
+              "They were all-in at first, then pulled way back. I'm trying to make sense of the contrast.",
+            signals: { fast_intensity: 2, consistency_low: 3, mixed_signals_high: 2 },
+            weight: 1,
+            branchRef: "post-bombing",
+          },
+        ],
+        required: true,
+        sortOrder: 0,
+      },
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Intense Start ───────────────────────────────
+        "intense-start": [
+          {
+            id: "lbd-is1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Early on, how did they express their interest in you?",
+            subtitle: "Think about the first few weeks.",
+            branchId: "intense-start",
+            sortOrder: 1,
+            options: [
+              {
+                id: "lbd-is1-gradual",
+                label: "Gradually — they showed interest through actions over time",
+                signals: { fast_intensity: -1, consistency_low: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-is1-sweet",
+                label: "Sweet and enthusiastic — they were clearly excited but it felt natural",
+                signals: { fast_intensity: 1, repair_potential_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-is1-grand",
+                label: "Grand gestures and big declarations — they said things that felt almost too good to be true",
+                signals: { fast_intensity: 3, future_promises_high: 2, pressure_signal: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-is1-idealize",
+                label: "They idealized me — like I was perfect and they'd been waiting for someone like me",
+                signals: { fast_intensity: 3, future_promises_high: 3, pressure_signal: 2, effort_imbalance: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-is2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How quickly did they want to define the relationship or make future plans?",
+            branchId: "intense-start",
+            sortOrder: 2,
+            options: [
+              {
+                id: "lbd-is2-patient",
+                label: "They were patient — no rush at all",
+                signals: { fast_intensity: -1, pressure_signal: -1, future_promises_high: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-is2-normal",
+                label: "A normal pace — they brought it up when it felt right",
+                signals: { fast_intensity: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-is2-early",
+                label: "Very early — they talked about the future before we'd even gone on a few dates",
+                signals: { fast_intensity: 2, future_promises_high: 3, pressure_signal: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-is2-immediate",
+                label: "Almost immediately — trips, moving in, meeting family, all within weeks",
+                signals: { fast_intensity: 3, future_promises_high: 3, pressure_signal: 2, effort_imbalance: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-is3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Did they try to spend all their time with you early on, or talk constantly?",
+            branchId: "intense-start",
+            sortOrder: 3,
+            options: [
+              {
+                id: "lbd-is3-balance",
+                label: "No, they had their own life and respected mine too",
+                signals: { fast_intensity: -1, boundary_friction: -1, pressure_signal: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-is3-enthusiastic",
+                label: "They were eager but it didn't feel overwhelming",
+                signals: { fast_intensity: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-is3-a-lot",
+                label: "Yeah, they wanted to talk or see me all the time",
+                signals: { fast_intensity: 2, pressure_signal: 1, boundary_friction: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-is3-all-consuming",
+                label: "It was all-consuming — they made me the center of their world immediately",
+                signals: { fast_intensity: 3, pressure_signal: 2, boundary_friction: 2, effort_imbalance: 1 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Gradual ────────────────────────────────────
+        gradual: [
+          {
+            id: "lbd-g1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Even though things started naturally, have there been moments that felt unexpectedly intense?",
+            branchId: "gradual",
+            sortOrder: 1,
+            options: [
+              {
+                id: "lbd-g1-no",
+                label: "Not really — it's been fairly consistent throughout",
+                signals: { fast_intensity: -1, mixed_signals_high: -1, consistency_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-g1-small",
+                label: "Small moments — nothing that alarmed me",
+                signals: { fast_intensity: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-g1-some",
+                label: "A few times — I noticed it but figured it was just enthusiasm",
+                signals: { fast_intensity: 2, mixed_signals_high: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "lbd-g1-looking-back",
+                label: "Looking back, there were more red flags than I realized at the time",
+                signals: { fast_intensity: 2, mixed_signals_high: 2, trust_instability: 1 },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "lbd-g2",
+            kind: "branch",
+            type: "single-choice",
+            text: "How do they handle it when you want space or don't respond right away?",
+            branchId: "gradual",
+            sortOrder: 2,
+            options: [
+              {
+                id: "lbd-g2-respect",
+                label: "They respect it — no problem at all",
+                signals: { pressure_signal: -1, boundary_friction: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-g2-fine",
+                label: "Mostly fine, though they might check in once",
+                signals: { pressure_signal: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-g2-guilty",
+                label: "They act hurt or make me feel guilty for not being available",
+                signals: { pressure_signal: 2, boundary_friction: 2, effort_imbalance: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-g2-bombard",
+                label: "They bombard me with messages or show up unannounced",
+                signals: { pressure_signal: 3, boundary_friction: 3, trust_instability: 1 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-g3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do they often bring up big commitments early — like exclusivity, moving in, or long-term plans?",
+            branchId: "gradual",
+            sortOrder: 3,
+            options: [
+              {
+                id: "lbd-g3-no",
+                label: "No — they let things develop at their own pace",
+                signals: { future_promises_high: -1, pressure_signal: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-g3-sometimes",
+                label: "Occasionally — it feels like thinking ahead, not pressure",
+                signals: { future_promises_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-g3-often",
+                label: "Fairly often — it sometimes feels like they're trying to lock things down",
+                signals: { future_promises_high: 2, pressure_signal: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-g3-very-early",
+                label: "Yes — and it feels premature, like they're skipping steps",
+                signals: { future_promises_high: 3, fast_intensity: 2, pressure_signal: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Reconsidering ───────────────────────────────
+        reconsidering: [
+          {
+            id: "lbd-rc1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What specifically made you start rethinking the beginning of this connection?",
+            branchId: "reconsidering",
+            sortOrder: 1,
+            options: [
+              {
+                id: "lbd-rc1-small-things",
+                label: "Small inconsistencies — things they said early on that don't add up now",
+                signals: { consistency_low: 2, mixed_signals_high: 2, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-rc1-changed",
+                label: "They changed — the person I met at the beginning feels gone",
+                signals: { consistency_low: 3, mixed_signals_high: 2, trust_instability: 2, effort_imbalance: 1 },
+                weight: 1.8,
+              },
+              {
+                id: "lbd-rc1-others-noticed",
+                label: "People close to me pointed things out I hadn't noticed",
+                signals: { consistency_low: 1, trust_instability: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "lbd-rc1-just-feeling",
+                label: "Just a gut feeling — something felt off and I can't fully explain it",
+                signals: { mixed_signals_high: 2, trust_instability: 2 },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "lbd-rc2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do they still do the sweet things they did at the beginning, or has that faded?",
+            branchId: "reconsidering",
+            sortOrder: 2,
+            options: [
+              {
+                id: "lbd-rc2-yes",
+                label: "Yes — they're still thoughtful and consistent",
+                signals: { consistency_low: -1, effort_imbalance: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-rc2-settled",
+                label: "It's shifted — but in a natural, settled way",
+                signals: { consistency_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-rc2-dropped",
+                label: "A lot of it has dropped off — they used to do so much more",
+                signals: { consistency_low: 2, effort_imbalance: 2, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-rc2-gone",
+                label: "Almost completely gone — it's like a different person now",
+                signals: { consistency_low: 3, effort_imbalance: 3, trust_instability: 2, mixed_signals_high: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-rc3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have they ever told you that you're the only one who truly understands them?",
+            subtitle: "Or made you feel like your bond is special in a way that separates you from others.",
+            branchId: "reconsidering",
+            sortOrder: 3,
+            options: [
+              {
+                id: "lbd-rc3-no",
+                label: "No, they haven't framed it like that",
+                signals: { pressure_signal: -1, boundary_friction: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-rc3-sweetly",
+                label: "In a sweet, genuine way — it felt natural",
+                signals: { pressure_signal: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-rc3-isolated",
+                label: "Yeah — and it kind of isolated me from my friends or support system",
+                signals: { pressure_signal: 2, boundary_friction: 2, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-rc3-us-against",
+                label: "All the time — it feels like it's 'us against the world' in a way that's intense",
+                signals: { pressure_signal: 3, boundary_friction: 3, fast_intensity: 2, trust_instability: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Post-Bombing ────────────────────────────────
+        "post-bombing": [
+          {
+            id: "lbd-pb1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When the intensity dropped, what did that look like?",
+            subtitle: "The contrast between 'then' and 'now' is what matters here.",
+            branchId: "post-bombing",
+            sortOrder: 1,
+            options: [
+              {
+                id: "lbd-pb1-settled",
+                label: "It settled into something more natural and comfortable",
+                signals: { consistency_low: -1, repair_potential_high: 2, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-pb1-slight-drop",
+                label: "A slight drop in attention — but still present and caring",
+                signals: { consistency_low: 1, effort_imbalance: 1 },
+                weight: 1,
+              },
+              {
+                id: "lbd-pb1-big-shift",
+                label: "A big shift — way less effort, fewer sweet texts, less interest",
+                signals: { consistency_low: 3, effort_imbalance: 3, mixed_signals_high: 2, trust_instability: 2 },
+                weight: 1.8,
+              },
+              {
+                id: "lbd-pb1-gone",
+                label: "They went cold almost overnight — like a switch flipped",
+                signals: { consistency_low: 3, trust_instability: 3, mixed_signals_high: 3, effort_imbalance: 3 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-pb2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you mention the change, how do they respond?",
+            branchId: "post-bombing",
+            sortOrder: 2,
+            options: [
+              {
+                id: "lbd-pb2-listen",
+                label: "They listen and acknowledge it — maybe explain what's going on",
+                signals: { repair_potential_high: 2, trust_instability: -1, emotional_availability_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-pb2-dismiss",
+                label: "They say I'm overthinking it or being needy",
+                signals: { boundary_friction: 2, trust_instability: 2, emotional_availability_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "lbd-pb2-blame",
+                label: "They blame me — say I'm the one who changed",
+                signals: { boundary_friction: 3, trust_instability: 2, effort_imbalance: 2 },
+                weight: 2,
+              },
+              {
+                id: "lbd-pb2-bomb-again",
+                label: "They briefly ramp up the intensity again — but it doesn't last",
+                signals: { consistency_low: 3, mixed_signals_high: 3, trust_instability: 2, fast_intensity: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "lbd-pb3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Right now, do you feel like the version of them you first met was the real them?",
+            subtitle: "There's no wrong answer — this is about trusting your own observations.",
+            branchId: "post-bombing",
+            sortOrder: 3,
+            options: [
+              {
+                id: "lbd-pb3-yes",
+                label: "Yes — I think they were just really excited and have settled since",
+                signals: { trust_instability: -1, consistency_low: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "lbd-pb3-unsure",
+                label: "I'm unsure — it's hard to tell",
+                signals: { trust_instability: 1, mixed_signals_high: 2 },
+                weight: 1,
+              },
+              {
+                id: "lbd-pb3-different",
+                label: "No — I think they showed me who they wanted to be, not who they are",
+                signals: { trust_instability: 3, mixed_signals_high: 2, consistency_low: 2, effort_imbalance: 2 },
+                weight: 1.8,
+              },
+              {
+                id: "lbd-pb3-manipulated",
+                label: "I feel like I was manipulated — and I'm still trying to accept that",
+                signals: { trust_instability: 3, mixed_signals_high: 3, consistency_low: 3, emotional_availability_low: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "lbd-uni1",
+          kind: "universal",
+          type: "single-choice",
+          text: "Do you feel like you can set boundaries with this person without fear of how they'll react?",
+          sortOrder: 10,
+          options: [
+            {
+              id: "lbd-uni1-yes",
+              label: "Yes — they respect my boundaries",
+              signals: { boundary_friction: -1, trust_instability: -1, repair_potential_high: 1 },
+              weight: 0.5,
+            },
+            {
+              id: "lbd-uni1-mostly",
+              label: "Mostly — occasional pushback but nothing major",
+              signals: { boundary_friction: 1 },
+              weight: 1,
+            },
+            {
+              id: "lbd-uni1-anxious",
+              label: "I feel anxious about it — like I have to prepare for their reaction",
+              signals: { boundary_friction: 2, trust_instability: 2, pressure_signal: 1 },
+              weight: 1.5,
+            },
+            {
+              id: "lbd-uni1-cant",
+              label: "I can't — every time I try, it turns into a big issue",
+              signals: { boundary_friction: 3, trust_instability: 3, pressure_signal: 2, emotional_availability_low: 1 },
+              weight: 2,
+            },
+          ],
+        },
+        {
+          id: "lbd-uni2",
+          kind: "universal",
+          type: "scale",
+          text: "How much do you feel like yourself around this person?",
+          subtitle: "1 = I feel like a version of myself I don't recognize, 5 = I'm fully myself",
+          sortOrder: 11,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "Don't recognize myself",
+          maxLabel: "Fully myself",
+          options: [], // scale uses value
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "lbd-final",
+        kind: "final",
+        type: "open-ended",
+        text: "Is there anything from the early days of this connection that keeps replaying in your mind?",
+        subtitle:
+          "Optional. Sometimes the moments we glossed over at first become the most important ones in hindsight.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
+    },
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  // 8. Future Alignment Checker  (active)
+  // ════════════════════════════════════════════════════════════════
+  {
+    slug: "future-alignment-checker",
+    name: "Future Alignment Checker",
+    tagline: "See if you're actually walking in the same direction.",
+    description:
+      "Being in love doesn't automatically mean being aligned. This tool helps you explore whether you and your partner see eye to eye on the things that shape a shared future — values, timing, lifestyle, and the bigger picture — without judgment or pressure to have it all figured out.",
+    mode: "insight",
+    version: "1.0.0",
+    icon: "Compass",
+    color: "emerald",
+    estimatedQuestions: "6–8",
+    estimatedTime: "3–5 min",
+    category: "Compatibility",
+    featured: false,
+    comingSoon: false,
+    questionTree: {
+      // ── Routing Question ─────────────────────────────────────
+      routingQuestion: {
+        id: "fac-routing",
+        kind: "routing",
+        type: "single-choice",
+        text: "How aligned do you feel about the future with this person?",
+        subtitle:
+          "Not just logistics — the bigger picture of where you're both heading.",
+        options: [
+          {
+            id: "fac-r-aligned",
+            label: "Pretty aligned — we see things similarly",
+            description:
+              "We've talked about the future and it generally feels like we're on the same page.",
+            signals: { future_ambiguity: -1, clarity_low: -1 },
+            weight: 1,
+            branchRef: "aligned",
+          },
+          {
+            id: "fac-r-gaps",
+            label: "Some gaps — nothing major, but a few things don't quite line up",
+            description:
+              "We agree on a lot, but there are specific areas where we're not totally synced.",
+            signals: { future_ambiguity: 1, mixed_signals_high: 1 },
+            weight: 1,
+            branchRef: "some-gaps",
+          },
+          {
+            id: "fac-r-uncertain",
+            label: "I'm not sure — we haven't really talked about it deeply",
+            description:
+              "The future has come up, but it's still vague. I don't know exactly where they stand.",
+            signals: { future_ambiguity: 2, clarity_low: 2 },
+            weight: 1,
+            branchRef: "uncertain",
+          },
+          {
+            id: "fac-r-misaligned",
+            label: "Misaligned — our visions for the future seem pretty different",
+            description:
+              "We've talked and I can see meaningful gaps in what we both want long-term.",
+            signals: { future_ambiguity: 3, clarity_low: 2, mixed_signals_high: 2 },
+            weight: 1,
+            branchRef: "misaligned",
+          },
+        ],
+        required: true,
+        sortOrder: 0,
+      },
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Aligned ────────────────────────────────────
+        aligned: [
+          {
+            id: "fac-a1",
+            kind: "branch",
+            type: "single-choice",
+            text: "How did you and this person figure out you were on the same page about the future?",
+            branchId: "aligned",
+            sortOrder: 1,
+            options: [
+              {
+                id: "fac-a1-organic",
+                label: "Organically — it came up naturally in conversation",
+                signals: { clarity_low: -1, future_ambiguity: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-a1-direct",
+                label: "We had an intentional conversation about it",
+                signals: { clarity_low: -1, future_ambiguity: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-a1-assumed",
+                label: "We kind of assumed — we haven't talked about it in detail",
+                signals: { future_ambiguity: 1, clarity_low: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-a1-one-person",
+                label: "One of us brought it up more than the other",
+                signals: { effort_imbalance: 1, future_ambiguity: 1 },
+                weight: 1,
+              },
+            ],
+          },
+          {
+            id: "fac-a2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you picture your life 3–5 years from now, does this person fit naturally into that vision?",
+            branchId: "aligned",
+            sortOrder: 2,
+            options: [
+              {
+                id: "fac-a2-absolutely",
+                label: "Absolutely — I can see us clearly in that picture",
+                signals: { future_ambiguity: -1, trust_instability: -1, clarity_low: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-a2-mostly",
+                label: "Mostly — there are a few question marks but overall yes",
+                signals: { future_ambiguity: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-a2-hopefully",
+                label: "Hopefully — I want them to be there but I'm not 100% sure",
+                signals: { future_ambiguity: 2, clarity_low: 1, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-a2-hard",
+                label: "Honestly, it's hard to picture — things feel uncertain",
+                signals: { future_ambiguity: 3, clarity_low: 2, trust_instability: 1 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "fac-a3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Have there been any moments where their actions contradicted what they said about the future?",
+            branchId: "aligned",
+            sortOrder: 3,
+            options: [
+              {
+                id: "fac-a3-no",
+                label: "No — their actions match their words",
+                signals: { consistency_low: -1, follow_through_low: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-a3-minor",
+                label: "Minor things — nothing that really worried me",
+                signals: { consistency_low: 1, follow_through_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-a3-some",
+                label: "A few times — I've noticed and it's made me wonder",
+                signals: { consistency_low: 2, follow_through_low: 2, future_promises_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-a3-pattern",
+                label: "Yeah — there's a pattern of saying the right thing but not following through",
+                signals: { consistency_low: 3, follow_through_low: 3, future_promises_high: 2, trust_instability: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Some Gaps ──────────────────────────────────
+        "some-gaps": [
+          {
+            id: "fac-sg1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What's the biggest area where you don't quite see eye to eye?",
+            branchId: "some-gaps",
+            sortOrder: 1,
+            options: [
+              {
+                id: "fac-sg1-timing",
+                label: "Timing — one of us is ready for the next step, the other isn't",
+                signals: { future_ambiguity: 2, mixed_signals_high: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "fac-sg1-lifestyle",
+                label: "Lifestyle — city vs. country, career ambitions, how we want to live",
+                signals: { future_ambiguity: 2, clarity_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "fac-sg1-values",
+                label: "Values — we differ on something that feels important (family, money, etc.)",
+                signals: { future_ambiguity: 2, clarity_low: 2, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-sg1-commitment",
+                label: "Commitment level — we're not on the same page about how serious this is",
+                signals: { future_ambiguity: 3, clarity_low: 2, mixed_signals_high: 2, trust_instability: 1 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "fac-sg2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you bring up these differences, how does the conversation usually go?",
+            branchId: "some-gaps",
+            sortOrder: 2,
+            options: [
+              {
+                id: "fac-sg2-open",
+                label: "Open and productive — we actually talk through it",
+                signals: { repair_potential_high: 2, clarity_low: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-sg2-avoid",
+                label: "We kind of avoid it — it's an uncomfortable topic",
+                signals: { clarity_low: 2, consistency_low: 1, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-sg2-dismiss",
+                label: "They brush it off like it's not a big deal",
+                signals: { clarity_low: 2, emotional_availability_low: 1, effort_imbalance: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-sg2-argue",
+                label: "It turns into an argument — we can never seem to get on the same page",
+                signals: { trust_instability: 2, consistency_low: 2, clarity_low: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "fac-sg3",
+            kind: "branch",
+            type: "single-choice",
+            text: "Do you feel like these gaps are things you can work through together?",
+            subtitle: "Gaps don't have to be dealbreakers — it depends on willingness.",
+            branchId: "some-gaps",
+            sortOrder: 3,
+            options: [
+              {
+                id: "fac-sg3-confident",
+                label: "Confident — we're both willing to figure it out",
+                signals: { repair_potential_high: 2, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-sg3-hopeful",
+                label: "Hopeful, but I'm not sure how",
+                signals: { repair_potential_high: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-sg3-worried",
+                label: "Worried — I want to but I don't think they see it the same way",
+                signals: { effort_imbalance: 2, future_ambiguity: 2, mixed_signals_high: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-sg3-doubtful",
+                label: "Doubtful — it feels like we're fundamentally different on this",
+                signals: { future_ambiguity: 3, clarity_low: 2, trust_instability: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Uncertain ──────────────────────────────────
+        uncertain: [
+          {
+            id: "fac-uc1",
+            kind: "branch",
+            type: "single-choice",
+            text: "Why do you think you two haven't had a deeper conversation about the future?",
+            branchId: "uncertain",
+            sortOrder: 1,
+            options: [
+              {
+                id: "fac-uc1-early",
+                label: "It's still early — it hasn't felt like the right time yet",
+                signals: { future_ambiguity: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-uc1-scared",
+                label: "I've been scared to bring it up — I don't want to hear something I don't like",
+                signals: { future_ambiguity: 2, clarity_low: 2, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-uc1-them",
+                label: "They seem to avoid it when I try",
+                signals: { future_ambiguity: 2, clarity_low: 2, consistency_low: 1, effort_imbalance: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-uc1-both",
+                label: "We both kind of dodge it — like we're afraid of what we might find out",
+                signals: { future_ambiguity: 3, clarity_low: 3, mixed_signals_high: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "fac-uc2",
+            kind: "branch",
+            type: "single-choice",
+            text: "When the topic of the future does come up casually (movies, weddings, etc.), how do they react?",
+            branchId: "uncertain",
+            sortOrder: 2,
+            options: [
+              {
+                id: "fac-uc2-open",
+                label: "Openly — they're comfortable with the conversation",
+                signals: { future_ambiguity: -1, clarity_low: -1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-uc2-joke",
+                label: "They joke about it or keep it light",
+                signals: { future_ambiguity: 1, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-uc2-shut",
+                label: "They shut it down or pivot quickly",
+                signals: { future_ambiguity: 2, clarity_low: 2, consistency_low: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-uc2-uncomfortable",
+                label: "They get visibly uncomfortable — body language says a lot",
+                signals: { future_ambiguity: 3, clarity_low: 2, emotional_availability_low: 1 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "fac-uc3",
+            kind: "branch",
+            type: "single-choice",
+            text: "If you had to guess, what does their hesitation about the future say to you?",
+            subtitle: "Your interpretation matters — even if you're not sure it's accurate.",
+            branchId: "uncertain",
+            sortOrder: 3,
+            options: [
+              {
+                id: "fac-uc3-genuine",
+                label: "They genuinely just need more time — and that's okay",
+                signals: { future_ambiguity: 1, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-uc3-dont-know",
+                label: "They honestly don't know what they want yet",
+                signals: { future_ambiguity: 2, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-uc3-not-with-me",
+                label: "I worry they know, but it might not be with me",
+                signals: { future_ambiguity: 2, trust_instability: 2, mixed_signals_high: 2, clarity_low: 1 },
+                weight: 1.8,
+              },
+              {
+                id: "fac-uc3-keeping-options",
+                label: "I think they're keeping their options open",
+                signals: { future_ambiguity: 3, trust_instability: 3, mixed_signals_high: 2, effort_imbalance: 1 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Misaligned ─────────────────────────────────
+        misaligned: [
+          {
+            id: "fac-m1",
+            kind: "branch",
+            type: "single-choice",
+            text: "When you realized you were misaligned, what was your first reaction?",
+            branchId: "misaligned",
+            sortOrder: 1,
+            options: [
+              {
+                id: "fac-m1-accept",
+                label: "I accepted it as a difference we could work through",
+                signals: { repair_potential_high: 2, trust_instability: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-m1-shock",
+                label: "Shock — I honestly didn't see it coming",
+                signals: { mixed_signals_high: 2, clarity_low: 2, trust_instability: 1 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-m1-sad",
+                label: "Sadness — because I really wanted this to work",
+                signals: { future_ambiguity: 2, trust_instability: 1, clarity_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "fac-m1-denial",
+                label: "I tried to convince myself it wasn't that big a deal",
+                signals: { clarity_low: 2, future_ambiguity: 2, mixed_signals_high: 1, consistency_low: 1 },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "fac-m2",
+            kind: "branch",
+            type: "single-choice",
+            text: "Has the misalignment gotten clearer over time, or has it stayed fuzzy?",
+            branchId: "misaligned",
+            sortOrder: 2,
+            options: [
+              {
+                id: "fac-m2-clearer",
+                label: "Clearer — the gap has become more obvious",
+                signals: { future_ambiguity: 2, clarity_low: 1, mixed_signals_high: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "fac-m2-stayed",
+                label: "Stayed about the same — neither better nor worse",
+                signals: { consistency_low: 1, future_ambiguity: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-m2-fuzzier",
+                label: "Fuzzier — sometimes it feels fine, other times it feels really off",
+                signals: { mixed_signals_high: 3, consistency_low: 2, future_ambiguity: 2 },
+                weight: 1.8,
+              },
+              {
+                id: "fac-m2-denial-more",
+                label: "I've stopped thinking about it — it's easier not to",
+                signals: { clarity_low: 3, consistency_low: 2, future_ambiguity: 2 },
+                weight: 2,
+              },
+            ],
+          },
+          {
+            id: "fac-m3",
+            kind: "branch",
+            type: "single-choice",
+            text: "If nothing changes, how do you see this playing out in a year?",
+            subtitle: "This is a tough question — but your honest answer matters.",
+            branchId: "misaligned",
+            sortOrder: 3,
+            options: [
+              {
+                id: "fac-m3-will-figure",
+                label: "I think we'll figure it out — we're both willing",
+                signals: { repair_potential_high: 2, trust_instability: -1, future_ambiguity: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "fac-m3-hope",
+                label: "I hope things align, but I'm not sure they will",
+                signals: { future_ambiguity: 2, clarity_low: 1 },
+                weight: 1,
+              },
+              {
+                id: "fac-m3-resigned",
+                label: "I feel resigned — like I'll have to compromise more than I want to",
+                signals: { effort_imbalance: 2, future_ambiguity: 2, clarity_low: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "fac-m3-wont-work",
+                label: "Honestly? I don't think it'll work if this stays the same",
+                signals: { future_ambiguity: 3, clarity_low: 2, trust_instability: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "fac-uni1",
+          kind: "universal",
+          type: "single-choice",
+          text: "When you think about your future, how much does this person's vision overlap with yours?",
+          sortOrder: 10,
+          options: [
+            {
+              id: "fac-uni1-a-lot",
+              label: "A lot — we're heading in the same direction",
+              signals: { future_ambiguity: -1, clarity_low: -1 },
+              weight: 0.5,
+            },
+            {
+              id: "fac-uni1-some",
+              label: "Some — there's overlap but also some divergence",
+              signals: { future_ambiguity: 1, mixed_signals_high: 1 },
+              weight: 1,
+            },
+            {
+              id: "fac-uni1-not-sure",
+              label: "I'm not sure — I don't fully know what their vision is",
+              signals: { future_ambiguity: 2, clarity_low: 2 },
+              weight: 1.5,
+            },
+            {
+              id: "fac-uni1-very-little",
+              label: "Very little — our futures feel like they're on different tracks",
+              signals: { future_ambiguity: 3, clarity_low: 2, mixed_signals_high: 2 },
+              weight: 1.8,
+            },
+          ],
+        },
+        {
+          id: "fac-uni2",
+          kind: "universal",
+          type: "scale",
+          text: "How much does the uncertainty (or alignment) about the future affect your day-to-day happiness?",
+          subtitle: "1 = it barely crosses my mind, 5 = it's on my mind constantly",
+          sortOrder: 11,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "Barely crosses my mind",
+          maxLabel: "Constantly on my mind",
+          options: [], // scale uses value
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "fac-final",
+        kind: "final",
+        type: "open-ended",
+        text: "If you could fast-forward 5 years and see how this turns out, what would you want the answer to be?",
+        subtitle:
+          "Optional — but sometimes the future we secretly hope for tells us a lot about the present.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
+    },
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  // 9. Flirty Reply Coach  (active — play mode)
+  // ════════════════════════════════════════════════════════════════
+  {
+    slug: "flirty-reply-coach",
+    name: "Flirty Reply Coach",
+    tagline: "Decode the vibe, craft the reply, own the conversation.",
+    description:
+      "Staring at a message trying to figure out what to say? This playful tool helps you read the energy, understand the subtext, and respond in a way that matches the vibe you want — whether that's flirty, mysterious, warm, or casually confident. No overthinking required.",
+    mode: "play",
+    version: "1.0.0",
+    icon: "Sparkles",
+    color: "pink",
+    estimatedQuestions: "5–7",
+    estimatedTime: "2–3 min",
+    category: "Communication",
+    featured: false,
+    comingSoon: false,
+    questionTree: {
+      // ── Routing Question ─────────────────────────────────────
+      routingQuestion: {
+        id: "frc-routing",
+        kind: "routing",
+        type: "single-choice",
+        text: "What's the vibe of the conversation?",
+        subtitle:
+          "Go with your gut — you know the energy better than anyone.",
+        options: [
+          {
+            id: "frc-r-flirty",
+            label: "Definitely flirty — the energy is building",
+            description:
+              "Playful banter, teasing, maybe some boldness. You're feeling it.",
+            signals: { enthusiasm_mismatch: -1 },
+            weight: 1,
+            branchRef: "flirty",
+          },
+          {
+            id: "frc-r-testing",
+            label: "Testing the waters — not sure if they're flirting or just being friendly",
+            description:
+              "There's something there but you can't quite read it yet.",
+            signals: { mixed_signals_high: 1, enthusiasm_mismatch: 1 },
+            weight: 1,
+            branchRef: "testing-waters",
+          },
+          {
+            id: "frc-r-after-date",
+            label: "After a date — the first (or latest) one just happened",
+            description:
+              "You had a great time and now you're in the post-date texting phase.",
+            signals: { enthusiasm_mismatch: 1 },
+            weight: 1,
+            branchRef: "after-date",
+          },
+          {
+            id: "frc-r-spark",
+            label: "Keeping the spark alive — we've been talking for a while",
+            description:
+              "Things are good but you want to keep the energy fresh and fun.",
+            signals: { consistency_low: 1 },
+            weight: 1,
+            branchRef: "keeping-spark",
+          },
+        ],
+        required: true,
+        sortOrder: 0,
+      },
+
+      // ── Adaptive Branches ─────────────────────────────────────
+      branches: {
+        // ── Branch: Flirty ─────────────────────────────────────
+        flirty: [
+          {
+            id: "frc-f1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What did they say that made you pause and think 'okay, what do I do with this?'",
+            subtitle: "The message that got you here — what was the energy?",
+            branchId: "flirty",
+            sortOrder: 1,
+            options: [
+              {
+                id: "frc-f1-bold",
+                label: "Something bold and direct — they made their interest clear",
+                signals: { enthusiasm_mismatch: -1, dry_texting: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-f1-tease",
+                label: "Something teasing — they're poking at you in a fun way",
+                signals: { enthusiasm_mismatch: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-f1-sweet",
+                label: "Something sweet but slightly ambiguous — you can't tell how serious they are",
+                signals: { mixed_signals_high: 2, enthusiasm_mismatch: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-f1-mixed",
+                label: "Something that felt like a mix — flirty one minute, distant the next",
+                signals: { mixed_signals_high: 3, consistency_low: 2, dry_texting: 1 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "frc-f2",
+            kind: "branch",
+            type: "single-choice",
+            text: "What vibe do you want to send back?",
+            subtitle: "No wrong answer — just what feels right for you right now.",
+            branchId: "flirty",
+            sortOrder: 2,
+            options: [
+              {
+                id: "frc-f2-match",
+                label: "Match their energy — meet them where they're at",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-f2-playful",
+                label: "Playful and a little mysterious — keep them guessing",
+                signals: { enthusiasm_mismatch: 1 },
+                weight: 1,
+              },
+              {
+                id: "frc-f2-sweet",
+                label: "Warm and genuine — let them know I'm feeling it too",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-f2-pressured",
+                label: "Honestly? I feel pressured to respond a certain way",
+                signals: { pressure_signal: 2, dry_texting: 1, enthusiasm_mismatch: 2 },
+                weight: 2,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Testing Waters ─────────────────────────────
+        "testing-waters": [
+          {
+            id: "frc-tw1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What's making it hard to tell if they're flirting or just being friendly?",
+            branchId: "testing-waters",
+            sortOrder: 1,
+            options: [
+              {
+                id: "frc-tw1-naturally-friendly",
+                label: "They're naturally friendly — so everything feels like it could go either way",
+                signals: { mixed_signals_high: 2, enthusiasm_mismatch: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-tw1-hot-cold",
+                label: "They're hot and cold — interested one minute, pulling back the next",
+                signals: { mixed_signals_high: 3, consistency_low: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "frc-tw1-subtle",
+                label: "It's subtle — small signs that could mean something or nothing",
+                signals: { mixed_signals_high: 2, clarity_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-tw1-my-head",
+                label: "It might just be in my head — I tend to overthink these things",
+                signals: { mixed_signals_high: 1, trust_instability: 1, dry_texting: 1 },
+                weight: 1,
+              },
+            ],
+          },
+          {
+            id: "frc-tw2",
+            kind: "branch",
+            type: "single-choice",
+            text: "If you had to guess the worst-case scenario for sending a flirty reply, what would it be?",
+            subtitle: "Sometimes knowing the fear helps you move past it.",
+            branchId: "testing-waters",
+            sortOrder: 2,
+            options: [
+              {
+                id: "frc-tw2-nothing-bad",
+                label: "Honestly, nothing that bad — they'd probably be into it",
+                signals: { enthusiasm_mismatch: -1, pressure_signal: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-tw2-awkward",
+                label: "It'd be a little awkward — but survivable",
+                signals: { enthusiasm_mismatch: 1 },
+                weight: 1,
+              },
+              {
+                id: "frc-tw2-friend-zone",
+                label: "They'd friend-zone me even harder",
+                signals: { enthusiasm_mismatch: 2, mixed_signals_high: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-tw2-ruin-it",
+                label: "I'd ruin whatever we have going right now",
+                signals: { pressure_signal: 2, enthusiasm_mismatch: 2, trust_instability: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: After Date ─────────────────────────────────
+        "after-date": [
+          {
+            id: "frc-ad1",
+            kind: "branch",
+            type: "single-choice",
+            text: "How did the date actually go — the real version, not the one you'd tell your friends?",
+            branchId: "after-date",
+            sortOrder: 1,
+            options: [
+              {
+                id: "frc-ad1-great",
+                label: "Really great — genuine connection, good vibes, definitely want to see them again",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1, dry_texting: -1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-ad1-good",
+                label: "Good — fun but I'm not 100% sure if there was romantic chemistry",
+                signals: { enthusiasm_mismatch: 1, mixed_signals_high: 1 },
+                weight: 1,
+              },
+              {
+                id: "frc-ad1-mixed",
+                label: "Mixed — some moments were amazing, others were a little off",
+                signals: { mixed_signals_high: 2, consistency_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-ad1-meh",
+                label: "Honestly? Not as great as I hoped — but I don't want to write them off yet",
+                signals: { enthusiasm_mismatch: 2, dry_texting: 1, consistency_low: 1 },
+                weight: 1.5,
+              },
+            ],
+          },
+          {
+            id: "frc-ad2",
+            kind: "branch",
+            type: "single-choice",
+            text: "What's the message you're trying to craft right now — in one sentence?",
+            subtitle: "Just the vibe, not the exact words.",
+            branchId: "after-date",
+            sortOrder: 2,
+            options: [
+              {
+                id: "frc-ad2-had-fun",
+                label: "I had a great time — let's do this again",
+                signals: { enthusiasm_mismatch: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-ad2-thank-you",
+                label: "Thank you for a lovely evening — warm and sweet",
+                signals: { enthusiasm_mismatch: 1 },
+                weight: 1,
+              },
+              {
+                id: "frc-ad2-throw-ball",
+                label: "Something casual that throws the ball back in their court",
+                signals: { enthusiasm_mismatch: 1, mixed_signals_high: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-ad2-dont-know",
+                label: "I genuinely don't know — that's why I'm here",
+                signals: { enthusiasm_mismatch: 2, mixed_signals_high: 1, dry_texting: 1 },
+                weight: 1.5,
+              },
+            ],
+          },
+        ],
+
+        // ── Branch: Keeping Spark ──────────────────────────────
+        "keeping-spark": [
+          {
+            id: "frc-ks1",
+            kind: "branch",
+            type: "single-choice",
+            text: "What does your typical texting rhythm look like these days?",
+            branchId: "keeping-spark",
+            sortOrder: 1,
+            options: [
+              {
+                id: "frc-ks1-good",
+                label: "Good — we text regularly and it still feels fun",
+                signals: { consistency_low: -1, dry_texting: -1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-ks1-routine",
+                label: "A bit routine — good morning, good night, how was your day",
+                signals: { dry_texting: 2, consistency_low: 1 },
+                weight: 1.2,
+              },
+              {
+                id: "frc-ks1-slipping",
+                label: "It's slipping — less effort, shorter replies, less excitement",
+                signals: { dry_texting: 3, consistency_low: 2, enthusiasm_mismatch: 2 },
+                weight: 1.8,
+              },
+              {
+                id: "frc-ks1-one-sided",
+                label: "One-sided — I feel like I'm carrying the conversation lately",
+                signals: { effort_imbalance: 2, dry_texting: 2, enthusiasm_mismatch: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+          {
+            id: "frc-ks2",
+            kind: "branch",
+            type: "single-choice",
+            text: "What would make texting feel exciting again?",
+            subtitle: "The thing you're craving but maybe haven't asked for.",
+            branchId: "keeping-spark",
+            sortOrder: 2,
+            options: [
+              {
+                id: "frc-ks2-more-flirty",
+                label: "More playfulness and flirtation — I miss the banter",
+                signals: { dry_texting: 1, repair_potential_high: 1 },
+                weight: 0.5,
+              },
+              {
+                id: "frc-ks2-more-deep",
+                label: "More depth — I want real conversations, not just updates",
+                signals: { dry_texting: 2, enthusiasm_mismatch: 1 },
+                weight: 1,
+              },
+              {
+                id: "frc-ks2-more-initiation",
+                label: "More initiation from them — I want to feel pursued again",
+                signals: { effort_imbalance: 2, dry_texting: 1, enthusiasm_mismatch: 2 },
+                weight: 1.5,
+              },
+              {
+                id: "frc-ks2-not-sure",
+                label: "I'm not sure — the spark just feels faded and I don't know how to get it back",
+                signals: { dry_texting: 2, consistency_low: 2, mixed_signals_high: 2 },
+                weight: 1.8,
+              },
+            ],
+          },
+        ],
+      },
+
+      // ── Universal Questions (asked in every branch) ──────────
+      universalQuestions: [
+        {
+          id: "frc-uni1",
+          kind: "universal",
+          type: "single-choice",
+          text: "Right now, what's your biggest worry about how you'll come across?",
+          sortOrder: 10,
+          options: [
+            {
+              id: "frc-uni1-too-eager",
+              label: "Too eager or desperate",
+              signals: { pressure_signal: 1, enthusiasm_mismatch: 1 },
+              weight: 1,
+            },
+            {
+              id: "frc-uni1-too-cold",
+              label: "Too cold or uninterested",
+              signals: { enthusiasm_mismatch: 1, dry_texting: 1 },
+              weight: 1,
+            },
+            {
+              id: "frc-uni1-try-hard",
+              label: "Like I'm trying too hard to be clever",
+              signals: { pressure_signal: 1, mixed_signals_high: 1 },
+              weight: 1,
+            },
+            {
+              id: "frc-uni1-nothing",
+              label: "Honestly, nothing — I'm just vibing and going with it",
+              signals: { pressure_signal: -1, enthusiasm_mismatch: -1, repair_potential_high: 1 },
+              weight: 0.5,
+            },
+          ],
+        },
+        {
+          id: "frc-uni2",
+          kind: "universal",
+          type: "scale",
+          text: "How much are you enjoying the texting dynamic right now?",
+          subtitle: "1 = it's stressing me out, 5 = I'm genuinely having fun",
+          sortOrder: 11,
+          min: 1,
+          max: 5,
+          step: 1,
+          minLabel: "Stressing me out",
+          maxLabel: "Genuinely having fun",
+          options: [], // scale uses value
+        },
+      ],
+
+      // ── Optional Final Question ──────────────────────────────
+      finalQuestion: {
+        id: "frc-final",
+        kind: "final",
+        type: "open-ended",
+        text: "What's the exact message you're trying to reply to? (You can paste it here if you want.)",
+        subtitle:
+          "Totally optional — but if you share it, we'll give you a vibe read and some reply ideas.",
+        sortOrder: 20,
+        options: [],
+        required: false,
+      },
+    },
+  },
 ];

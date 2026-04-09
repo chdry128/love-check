@@ -12,7 +12,9 @@ export type ViewState =
   | "home"
   | "tool-intro"
   | "tool-flow"
-  | "results";
+  | "results"
+  | "blog"
+  | "blog-post";
 
 // ── App Store ───────────────────────────────────────────────
 
@@ -20,6 +22,10 @@ interface LoveCheckState {
   // Navigation
   view: ViewState;
   setView: (view: ViewState) => void;
+
+  // Blog
+  blogPostSlug: string | null;
+  openBlog: (slug: string) => void;
 
   // Tool session
   activeTool: ToolSlug | null;
@@ -49,12 +55,19 @@ interface LoveCheckState {
   startToolIntro: (slug: ToolSlug) => void;
   beginToolFlow: () => void;
   resetSession: () => void;
+  goHome: () => void;
 }
 
 export const useLoveCheckStore = create<LoveCheckState>((set, get) => ({
   // Navigation
   view: "home",
   setView: (view) => set({ view }),
+
+  // Blog
+  blogPostSlug: null,
+  openBlog: (slug: string) => {
+    set({ view: "blog-post", blogPostSlug: slug });
+  },
 
   // Tool session
   activeTool: null,
@@ -129,5 +142,21 @@ export const useLoveCheckStore = create<LoveCheckState>((set, get) => ({
       totalQuestions: 1,
       finalResult: null,
       isLoading: false,
+      blogPostSlug: null,
+    }),
+
+  /** Navigate back to home (clears tool + blog state) */
+  goHome: () =>
+    set({
+      view: "home",
+      activeTool: null,
+      currentQuestion: null,
+      answers: [],
+      branchId: null,
+      questionIndex: 0,
+      totalQuestions: 1,
+      finalResult: null,
+      isLoading: false,
+      blogPostSlug: null,
     }),
 }));

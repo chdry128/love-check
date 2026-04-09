@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +30,11 @@ import {
   Trash2,
   RotateCcw,
   HelpCircle,
+  MessageCircle,
+  Shield,
+  Target,
+  Wand2,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ToolSlug, RiskLevel } from "@/types";
@@ -43,6 +48,7 @@ import {
   type ComingSoonTool,
 } from "@/components/lovecheck/coming-soon-modal";
 import { toast } from "sonner";
+import { useLoveCheckStore } from "@/lib/store";
 
 // ── Reduced-motion aware animation helpers ──────────────────
 
@@ -94,49 +100,39 @@ function formatDate(iso: string): string {
 
 // ── Past Results Section ────────────────────────────────────
 
-// Module-level cache for useSyncExternalStore (stable reference)
 const EMPTY_HISTORY: HistoryEntry[] = [];
-let historyCache: HistoryEntry[] = EMPTY_HISTORY;
-let historyCacheRaw: string = "";
-
-function getHistorySnapshot(): HistoryEntry[] {
-  if (typeof window === "undefined") return EMPTY_HISTORY;
-  try {
-    const raw = localStorage.getItem("lovecheck-history") ?? "";
-    if (raw !== historyCacheRaw) {
-      historyCacheRaw = raw;
-      historyCache = raw ? JSON.parse(raw).slice(0, 3) : EMPTY_HISTORY;
-    }
-    return historyCache;
-  } catch {
-    return EMPTY_HISTORY;
-  }
-}
-
-function getServerSnapshot(): HistoryEntry[] {
-  return EMPTY_HISTORY;
-}
-
-function subscribeToStorage(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-}
 
 function PastResultsSection({
   onStartTool,
 }: {
   onStartTool: (slug: ToolSlug) => void;
 }) {
-  const history = useSyncExternalStore(
-    subscribeToStorage,
-    getHistorySnapshot,
-    getServerSnapshot
-  );
+  const [history, setHistory] = useState<HistoryEntry[]>(() => {
+    if (typeof window === "undefined") return EMPTY_HISTORY;
+    try {
+      const raw = localStorage.getItem("lovecheck-history") ?? "";
+      return raw ? JSON.parse(raw).slice(0, 3) : EMPTY_HISTORY;
+    } catch {
+      return EMPTY_HISTORY;
+    }
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem("lovecheck-history") ?? "";
+        setHistory(raw ? JSON.parse(raw).slice(0, 3) : EMPTY_HISTORY);
+      } catch {
+        setHistory(EMPTY_HISTORY);
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   const handleClear = useCallback(() => {
     clearHistory();
-    historyCache = EMPTY_HISTORY;
-    historyCacheRaw = "";
+    setHistory(EMPTY_HISTORY);
   }, []);
 
   if (history.length === 0) return null;
@@ -348,9 +344,9 @@ const tools = [
     borderColor: "hover:border-violet-200 dark:hover:border-violet-800",
     category: "Self-Discovery",
     time: "5–8 min",
-    comingSoon: true,
+    comingSoon: false,
     comingSoonDescription:
-      "understand your emotional patterns and how they shape the way you connect with others",
+      "explore another dimension of your relationships",
   },
   {
     slug: "communication-pattern-check" as ToolSlug,
@@ -362,6 +358,54 @@ const tools = [
     borderColor: "hover:border-amber-200 dark:hover:border-amber-800",
     category: "Communication",
     time: "3–5 min",
+    comingSoon: false,
+  },
+  {
+    slug: "texting-energy-match" as ToolSlug,
+    name: "Texting Energy Match",
+    tagline: "Is your texting vibe actually aligned — or is one person doing all the work?",
+    icon: MessageCircle,
+    color: "text-teal-600 dark:text-teal-400",
+    bgColor: "bg-teal-50 dark:bg-teal-950/30",
+    borderColor: "hover:border-teal-200 dark:hover:border-teal-800",
+    category: "Communication",
+    time: "3–5 min",
+    comingSoon: false,
+  },
+  {
+    slug: "love-bombing-detector" as ToolSlug,
+    name: "Love Bombing Detector",
+    tagline: "Distinguish genuine enthusiasm from intensity that becomes control.",
+    icon: Shield,
+    color: "text-orange-600 dark:text-orange-400",
+    bgColor: "bg-orange-50 dark:bg-orange-950/30",
+    borderColor: "hover:border-orange-200 dark:hover:border-orange-800",
+    category: "Safety",
+    time: "3–5 min",
+    comingSoon: false,
+  },
+  {
+    slug: "future-alignment-checker" as ToolSlug,
+    name: "Future Alignment Checker",
+    tagline: "Are your values, timelines, and visions actually pointing in the same direction?",
+    icon: Target,
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+    borderColor: "hover:border-emerald-200 dark:hover:border-emerald-800",
+    category: "Compatibility",
+    time: "3–5 min",
+    comingSoon: false,
+  },
+  {
+    slug: "flirty-reply-coach" as ToolSlug,
+    name: "Flirty Reply Coach",
+    tagline: "Craft the perfect reply — playful, confident, and authentically you.",
+    icon: Wand2,
+    color: "text-pink-600 dark:text-pink-400",
+    bgColor: "bg-pink-50 dark:bg-pink-950/30",
+    borderColor: "hover:border-pink-200 dark:hover:border-pink-800",
+    category: "Communication",
+    time: "2–3 min",
     comingSoon: false,
   },
   {
@@ -383,9 +427,9 @@ const tools = [
     name: "Red Flag Scanner",
     tagline: "A quiet, honest look at the warning signs you might be overlooking.",
     icon: ShieldAlert,
-    color: "text-orange-600 dark:text-orange-400",
-    bgColor: "bg-orange-50 dark:bg-orange-950/30",
-    borderColor: "hover:border-orange-200 dark:hover:border-orange-800",
+    color: "text-red-600 dark:text-red-400",
+    bgColor: "bg-red-50 dark:bg-red-950/30",
+    borderColor: "hover:border-red-200 dark:hover:border-red-800",
     category: "Safety",
     time: "4–6 min",
     comingSoon: true,
@@ -469,6 +513,12 @@ const patternExamples = [
     color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300",
   },
   {
+    name: "Breadcrumbing Risk",
+    description:
+      "When someone sends just enough attention to keep you hooked — without real investment.",
+    color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300",
+  },
+  {
     name: "Low-Clarity Connection",
     description:
       "When direction and expectations remain ambiguous, making it hard to feel secure.",
@@ -479,6 +529,12 @@ const patternExamples = [
     description:
       "When important conversations get progressively avoided, eroding connection over time.",
     color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  },
+  {
+    name: "Fast Intensity Risk",
+    description:
+      "When early intensity accelerates too quickly — making it hard to see clearly.",
+    color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   },
 ];
 
@@ -529,22 +585,25 @@ const testimonials = [
 
 const blogPreviews = [
   {
+    slug: "why-most-relationship-advice-fails",
     title: "Why Most Relationship Advice Fails (And What Works Instead)",
     excerpt:
       "Generic advice doesn't account for the unique patterns at play in your connection. Here's why pattern-based understanding changes everything.",
     tag: "Insights",
   },
   {
-    title: "5 Signs Your Relationship Has Repair Potential",
+    slug: "love-bombing-vs-real-enthusiasm",
+    title: "Love Bombing vs Real Enthusiasm: How to Tell the Difference",
     excerpt:
-      "Not every struggle means it's over. These five signs suggest there's genuine foundation to build on — even when things feel uneven.",
-    tag: "Patterns",
+      "Both feel intense at first. But one fades into consistency, the other fades into control. Learn the signs.",
+    tag: "Safety",
   },
   {
-    title: "The Difference Between Healthy Effort and Overgiving",
+    slug: "how-to-read-texting-dynamic",
+    title: "How to Read Your Texting Dynamic (Without Overthinking It)",
     excerpt:
-      "Generosity is beautiful — until it becomes a pattern of self-abandonment. Learn to recognize where care ends and over-functioning begins.",
-    tag: "Self-Awareness",
+      "Your texts say more than you think — but probably less than you fear. Here's how to read the real signals.",
+    tag: "Communication",
   },
 ];
 
@@ -552,6 +611,8 @@ const blogPreviews = [
 
 export function Homepage({ onStartTool }: HomepageProps) {
   const [comingSoonTool, setComingSoonTool] = useState<ComingSoonTool | null>(null);
+  const openBlog = useLoveCheckStore((s) => s.openBlog);
+  const setView = useLoveCheckStore((s) => s.setView);
 
   function handleToolClick(tool: (typeof tools)[number]) {
     if (tool.comingSoon) {
@@ -722,7 +783,12 @@ export function Homepage({ onStartTool }: HomepageProps) {
       {/* ── All Tools Grid ───────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
-          <h2 className="text-xl font-bold">All Tools</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold">All Tools</h2>
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+              7 active
+            </span>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">
             Each tool focuses on a different dimension of your relationships.
           </p>
@@ -922,7 +988,12 @@ export function Homepage({ onStartTool }: HomepageProps) {
       {/* ── Blog Preview ─────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
-          <h2 className="text-xl font-bold">From the Journal</h2>
+          <h2
+            className="text-xl font-bold cursor-pointer hover:text-primary transition-colors"
+            onClick={() => setView("blog")}
+          >
+            From the Journal
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Perspectives on patterns, growth, and making sense of connections.
           </p>
@@ -930,8 +1001,11 @@ export function Homepage({ onStartTool }: HomepageProps) {
 
         <AnimatedGrid className="grid gap-4 sm:grid-cols-3">
           {blogPreviews.map((post) => (
-            <AnimatedGridItem key={post.title}>
-              <div className="group relative rounded-xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
+            <AnimatedGridItem key={post.slug}>
+              <div
+                className="group relative rounded-xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                onClick={() => openBlog(post.slug)}
+              >
                 {/* Hover gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-primary/0 via-primary/0 to-primary/[0.04] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="relative h-2 bg-gradient-to-r from-primary/20 to-primary/5 transition-all duration-300 group-hover:from-primary/40 group-hover:to-primary/15" />

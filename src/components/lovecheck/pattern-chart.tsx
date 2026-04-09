@@ -75,7 +75,8 @@ export function PatternChart({ signals, className }: PatternChartProps) {
 
   useEffect(() => {
     if (reduced) {
-      setAnimatedValues(targetValues);
+      // Use rAF to avoid synchronous setState lint
+      requestAnimationFrame(() => setAnimatedValues(targetValues));
       return;
     }
 

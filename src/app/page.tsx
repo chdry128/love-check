@@ -7,9 +7,12 @@ import { Homepage } from "@/components/lovecheck/homepage";
 import { ToolIntro } from "@/components/lovecheck/tool-intro";
 import { ToolFlow } from "@/components/lovecheck/tool-flow";
 import { ResultPage, ResultLoading } from "@/components/lovecheck/result-page";
+import { BlogPage } from "@/components/lovecheck/blog-page";
+import { BlogPostPage } from "@/components/lovecheck/blog-post-page";
 import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
 import { saveToHistory } from "@/lib/history";
+import { analytics } from "@/lib/analytics";
 import type { ToolSlug, FinalResult } from "@/types";
 
 export default function Home() {
@@ -33,6 +36,7 @@ export default function Home() {
       try {
         const tool = loadTool(slug);
         if (tool.comingSoon) return;
+        analytics.toolViewed(slug);
         startToolIntro(slug);
       } catch {
         // Tool not found
@@ -43,8 +47,9 @@ export default function Home() {
 
   // Handle beginning the tool flow
   const handleBeginFlow = useCallback(() => {
+    analytics.toolStarted(activeTool ?? "unknown");
     beginToolFlow();
-  }, [beginToolFlow]);
+  }, [beginToolFlow, activeTool]);
 
   // Handle finishing the tool flow — submit to API
   const handleFinishFlow = useCallback(async () => {
@@ -74,6 +79,13 @@ export default function Home() {
       if (data.success && data.data) {
         const result = data.data as FinalResult;
         setFinalResult(result);
+        analytics.toolCompleted(currentTool);
+        analytics.resultViewed(currentTool);
+        if (result.aiEnhanced) {
+          analytics.aiSuccess(currentTool);
+        } else {
+          analytics.aiFallback(currentTool);
+        }
         // Save to localStorage history
         try {
           saveToHistory(result, currentTool);
@@ -117,6 +129,10 @@ export default function Home() {
         {view === "tool-flow" && activeTool && (
           <ToolFlow toolSlug={activeTool} onFinish={handleFinishFlow} />
         )}
+
+        {view === "blog" && <BlogPage />}
+
+        {view === "blog-post" && <BlogPostPage />}
 
         {view === "results" && (
           <>

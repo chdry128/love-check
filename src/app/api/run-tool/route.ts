@@ -12,6 +12,10 @@ const VALID_SLUGS: ToolSlug[] = [
   "communication-pattern-check",
   "compatibility-compass",
   "red-flag-scanner",
+  "texting-energy-match",
+  "love-bombing-detector",
+  "future-alignment-checker",
+  "flirty-reply-coach",
 ];
 
 function isValidPayload(data: unknown): data is AnswerPayload {
@@ -33,7 +37,10 @@ function isValidPayload(data: unknown): data is AnswerPayload {
   for (const answer of d.answers) {
     const a = answer as Record<string, unknown>;
     if (typeof a.questionId !== "string") return false;
-    if (typeof a.optionId !== "string" && !Array.isArray(a.optionId)) return false;
+    // optionId (string/array) OR value (number for scale) must be present
+    const hasOption = typeof a.optionId === "string" || Array.isArray(a.optionId);
+    const hasValue = typeof a.value === "number";
+    if (!hasOption && !hasValue) return false;
   }
 
   return true;
