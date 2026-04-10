@@ -14,7 +14,7 @@ import {
   getTotalQuestionCount,
 } from "@/lib/engine";
 import type { QuestionOption, ToolSlug } from "@/types";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface ToolFlowProps {
   toolSlug: ToolSlug;
@@ -59,6 +59,7 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [justSelected, setJustSelected] = useState(false);
   const continueButtonRef = useRef<HTMLButtonElement>(null);
+  const reduced = useReducedMotion();
 
   // Compute total questions (derived, no side effects)
   const currentTotal = useMemo(() => {
@@ -369,7 +370,25 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
           ))}
         </div>
 
-        <Progress value={progressPercent} className="h-1.5" />
+        {/* Progress bar with heartbeat rose glow when user answers */}
+        <div className="relative">
+          <motion.div
+            className="absolute -inset-1 rounded-full transition-opacity duration-300"
+            animate={
+              justSelected && !reduced
+                ? {
+                    boxShadow: [
+                      "0 0 8px 2px rgba(244,63,94,0.3)",
+                      "0 0 16px 4px rgba(244,63,94,0.5)",
+                      "0 0 8px 2px rgba(244,63,94,0.3)",
+                    ],
+                  }
+                : { boxShadow: "0 0 0 0 rgba(244,63,94,0)" }
+            }
+            transition={{ duration: 0.8, repeat: justSelected && !reduced ? 2 : 0, ease: "easeInOut" }}
+          />
+          <Progress value={progressPercent} className="h-1.5" />
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -380,8 +399,53 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
           exit={{ opacity: 0, y: -16 }}
           transition={{ duration: 0.3 }}
         >
-          {currentQuestion && (
-            <Card className="border-0 shadow-none bg-transparent">
+          {/* Typing indicator when transitioning */}
+          {isAnimating && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="flex items-center justify-center gap-3 py-16"
+            >
+              <div className="flex items-center gap-1.5">
+                {[0, 1, 2].map((i) => (
+                  <motion.span
+                    key={i}
+                    className="h-2 w-2 rounded-full bg-primary"
+                    animate={!reduced ? { y: [0, -8, 0] } : { y: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      delay: i * 0.15,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground ml-2">Finding your next question...</span>
+            </motion.div>
+          )}
+
+          {currentQuestion && !isAnimating && (
+            <Card className="border-0 shadow-none bg-transparent relative">
+              {/* Warm gradient animated border around question card */}
+              <motion.div
+                className="pointer-events-none absolute -inset-[1.5px] rounded-2xl overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                style={{ zIndex: -1 }}
+              >
+                {!reduced && (
+                  <div
+                    className="absolute inset-0 rounded-2xl"
+                    style={{
+                      background: "conic-gradient(from var(--border-angle, 0deg), rgba(244,63,94,0.3), rgba(251,113,133,0.15), rgba(249,115,22,0.2), rgba(244,63,94,0.3))",
+                      animation: "romanticBorderRotate 4s linear infinite",
+                    }}
+                  />
+                )}
+              </motion.div>
               <CardContent className="p-0">
                 {/* Previous answer chip */}
                 {previousAnswerChip && (
@@ -503,11 +567,11 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                   </div>
                 )}
 
-                {/* Continue button with glow + bounce */}
+                {/* Continue button with romantic rose glow + bounce */}
                 <motion.div
                   animate={
-                    justSelected && canProceed
-                      ? { scale: [1, 1.03, 1] }
+                    justSelected && canProceed && !reduced
+                      ? { scale: [1, 1.04, 1] }
                       : { scale: 1 }
                   }
                   transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -518,7 +582,9 @@ export function ToolFlow({ toolSlug, onFinish }: ToolFlowProps) {
                     className={cn(
                       "w-full gap-2 rounded-xl h-12 text-base transition-all duration-300",
                       canProceed && !isAnimating &&
-                        "shadow-lg shadow-rose-200/50 dark:shadow-rose-900/30 hover:shadow-xl hover:shadow-rose-200/60 dark:hover:shadow-rose-900/40"
+                        "shadow-lg shadow-rose-300/60 dark:shadow-rose-800/50 hover:shadow-xl hover:shadow-rose-300/80 dark:hover:shadow-rose-700/60",
+                      justSelected && canProceed && !isAnimating && !reduced &&
+                        "animate-[heartPulse_0.8s_ease-in-out_2]"
                     )}
                     disabled={!canProceed || isAnimating}
                     onClick={handleAnswer}

@@ -57,6 +57,7 @@ import { FloatingHearts } from "@/components/lovecheck/floating-hearts";
 import { SocialProof } from "@/components/lovecheck/social-proof";
 import { WelcomeBanner } from "@/components/lovecheck/welcome-banner";
 import { IcebreakerGenerator } from "@/components/lovecheck/icebreaker-generator";
+import { WellnessScore } from "@/components/lovecheck/wellness-score";
 
 // ── Reduced-motion aware animation helpers ──────────────────
 
@@ -815,6 +816,13 @@ export function Homepage({ onStartTool }: HomepageProps) {
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <DailyTip />
+        </AnimatedSection>
+      </section>
+
+      {/* ── Relationship Wellness Score ──────────────────── */}
+      <section className="mx-auto max-w-md px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <WellnessScore />
         </AnimatedSection>
       </section>
 

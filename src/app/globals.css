@@ -649,12 +649,49 @@ html {
   background-size: 200% 100%;
 }
 
+/* Romantic skeleton bar — warm shimmer for skeleton elements */
+.romantic-skeleton-bar {
+  background: linear-gradient(
+    90deg,
+    oklch(0.93 0.01 60 / 0.4) 0%,
+    oklch(0.6 0.15 20 / 0.15) 25%,
+    oklch(0.65 0.18 25 / 0.2) 50%,
+    oklch(0.6 0.15 20 / 0.15) 75%,
+    oklch(0.93 0.01 60 / 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: warmShimmer 2.5s ease-in-out infinite;
+}
+
+.dark .romantic-skeleton-bar {
+  background: linear-gradient(
+    90deg,
+    oklch(0.22 0.01 50 / 0.4) 0%,
+    oklch(0.55 0.15 20 / 0.1) 25%,
+    oklch(0.6 0.18 25 / 0.15) 50%,
+    oklch(0.55 0.15 20 / 0.1) 75%,
+    oklch(0.22 0.01 50 / 0.4) 100%
+  );
+  background-size: 200% 100%;
+}
+
 /* ── 4. Romantic Gradient Border ──────────────────────────── */
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
 
 @property --romantic-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
+}
+
+@keyframes romanticBorderRotate {
+  0% { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
 }
 
 @keyframes romanticBorderSpin {
@@ -1079,15 +1116,421 @@ body::before {
   background:
     radial-gradient(
       ellipse 80% 60% at 50% 0%,
-      oklch(0.65 0.12 15 / 0.06) 0%,
+      oklch(0.4 0.12 15 / 0.12) 0%,
+      oklch(0.3 0.08 350 / 0.06) 40%,
       transparent 70%
     ),
     radial-gradient(
       ellipse 60% 50% at 80% 100%,
-      oklch(0.55 0.1 35 / 0.04) 0%,
+      oklch(0.45 0.1 35 / 0.08) 0%,
       transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 10% 50%,
+      oklch(0.35 0.1 25 / 0.06) 0%,
+      transparent 55%
     );
 }
+
+/* ── Body Fade-In Animation (Task 3-a) ──────────────────── */
+
+@keyframes bodyFadeIn {
+  from {
+    opacity: 0.92;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+body {
+  animation: bodyFadeIn 0.6s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ║  ROMANTIC MICRO-INTERACTIONS (Task 3-a)                     ║
+   ║  Buttons, dividers, text, cards, inputs, badges              ║
+   ╚══════════════════════════════════════════════════════════════ */
+
+/* ── Romantic Button ────────────────────────────────────── */
+
+.romantic-button {
+  position: relative;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+  border: 1px solid oklch(0.55 0.15 15 / 0.3);
+}
+
+.romantic-button:hover {
+  box-shadow:
+    0 0 20px oklch(0.5 0.15 15 / 0.2),
+    0 0 40px oklch(0.55 0.18 20 / 0.1),
+    0 0 60px oklch(0.5 0.12 10 / 0.05);
+  transform: scale(1.02);
+}
+
+.romantic-button:active {
+  transform: scale(0.97);
+  box-shadow:
+    0 0 12px oklch(0.5 0.15 15 / 0.15),
+    0 0 24px oklch(0.55 0.18 20 / 0.08);
+}
+
+.dark .romantic-button {
+  border-color: oklch(0.65 0.18 15 / 0.25);
+}
+
+.dark .romantic-button:hover {
+  box-shadow:
+    0 0 24px oklch(0.65 0.18 15 / 0.25),
+    0 0 48px oklch(0.6 0.2 20 / 0.12),
+    0 0 72px oklch(0.55 0.15 10 / 0.06);
+}
+
+.dark .romantic-button:active {
+  box-shadow:
+    0 0 16px oklch(0.65 0.18 15 / 0.2),
+    0 0 32px oklch(0.6 0.2 20 / 0.1);
+}
+
+/* ── Romantic Section Divider ────────────────────────────── */
+
+@keyframes shimmerLine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.romantic-section-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2.5rem auto;
+  max-width: 500px;
+  height: 2px;
+}
+
+.romantic-section-divider::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.55 0.18 15 / 0.5) 30%,
+    oklch(0.6 0.2 25 / 0.6) 50%,
+    oklch(0.55 0.18 15 / 0.5) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerLine 4s ease-in-out infinite;
+}
+
+.romantic-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.6 0.15 35 / 0.5) 30%,
+    oklch(0.55 0.2 25 / 0.6) 50%,
+    oklch(0.6 0.15 35 / 0.5) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerLine 4s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+/* Center CSS heart for the section divider */
+.romantic-section-divider .divider-heart {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.romantic-section-divider .divider-heart::before,
+.romantic-section-divider .divider-heart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 14px;
+  border-radius: 10px 10px 0 0;
+  background: oklch(0.5 0.2 15);
+  box-shadow: 0 0 8px oklch(0.5 0.2 15 / 0.4);
+}
+
+.romantic-section-divider .divider-heart::before {
+  left: 0;
+  transform: rotate(-45deg);
+  transform-origin: bottom right;
+}
+
+.romantic-section-divider .divider-heart::after {
+  right: 0;
+  transform: rotate(45deg);
+  transform-origin: bottom left;
+}
+
+.dark .romantic-section-divider::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.65 0.2 15 / 0.4) 30%,
+    oklch(0.7 0.22 25 / 0.5) 50%,
+    oklch(0.65 0.2 15 / 0.4) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+.dark .romantic-section-divider::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.7 0.18 35 / 0.4) 30%,
+    oklch(0.65 0.22 25 / 0.5) 50%,
+    oklch(0.7 0.18 35 / 0.4) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+.dark .romantic-section-divider .divider-heart::before,
+.dark .romantic-section-divider .divider-heart::after {
+  background: oklch(0.65 0.22 15);
+  box-shadow: 0 0 12px oklch(0.65 0.22 15 / 0.4);
+}
+
+/* ── Romantic Gradient Text ──────────────────────────────── */
+
+@keyframes romanticTextShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.romantic-gradient-text {
+  background: linear-gradient(
+    135deg,
+    oklch(0.55 0.22 15) 0%,
+    oklch(0.6 0.2 35) 20%,
+    oklch(0.65 0.18 25) 40%,
+    oklch(0.7 0.2 45) 60%,
+    oklch(0.55 0.15 15) 80%,
+    oklch(0.6 0.22 20) 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: romanticTextShimmer 5s ease-in-out infinite;
+}
+
+.dark .romantic-gradient-text {
+  background: linear-gradient(
+    135deg,
+    oklch(0.65 0.22 15) 0%,
+    oklch(0.7 0.2 35) 20%,
+    oklch(0.75 0.18 25) 40%,
+    oklch(0.8 0.2 45) 60%,
+    oklch(0.65 0.15 15) 80%,
+    oklch(0.7 0.22 20) 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Romantic Card Glow ──────────────────────────────────── */
+
+@keyframes romanticCardGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px oklch(0.55 0.15 15 / 0.1),
+      0 4px 12px oklch(0 0 0 / 0.04);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px oklch(0.55 0.15 15 / 0.25),
+      0 0 20px oklch(0.55 0.15 15 / 0.08),
+      0 0 40px oklch(0.6 0.18 25 / 0.04),
+      0 4px 16px oklch(0 0 0 / 0.06);
+  }
+}
+
+.romantic-card-glow {
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.35s ease;
+  border: 1px solid oklch(0.92 0.01 80);
+}
+
+.romantic-card-glow:hover {
+  animation: romanticCardGlow 2.5s ease-in-out infinite;
+  transform: translateY(-3px);
+}
+
+.dark .romantic-card-glow {
+  border-color: oklch(1 0 0 / 0.08);
+}
+
+@keyframes romanticCardGlowDark {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px oklch(0.65 0.18 15 / 0.1),
+      0 4px 16px oklch(0 0 0 / 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px oklch(0.65 0.18 15 / 0.35),
+      0 0 28px oklch(0.65 0.18 15 / 0.12),
+      0 0 56px oklch(0.6 0.2 25 / 0.06),
+      0 4px 20px oklch(0 0 0 / 0.2);
+  }
+}
+
+.dark .romantic-card-glow:hover {
+  animation: romanticCardGlowDark 2.5s ease-in-out infinite;
+}
+
+/* ── Romantic Input ──────────────────────────────────────── */
+
+.romantic-input {
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  border: 1px solid oklch(0.88 0.01 80);
+  outline: none;
+}
+
+.romantic-input:focus {
+  border-color: oklch(0.55 0.18 15 / 0.4);
+  box-shadow:
+    0 0 0 3px oklch(0.55 0.18 15 / 0.1),
+    0 0 0 6px oklch(0.55 0.18 15 / 0.05);
+  animation: romanticInputFocus 0.4s ease-out;
+}
+
+@keyframes romanticInputFocus {
+  0% {
+    box-shadow:
+      0 0 0 0px oklch(0.55 0.18 15 / 0.2),
+      0 0 0 0px oklch(0.55 0.18 15 / 0.1);
+  }
+  100% {
+    box-shadow:
+      0 0 0 3px oklch(0.55 0.18 15 / 0.1),
+      0 0 0 6px oklch(0.55 0.18 15 / 0.05);
+  }
+}
+
+.dark .romantic-input {
+  border-color: oklch(1 0 0 / 0.12);
+  background: oklch(0.18 0.01 50 / 0.8);
+}
+
+.dark .romantic-input:focus {
+  border-color: oklch(0.65 0.2 15 / 0.4);
+  box-shadow:
+    0 0 0 3px oklch(0.65 0.2 15 / 0.12),
+    0 0 0 8px oklch(0.65 0.2 15 / 0.06);
+  animation: romanticInputFocusDark 0.4s ease-out;
+}
+
+@keyframes romanticInputFocusDark {
+  0% {
+    box-shadow:
+      0 0 0 0px oklch(0.65 0.2 15 / 0.2),
+      0 0 0 0px oklch(0.65 0.2 15 / 0.1);
+  }
+  100% {
+    box-shadow:
+      0 0 0 3px oklch(0.65 0.2 15 / 0.12),
+      0 0 0 8px oklch(0.65 0.2 15 / 0.06);
+  }
+}
+
+/* ── Romantic Badge ──────────────────────────────────────── */
+
+@keyframes romanticBadgeShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.romantic-badge {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    oklch(0.96 0.02 15 / 0.8) 0%,
+    oklch(0.97 0.01 80 / 0.8) 50%,
+    oklch(0.96 0.02 15 / 0.8) 100%
+  );
+  background-size: 200% 100%;
+  border: 1px solid oklch(0.55 0.15 15 / 0.15);
+}
+
+.romantic-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.55 0.15 15 / 0.08) 40%,
+    oklch(0.6 0.2 25 / 0.12) 50%,
+    oklch(0.55 0.15 15 / 0.08) 60%,
+    transparent 100%
+  );
+  animation: romanticBadgeShimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dark .romantic-badge {
+  background: linear-gradient(
+    135deg,
+    oklch(0.22 0.03 15 / 0.9) 0%,
+    oklch(0.2 0.01 50 / 0.9) 50%,
+    oklch(0.22 0.03 15 / 0.9) 100%
+  );
+  background-size: 200% 100%;
+  border-color: oklch(0.65 0.18 15 / 0.2);
+}
+
+.dark .romantic-badge::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.65 0.18 15 / 0.06) 40%,
+    oklch(0.7 0.22 25 / 0.1) 50%,
+    oklch(0.65 0.18 15 / 0.06) 60%,
+    transparent 100%
+  );
+}
+
+/* ── Romantic Interactive Utilities ──────────────────────────── */
+/* The following romantic interaction classes are defined above:
+   .romantic-button, .romantic-card-glow, .romantic-gradient-text,
+   .romantic-input, .romantic-badge, .romantic-section-divider
+   See "ROMANTIC MICRO-INTERACTIONS (Task 3-a)" section for their definitions. */
 
 /* ── Reduced motion overrides ──────────────────────────────── */
 
@@ -1100,6 +1543,11 @@ body::before {
   .bg-flow-gradient,
   .warm-shimmer {
     animation: none;
+  }
+
+  /* Romantic border rotation */
+  [style*="romanticBorderRotate"] {
+    animation: none !important;
   }
 
   /* Heart animations */
@@ -1157,5 +1605,38 @@ body::before {
   /* Scroll progress — keep visible but no transition */
   .scroll-progress-bar {
     transition: none;
+  }
+
+  /* Romantic micro-interactions (Task 3-a) */
+  .romantic-button {
+    transition: none;
+    transform: none !important;
+  }
+
+  .romantic-button:hover {
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.06);
+  }
+
+  .romantic-section-divider::before,
+  .romantic-section-divider::after {
+    animation: none;
+  }
+
+  .romantic-gradient-text {
+    animation: none;
+  }
+
+  .romantic-card-glow:hover {
+    animation: none;
+    transform: none;
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.06);
+  }
+
+  .romantic-input:focus {
+    animation: none;
+  }
+
+  .romantic-badge::after {
+    animation: none;
   }
 }

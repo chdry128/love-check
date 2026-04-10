@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Homepage } from "@/components/lovecheck/homepage";
@@ -11,6 +11,7 @@ import { BlogPage } from "@/components/lovecheck/blog-page";
 import { BlogPostPage } from "@/components/lovecheck/blog-post-page";
 import { PatternLibrary } from "@/components/lovecheck/pattern-library";
 import { ScrollToTop } from "@/components/lovecheck/scroll-to-top";
+import { RomanticCursor } from "@/components/lovecheck/romantic-cursor";
 import { HistorySheet } from "@/components/lovecheck/history-sheet";
 import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
@@ -35,6 +36,22 @@ export default function Home() {
   } = useLoveCheckStore();
 
   const [historyOpen, setHistoryOpen] = useState(false);
+  const scrollProgressRef = useRef<HTMLDivElement>(null);
+
+  // Scroll progress bar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollProgressRef.current) {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        scrollProgressRef.current.style.width = `${progress}%`;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Handle starting a tool (navigate to intro)
   const handleStartTool = useCallback(
@@ -124,6 +141,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      {/* Scroll Progress Bar */}
+      <div className="scroll-progress" aria-hidden="true">
+        <div className="scroll-progress-bar" ref={scrollProgressRef} />
+      </div>
+
+      {/* Romantic Cursor Trail */}
+      <RomanticCursor />
       <Header
         onGoHome={resetSession}
         onOpenJournal={handleOpenJournal}

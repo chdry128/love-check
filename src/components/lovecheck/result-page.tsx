@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,11 +12,11 @@ import {
   Loader2,
   ShieldCheck,
   Activity,
-  FileDown,
   Star,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useLoveCheckStore } from "@/lib/store";
-import type { FinalResult } from "@/types";
+import type { FinalResult, RiskLevel } from "@/types";
 import { PatternBadge } from "./pattern-badge";
 import { RiskBadge } from "./risk-badge";
 import { ConfidenceChip } from "./confidence-chip";
@@ -25,7 +25,7 @@ import { NextToolCard } from "./next-tool-card";
 import { ShareSection } from "./share-section";
 import { RiskMeter } from "./risk-meter";
 import { SignalBars } from "./signal-bars";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface ResultPageProps {
   result: FinalResult;
@@ -151,14 +151,138 @@ function HeartConfetti() {
   );
 }
 
+/** Typewriter effect hook */
+function useTypewriter(text: string, speed = 20, enabled = true) {
+  const [displayed, setDisplayed] = useState("");
+  const [isDone, setIsDone] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      setDisplayed(text);
+      setIsDone(true);
+      return;
+    }
+    setDisplayed("");
+    setIsDone(false);
+    let i = 0;
+    const timer = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(timer);
+        setIsDone(true);
+      }
+    }, speed);
+    return () => clearInterval(timer);
+  }, [text, speed, enabled]);
+
+  return { displayed, isDone };
+}
+
+/** Animated risk level gauge bar */
+function AnimatedRiskGauge({ riskLevel }: { riskLevel: RiskLevel }) {
+  const reduced = useReducedMotion();
+
+  const riskMap: Record<RiskLevel, { pct: number; color: string; label: string }> = {
+    low: { pct: 20, color: "bg-emerald-500", label: "Low" },
+    moderate: { pct: 45, color: "bg-amber-500", label: "Moderate" },
+    elevated: { pct: 70, color: "bg-orange-500", label: "Elevated" },
+    high: { pct: 92, color: "bg-rose-500", label: "High" },
+  };
+
+  const config = riskMap[riskLevel];
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>Risk Level</span>
+        <span className="font-semibold text-foreground">{config.label}</span>
+      </div>
+      <div className="h-2.5 rounded-full bg-muted-foreground/10 overflow-hidden">
+        <motion.div
+          className={cn("h-full rounded-full", config.color)}
+          initial={{ width: "0%" }}
+          animate={{ width: `${config.pct}%` }}
+          transition={reduced ? { duration: 0 } : { duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Floating tiny hearts background particles */
+function FloatingHeartParticles() {
+  const reduced = useReducedMotion();
+  const hearts = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      left: `${5 + Math.random() * 90}%`,
+      size: 8 + Math.random() * 10,
+      duration: 6 + Math.random() * 8,
+      delay: Math.random() * 5,
+      opacity: 0.15 + Math.random() * 0.2,
+    }));
+  }, []);
+
+  if (reduced) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {hearts.map((h) => (
+        <motion.div
+          key={h.id}
+          className="absolute"
+          style={{ left: h.left, bottom: "-20px" }}
+          initial={{ y: 0, opacity: 0 }}
+          animate={{
+            y: [0, -400, -500],
+            opacity: [0, h.opacity, 0],
+          }}
+          transition={{
+            duration: h.duration,
+            delay: h.delay,
+            repeat: Infinity,
+            repeatDelay: 2 + Math.random() * 3,
+            ease: "easeOut",
+          }}
+        >
+          <svg
+            width={h.size}
+            height={h.size}
+            viewBox="0 0 24 24"
+            fill="rgba(244,63,94,0.6)"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export function ResultPage({ result }: ResultPageProps) {
   const { resetSession, startToolIntro, activeTool } = useLoveCheckStore();
+  const reduced = useReducedMotion();
   const [showConfetti, setShowConfetti] = useState(true);
+  const [explanationReady, setExplanationReady] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Start typewriter after a short delay for dramatic reveal
+  useEffect(() => {
+    const delay = reduced ? 0 : 800;
+    const timer = setTimeout(() => setExplanationReady(true), delay);
+    return () => clearTimeout(timer);
+  }, [reduced]);
+
+  const { displayed: typedExplanation, isDone: typeDone } = useTypewriter(
+    result.personalizedExplanation,
+    20,
+    explanationReady,
+  );
 
   const shareText = `I just used LoveCheck's Relationship Risk Radar and my dominant pattern is "${result.dominantPattern?.name ?? "Mixed"}" with ${result.dominantPattern?.confidence ?? "moderate"} confidence. Try it yourself:`;
 
@@ -215,11 +339,37 @@ export function ResultPage({ result }: ResultPageProps) {
       </div>
 
       {/* ── Main Result Card ─────────────────────────────── */}
-      <motion.div variants={item} className="relative">
+      <motion.div
+        variants={item}
+        className="relative"
+      >
+        {/* Floating heart particles behind result card */}
+        <FloatingHeartParticles />
+
         {/* Confetti decoration for low risk */}
         {isLowRisk && <LowRiskDecoration />}
         {showConfetti && <HeartConfetti />}
 
+        {/* Brief rose flash glow on reveal */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 rounded-2xl z-30"
+          initial={{ opacity: 0 }}
+          animate={reduced ? { opacity: 0 } : {
+            opacity: [0, 0.4, 0],
+            boxShadow: [
+              "0 0 0 0 rgba(244,63,94,0)",
+              "0 0 30px 10px rgba(244,63,94,0.2)",
+              "0 0 0 0 rgba(244,63,94,0)",
+            ],
+          }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        />
+
+        <motion.div
+          initial={reduced ? {} : { scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 20 }}
+        >
         <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-b from-card via-card to-muted/30" data-result-card>
           <div className="h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
           <CardContent className="p-6 sm:p-8 space-y-5">
@@ -233,9 +383,12 @@ export function ResultPage({ result }: ResultPageProps) {
               </p>
             </div>
 
-            {/* Risk Meter Visualization */}
+            {/* Risk Meter + Animated Gauge */}
             {result.dominantPattern && (
-              <RiskMeter riskLevel={result.dominantPattern.riskLevel} className="py-2" />
+              <div className="space-y-4">
+                <RiskMeter riskLevel={result.dominantPattern.riskLevel} className="py-2" />
+                <AnimatedRiskGauge riskLevel={result.dominantPattern.riskLevel} />
+              </div>
             )}
 
             {/* Badges row */}
@@ -257,14 +410,17 @@ export function ResultPage({ result }: ResultPageProps) {
               )}
             </div>
 
-            {/* Personalized explanation */}
+            {/* Personalized explanation with typewriter effect */}
             <div className="rounded-xl bg-muted/40 p-4 sm:p-5 border border-border/50">
               <div className="flex items-center gap-1.5 mb-2">
                 <Activity className="h-3.5 w-3.5 text-primary/60" />
                 <span className="text-xs font-semibold text-muted-foreground">Your Pattern Analysis</span>
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-line">
-                {result.personalizedExplanation}
+                {typedExplanation}
+                {!typeDone && explanationReady && (
+                  <span className="inline-block w-[2px] h-4 bg-primary ml-0.5 animate-pulse align-middle" />
+                )}
               </p>
             </div>
 
@@ -284,6 +440,7 @@ export function ResultPage({ result }: ResultPageProps) {
             )}
           </CardContent>
         </Card>
+        </motion.div>
       </motion.div>
 
       {/* ── Insight Cards ────────────────────────────────── */}
