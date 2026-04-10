@@ -51,6 +51,12 @@ import {
 import { toast } from "sonner";
 import { useLoveCheckStore } from "@/lib/store";
 import { MoodCheckin } from "@/components/lovecheck/mood-checkin";
+import { DailyTip } from "@/components/lovecheck/daily-tip";
+import { LoveLanguageQuiz } from "@/components/lovecheck/love-language-quiz";
+import { FloatingHearts } from "@/components/lovecheck/floating-hearts";
+import { SocialProof } from "@/components/lovecheck/social-proof";
+import { WelcomeBanner } from "@/components/lovecheck/welcome-banner";
+import { IcebreakerGenerator } from "@/components/lovecheck/icebreaker-generator";
 
 // ── Reduced-motion aware animation helpers ──────────────────
 
@@ -639,6 +645,9 @@ export function Homepage({ onStartTool }: HomepageProps) {
 
   return (
     <div>
+      {/* ── Welcome Banner ─────────────────────────────── */}
+      <WelcomeBanner onStartTool={onStartTool} />
+
       {/* ── Hero Section ──────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-rose-50/60 via-transparent to-transparent dark:from-rose-950/20 dark:via-transparent dark:to-transparent" />
@@ -660,6 +669,9 @@ export function Homepage({ onStartTool }: HomepageProps) {
           className="pointer-events-none absolute top-20 left-1/2 h-40 w-40 rounded-full bg-pink-200/20 blur-3xl dark:bg-pink-900/10"
           style={{ animation: "orbFloat3 12s ease-in-out infinite" }}
         />
+
+        {/* Floating hearts background */}
+        <FloatingHearts intensity="medium" />
 
         <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 sm:px-6 sm:pt-24 sm:pb-16">
           <AnimatedSection>
@@ -789,6 +801,20 @@ export function Homepage({ onStartTool }: HomepageProps) {
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <MoodCheckin />
+        </AnimatedSection>
+      </section>
+
+      {/* ── Love Language Quick Quiz ────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <LoveLanguageQuiz onStartTool={onStartTool} />
+        </AnimatedSection>
+      </section>
+
+      {/* ── Daily Relationship Tip ─────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <DailyTip />
         </AnimatedSection>
       </section>
 
@@ -941,7 +967,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
                 <div className="rounded-xl border bg-card p-5 transition-all duration-200 hover:shadow-sm">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/5">
-                      <Icon className="h-4.5 w-4.5 text-primary" />
+                      <Icon className="size-[18px] text-primary" />
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold mb-1">{prop.title}</h3>
@@ -985,6 +1011,18 @@ export function Homepage({ onStartTool }: HomepageProps) {
             </AnimatedGridItem>
           ))}
         </AnimatedGrid>
+      </section>
+
+      {/* ── Social Proof ──────────────────────────────── */}
+      <AnimatedSection>
+        <SocialProof />
+      </AnimatedSection>
+
+      {/* ── Conversation Starters ──────────────────────── */}
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+        <AnimatedSection>
+          <IcebreakerGenerator onStartTool={onStartTool} />
+        </AnimatedSection>
       </section>
 
       {/* ── Testimonials ────────────────────────────────── */}

@@ -527,13 +527,635 @@ html {
   50% { filter: drop-shadow(0 0 8px currentColor); }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   ║  ROMANTIC ANIMATION OVERHAUL                               ║
+   ║  Floating hearts, glows, shimmers, glass morphism & more   ║
+   ╚══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Floating Hearts Animation ─────────────────────────── */
+
+@keyframes heartFloat {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.3);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+    transform: translateY(-8vh) translateX(calc(var(--sway, 5px) * 0.5)) scale(0.7);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-50vh) translateX(var(--sway, 5px)) scale(0.9);
+  }
+  90% {
+    opacity: 0.3;
+    transform: translateY(-90vh) translateX(calc(var(--sway, 5px) * -0.3)) scale(1);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(0) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ── 2. Heart Pulse Glow ──────────────────────────────────── */
+
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.5 0.15 15 / 0.25);
+  }
+  15% {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px 4px oklch(0.5 0.15 15 / 0.2);
+  }
+  30% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.5 0.15 15 / 0);
+  }
+  45% {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px 4px oklch(0.5 0.15 15 / 0.15);
+  }
+  60% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.5 0.15 15 / 0);
+  }
+}
+
+.dark .heart-pulse-glow {
+  animation-name: heartPulseDark;
+}
+
+@keyframes heartPulseDark {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.65 0.18 15 / 0.2);
+  }
+  15% {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px 6px oklch(0.65 0.18 15 / 0.15);
+  }
+  30% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.65 0.18 15 / 0);
+  }
+  45% {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px 6px oklch(0.65 0.18 15 / 0.1);
+  }
+  60% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.65 0.18 15 / 0);
+  }
+}
+
+.heart-pulse-glow {
+  animation: heartPulse 1.8s ease-in-out infinite;
+}
+
+/* ── 3. Warm Shimmer ──────────────────────────────────────── */
+
+@keyframes warmShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.warm-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.97 0.01 60 / 0) 0%,
+    oklch(0.55 0.15 20 / 0.08) 25%,
+    oklch(0.6 0.18 25 / 0.12) 50%,
+    oklch(0.55 0.15 20 / 0.08) 75%,
+    oklch(0.97 0.01 60 / 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: warmShimmer 3s ease-in-out infinite;
+}
+
+.dark .warm-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.18 0.01 50 / 0) 0%,
+    oklch(0.55 0.15 20 / 0.06) 25%,
+    oklch(0.6 0.18 25 / 0.1) 50%,
+    oklch(0.55 0.15 20 / 0.06) 75%,
+    oklch(0.18 0.01 50 / 0) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* ── 4. Romantic Gradient Border ──────────────────────────── */
+
+@property --romantic-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes romanticBorderSpin {
+  0% { --romantic-angle: 0deg; }
+  100% { --romantic-angle: 360deg; }
+}
+
+.romanticBorder {
+  position: relative;
+  border: none;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: visible;
+}
+
+.romanticBorder::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--romantic-angle),
+    oklch(0.5 0.2 15),
+    oklch(0.6 0.2 25),
+    oklch(0.55 0.22 20),
+    oklch(0.5 0.18 10),
+    oklch(0.5 0.2 15)
+  );
+  z-index: -1;
+  animation: romanticBorderSpin 6s linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 2px;
+  border-radius: inherit;
+}
+
+.dark .romanticBorder::before {
+  background: conic-gradient(
+    from var(--romantic-angle),
+    oklch(0.65 0.22 15 / 0.7),
+    oklch(0.6 0.25 25 / 0.5),
+    oklch(0.55 0.2 20 / 0.6),
+    oklch(0.5 0.22 10 / 0.4),
+    oklch(0.65 0.22 15 / 0.7)
+  );
+}
+
+/* ── 5. Floating Hearts Container ─────────────────────────── */
+
+.floating-hearts {
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.floating-heart {
+  position: absolute;
+  bottom: -10%;
+  left: var(--x-pos, 50%);
+  font-size: var(--size, 20px);
+  animation: heartFloat var(--duration, 6s) var(--delay, 0s) ease-out infinite;
+  color: oklch(0.5 0.18 15 / 0.6);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.dark .floating-heart {
+  color: oklch(0.65 0.2 15 / 0.5);
+}
+
+/* ── 6. Breathing Glow ────────────────────────────────────── */
+
+@keyframes breathingGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 8px oklch(0.5 0.15 15 / 0.1),
+      0 0 20px oklch(0.5 0.15 15 / 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 16px oklch(0.5 0.15 15 / 0.2),
+      0 0 40px oklch(0.5 0.15 15 / 0.1),
+      0 0 60px oklch(0.55 0.12 25 / 0.05);
+  }
+}
+
+.dark .breathing-glow {
+  animation-name: breathingGlowDark;
+}
+
+@keyframes breathingGlowDark {
+  0%, 100% {
+    box-shadow:
+      0 0 10px oklch(0.65 0.18 15 / 0.08),
+      0 0 25px oklch(0.65 0.18 15 / 0.04);
+  }
+  50% {
+    box-shadow:
+      0 0 20px oklch(0.65 0.18 15 / 0.15),
+      0 0 50px oklch(0.65 0.18 15 / 0.08),
+      0 0 80px oklch(0.6 0.15 25 / 0.04);
+  }
+}
+
+.breathing-glow {
+  animation: breathingGlow 4s ease-in-out infinite;
+}
+
+/* ── 7. Romantic Text Gradient ────────────────────────────── */
+
+.text-gradient-romantic {
+  background: linear-gradient(
+    135deg,
+    oklch(0.5 0.2 15) 0%,
+    oklch(0.55 0.22 20) 25%,
+    oklch(0.6 0.2 35) 50%,
+    oklch(0.55 0.22 20) 75%,
+    oklch(0.5 0.2 15) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textShimmer 4s ease-in-out infinite;
+}
+
+.dark .text-gradient-romantic {
+  background: linear-gradient(
+    135deg,
+    oklch(0.65 0.22 15) 0%,
+    oklch(0.7 0.2 20) 25%,
+    oklch(0.75 0.18 35) 50%,
+    oklch(0.7 0.2 20) 75%,
+    oklch(0.65 0.22 15) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 8. Gentle Bounce In ──────────────────────────────────── */
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  70% {
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── 9. Stagger Fade In ───────────────────────────────────── */
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-fade-in {
+  opacity: 0;
+  animation: staggerFadeIn 0.5s ease-out forwards;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+/* ── 10. Ripple Effect ────────────────────────────────────── */
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: oklch(0.5 0.15 15 / 0.2);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+}
+
+.ripple-effect:active::after {
+  width: 300%;
+  height: 300%;
+  opacity: 1;
+  transition: width 0.5s ease-out, height 0.5s ease-out, opacity 0.6s ease-out;
+}
+
+.dark .ripple-effect::after {
+  background: oklch(0.65 0.18 15 / 0.15);
+}
+
+/* ── 11. Romantic Card Hover Lift ─────────────────────────── */
+
+.romantic-card {
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  border: 1px solid oklch(0.92 0.01 80);
+}
+
+.romantic-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 24px oklch(0.5 0.15 15 / 0.08),
+    0 2px 8px oklch(0.5 0.15 15 / 0.04);
+  border-color: oklch(0.55 0.15 15 / 0.3);
+}
+
+.dark .romantic-card {
+  border-color: oklch(1 0 0 / 0.08);
+}
+
+.dark .romantic-card:hover {
+  box-shadow:
+    0 8px 24px oklch(0.65 0.18 15 / 0.1),
+    0 2px 8px oklch(0.65 0.18 15 / 0.06);
+  border-color: oklch(0.65 0.18 15 / 0.25);
+}
+
+/* ── 12. Romantic Divider ─────────────────────────────────── */
+
+.romantic-divider {
+  position: relative;
+  height: 1px;
+  border: none;
+  margin: 2rem auto;
+  max-width: 300px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.55 0.15 15 / 0.3) 20%,
+    oklch(0.55 0.15 15 / 0.5) 50%,
+    oklch(0.55 0.15 15 / 0.3) 80%,
+    transparent 100%
+  );
+}
+
+.dark .romantic-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.65 0.18 15 / 0.2) 20%,
+    oklch(0.65 0.18 15 / 0.35) 50%,
+    oklch(0.65 0.18 15 / 0.2) 80%,
+    transparent 100%
+  );
+}
+
+/* Center heart dot using pseudo-element */
+.romantic-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: oklch(0.5 0.18 15);
+  border-radius: 0 2px 0 2px;
+  box-shadow: 0 0 6px oklch(0.5 0.18 15 / 0.4);
+}
+
+.romantic-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-68%, -12%) rotate(45deg);
+  background: oklch(0.5 0.18 15);
+  border-radius: 0 2px 0 2px;
+  z-index: 1;
+  /* Creates the second bump of the heart shape */
+}
+
+.dark .romantic-divider::before {
+  background: oklch(0.65 0.2 15);
+  box-shadow: 0 0 8px oklch(0.65 0.2 15 / 0.3);
+}
+
+.dark .romantic-divider::after {
+  background: oklch(0.65 0.2 15);
+}
+
+/* ── 13. Glass Morphism 2.0 ───────────────────────────────── */
+
+.glass-romantic {
+  background: oklch(1 0.005 15 / 0.55);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid oklch(0.5 0.15 15 / 0.12);
+  box-shadow:
+    0 4px 16px oklch(0.5 0.15 15 / 0.06),
+    inset 0 1px 0 oklch(1 0 0 / 0.3);
+  border-radius: var(--radius);
+}
+
+.dark .glass-romantic {
+  background: oklch(0.18 0.015 50 / 0.55);
+  border: 1px solid oklch(0.65 0.18 15 / 0.1);
+  box-shadow:
+    0 4px 24px oklch(0 0 0 / 0.2),
+    0 0 40px oklch(0.65 0.18 15 / 0.04),
+    inset 0 1px 0 oklch(1 0 0 / 0.05);
+}
+
+/* ── 14. Typewriter Cursor ────────────────────────────────── */
+
+@keyframes typewriter-cursor {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typewriter-cursor::after {
+  content: '|';
+  animation: typewriter-cursor 1s step-end infinite;
+  color: oklch(0.5 0.15 15);
+  font-weight: 300;
+  margin-left: 2px;
+}
+
+.dark .typewriter-cursor::after {
+  color: oklch(0.65 0.18 15);
+}
+
+/* ── 15. Scroll Progress ──────────────────────────────────── */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 9999;
+  background: oklch(0.92 0.01 80);
+  transform-origin: left;
+  /* Width is controlled via inline style or JS: width = scroll% */
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    oklch(0.55 0.18 15),
+    oklch(0.6 0.2 25),
+    oklch(0.55 0.15 10)
+  );
+  border-radius: 0 2px 2px 0;
+  transition: width 0.1s linear;
+}
+
+.dark .scroll-progress {
+  background: oklch(0.18 0.01 50);
+}
+
+.dark .scroll-progress-bar {
+  background: linear-gradient(
+    90deg,
+    oklch(0.65 0.2 15),
+    oklch(0.7 0.22 25),
+    oklch(0.65 0.18 10)
+  );
+}
+
+/* ── 17. Warm Body Background Overlay ─────────────────────── */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      oklch(0.5 0.08 15 / 0.04) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 100%,
+      oklch(0.6 0.06 35 / 0.03) 0%,
+      transparent 60%
+    );
+}
+
+.dark body::before {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      oklch(0.65 0.12 15 / 0.06) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 100%,
+      oklch(0.55 0.1 35 / 0.04) 0%,
+      transparent 60%
+    );
+}
+
 /* ── Reduced motion overrides ──────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .bg-mesh-gradient,
   .text-gradient-shimmer,
+  .text-gradient-romantic,
   .animated-gradient-border::before,
-  .bg-flow-gradient {
+  .romanticBorder::before,
+  .bg-flow-gradient,
+  .warm-shimmer {
     animation: none;
+  }
+
+  /* Heart animations */
+  .floating-heart,
+  .heart-pulse-glow,
+  .breathing-glow {
+    animation: none;
+  }
+
+  .floating-heart {
+    display: none;
+  }
+
+  .heart-pulse-glow {
+    box-shadow: 0 0 8px oklch(0.5 0.15 15 / 0.1);
+    transform: none;
+  }
+
+  .breathing-glow {
+    box-shadow:
+      0 0 8px oklch(0.5 0.15 15 / 0.1),
+      0 0 20px oklch(0.5 0.15 15 / 0.05);
+  }
+
+  /* Entrance animations — show immediately */
+  .bounce-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .stagger-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Ripple — no expanding circle */
+  .ripple-effect::after {
+    display: none;
+  }
+
+  /* Card hover — no lift */
+  .romantic-card:hover {
+    transform: none;
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.06);
+  }
+
+  /* Typewriter cursor — solid, not blinking */
+  .typewriter-cursor::after {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* Scroll progress — keep visible but no transition */
+  .scroll-progress-bar {
+    transition: none;
   }
 }

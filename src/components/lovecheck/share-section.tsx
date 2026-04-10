@@ -238,7 +238,7 @@ export function ShareSection({ text, className }: ShareSectionProps) {
             "flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all duration-200",
             "text-rose-600 dark:text-rose-400",
             "hover:bg-rose-50 dark:hover:bg-rose-950/30",
-            "hover:border-rose-200 dark:hover:hover:border-rose-800",
+            "hover:border-rose-200 dark:hover:border-rose-800",
             "hover:shadow-sm hover:-translate-y-[1px] active:translate-y-0",
             downloading && "opacity-60 pointer-events-none"
           )}

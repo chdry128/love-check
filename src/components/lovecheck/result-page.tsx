@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -82,8 +83,82 @@ function LowRiskDecoration() {
   );
 }
 
+/** Heart confetti burst animation for result page */
+function HeartConfetti() {
+  const [hearts] = useState(() => {
+    const colors = [
+      "#f43f5e", "#fb7185", "#fda4af", "#e11d48",
+      "#f97316", "#fb923c", "#f472b6", "#ec4899",
+      "#f87171", "#fca5a5",
+    ];
+    return Array.from({ length: 20 }, (_, i) => {
+      const angle = (Math.PI * 2 * i) / 20 + (Math.random() - 0.5) * 0.5;
+      const distance = 80 + Math.random() * 160;
+      return {
+        id: i,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance - 40,
+        rotation: Math.random() * 360 - 180,
+        scale: 0.6 + Math.random() * 0.6,
+        delay: i * 0.03,
+      };
+    });
+  });
+
+  const reduced = useReducedMotion();
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (reduced) return;
+    const timer = setTimeout(() => setVisible(false), 2500);
+    return () => clearTimeout(timer);
+  }, [reduced]);
+
+  if (reduced || !visible) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center overflow-hidden">
+      {hearts.map((h) => (
+        <motion.div
+          key={h.id}
+          className="absolute"
+          initial={{ opacity: 0, scale: 0, x: 0, y: 0, rotate: 0 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            scale: [0, h.scale, h.scale * 0.8],
+            x: h.x,
+            y: h.y + 80,
+            rotate: h.rotation,
+          }}
+          transition={{
+            duration: 2,
+            delay: h.delay,
+            ease: "easeOut",
+          }}
+        >
+          <svg
+            width={14}
+            height={14}
+            viewBox="0 0 24 24"
+            fill={h.color}
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export function ResultPage({ result }: ResultPageProps) {
   const { resetSession, startToolIntro, activeTool } = useLoveCheckStore();
+  const [showConfetti, setShowConfetti] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowConfetti(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const shareText = `I just used LoveCheck's Relationship Risk Radar and my dominant pattern is "${result.dominantPattern?.name ?? "Mixed"}" with ${result.dominantPattern?.confidence ?? "moderate"} confidence. Try it yourself:`;
 
@@ -143,6 +218,7 @@ export function ResultPage({ result }: ResultPageProps) {
       <motion.div variants={item} className="relative">
         {/* Confetti decoration for low risk */}
         {isLowRisk && <LowRiskDecoration />}
+        {showConfetti && <HeartConfetti />}
 
         <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-b from-card via-card to-muted/30" data-result-card>
           <div className="h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
