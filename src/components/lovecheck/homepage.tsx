@@ -246,14 +246,14 @@ function staggerChildVariants(reduced: boolean) {
       : { opacity: 0, y: 16 },
     visible: reduced
       ? { opacity: 1, y: 0, transition: { duration: 0 } }
-      : { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+      : { opacity: 1, y: 0, transition: { duration: 0.45 } },
   };
 }
 
 function sectionTransition(reduced: boolean) {
   return reduced
     ? { duration: 0 }
-    : { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] };
+    : { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const };
 }
 
 // ── Animated Section wrapper ────────────────────────────────
@@ -267,7 +267,7 @@ function AnimatedSection({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px 0px" });
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
 
   return (
     <motion.div
@@ -294,7 +294,7 @@ function AnimatedGrid({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px 0px" });
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
 
   return (
     <motion.div
@@ -316,7 +316,7 @@ function AnimatedGridItem({
   children: React.ReactNode;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
   return (
     <motion.div variants={staggerChildVariants(reduced)} className={className}>
       {children}
@@ -637,7 +637,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
         icon: tool.icon,
         color: tool.color,
         bgColor: tool.bgColor,
-        description: tool.comingSoonDescription ?? "explore another dimension of your relationships",
+        description: "explore another dimension of your relationships",
       });
     } else {
       onStartTool(tool.slug);

@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     const engineResult = runEngine(payload);
 
     // 3. Optionally enhance with AI (non-blocking, graceful fallback)
-    let aiOutput = null;
+    let aiOutput: Awaited<ReturnType<typeof enhanceResult>> | null = null;
     try {
       const aiPayload = buildAIPayload(engineResult, payload);
       aiOutput = await enhanceResult(aiPayload);
@@ -103,7 +103,10 @@ export async function POST(request: NextRequest) {
 
 // ── Result Builder ──────────────────────────────────────────
 
-function buildFinalResult(engineResult: EngineResult, aiOutput: ReturnType<typeof enhanceResult> extends Promise<infer T> ? T : never): FinalResult {
+function buildFinalResult(
+  engineResult: EngineResult,
+  aiOutput: Awaited<ReturnType<typeof enhanceResult>> | null,
+): FinalResult {
   // Generate summary
   const summary = engineResult.dominantPattern
     ? patternRules.find((r) => r.id === engineResult.dominantPattern!.id)?.summaryTemplate ??

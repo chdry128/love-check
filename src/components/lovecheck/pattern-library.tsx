@@ -79,9 +79,17 @@ function getPatternCategory(id: PatternId): PatternCategory {
 
 // ── Risk level config ────────────────────────────────────
 
-type RiskFilter = "All" | RiskLevel;
+type RiskLabel = "Low" | "Moderate" | "Elevated" | "High";
+type RiskFilter = "All" | RiskLabel;
 
 const riskFilters: RiskFilter[] = ["All", "Low", "Moderate", "Elevated", "High"];
+
+const riskLabelToLevel: Record<RiskLabel, RiskLevel> = {
+  Low: "low",
+  Moderate: "moderate",
+  Elevated: "elevated",
+  High: "high",
+};
 
 const riskConfig: Record<
   RiskLevel,
@@ -146,7 +154,7 @@ const categoryColors: Record<PatternCategory, string> = {
 // ── Animation variants (reduced-motion aware) ────────────
 
 function useReducedMotionValue() {
-  return useReducedMotion();
+  return !!useReducedMotion();
 }
 
 function fadeUpVariants(reduced: boolean) {
@@ -179,7 +187,7 @@ function staggerChildVariants(reduced: boolean) {
     hidden: reduced ? { opacity: 1 } : { opacity: 0, y: 12 },
     visible: reduced
       ? { opacity: 1 }
-      : { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+      : { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 }
 
@@ -395,7 +403,7 @@ export function PatternLibrary({ onStartTool, onBack }: PatternLibraryProps) {
 
       // Risk filter
       if (activeRisk !== "All") {
-        if (pattern.riskLevel !== activeRisk.toLowerCase()) return false;
+        if (pattern.riskLevel !== riskLabelToLevel[activeRisk]) return false;
       }
 
       return true;
@@ -428,8 +436,9 @@ export function PatternLibrary({ onStartTool, onBack }: PatternLibraryProps) {
       High: 0,
     };
     for (const pattern of patternRules) {
-      const key = pattern.riskLevel.charAt(0).toUpperCase() +
-        pattern.riskLevel.slice(1) as "Low" | "Moderate" | "Elevated" | "High";
+      const key =
+        pattern.riskLevel.charAt(0).toUpperCase() +
+        pattern.riskLevel.slice(1).toLowerCase();
       counts[key]++;
     }
     return counts;
@@ -534,8 +543,9 @@ export function PatternLibrary({ onStartTool, onBack }: PatternLibraryProps) {
                 </button>
               );
             }
-            const config = riskConfig[risk as RiskLevel];
-            const count = riskCounts[risk as "Low" | "Moderate" | "Elevated" | "High"];
+            const level = riskLabelToLevel[risk];
+            const config = riskConfig[level];
+            const count = riskCounts[risk];
             return (
               <button
                 key={risk}

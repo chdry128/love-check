@@ -30,19 +30,30 @@ interface HeartData {
   initialRotate: number; // initial rotation -10 to 10
 }
 
+function createSeededRandom(seed: number) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6D2B79F5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function generateHearts(count: number): HeartData[] {
+  const rand = createSeededRandom(count * 97 + 17);
   const hearts: HeartData[] = [];
   for (let i = 0; i < count; i++) {
     hearts.push({
       id: i,
-      x: Math.random() * 100,
-      size: 8 + Math.random() * 12,
-      duration: 6 + Math.random() * 8,
-      delay: Math.random() * 8,
-      swayRange: 10 + Math.random() * 30,
-      opacity: 0.15 + Math.random() * 0.25,
-      hue: Math.random() * 30,
-      initialRotate: -10 + Math.random() * 20,
+      x: rand() * 100,
+      size: 8 + rand() * 12,
+      duration: 6 + rand() * 8,
+      delay: rand() * 8,
+      swayRange: 10 + rand() * 30,
+      opacity: 0.15 + rand() * 0.25,
+      hue: rand() * 30,
+      initialRotate: -10 + rand() * 20,
     });
   }
   return hearts;

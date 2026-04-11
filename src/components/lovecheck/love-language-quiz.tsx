@@ -220,7 +220,7 @@ function getResult(scores: Record<LoveLanguage, number>): LoveLanguage {
 // ── Component ─────────────────────────────────────────────────
 
 interface LoveLanguageQuizProps {
-  onStartTool: (slug: string) => void;
+  onStartTool: (slug: ToolSlug) => void;
 }
 
 export function LoveLanguageQuiz({ onStartTool }: LoveLanguageQuizProps) {

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, MessageSquare, Heart, Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ToolSlug } from "@/types";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -19,7 +20,7 @@ interface DepthConfig {
   icon: typeof MessageSquare;
   badgeClass: string;
   tabActiveClass: string;
-  relatedTool: string;
+  relatedTool: ToolSlug;
   relatedToolLabel: string;
 }
 
@@ -107,14 +108,12 @@ const cardVariants = {
 // ── Component ──────────────────────────────────────────────
 
 interface IcebreakerGeneratorProps {
-  onStartTool: (slug: string) => void;
+  onStartTool: (slug: ToolSlug) => void;
 }
 
 export function IcebreakerGenerator({ onStartTool }: IcebreakerGeneratorProps) {
   const [activeDepth, setActiveDepth] = useState<DepthLevel>("light");
-  const [currentIndex, setCurrentIndex] = useState<number>(() =>
-    Math.floor(Math.random() * starters.light.length)
-  );
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [seenCount, setSeenCount] = useState(1);
   const [animKey, setAnimKey] = useState(0);
   const reduced = useReducedMotion();

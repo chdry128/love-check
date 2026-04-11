@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   MessageCircle,
@@ -261,16 +260,14 @@ const dailyTips: DailyTipData[] = [
 
 export function DailyTip() {
   const reduced = useReducedMotion();
-  const [formattedDate, setFormattedDate] = useState("");
+  const now = new Date();
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(now);
+  const dayIndex = (now.getUTCDate() - 1) % dailyTips.length;
 
-  useEffect(() => {
-    setFormattedDate(
-      new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })
-    );
-  }, []);
-
-  // Deterministic selection: day of month (1-31), index 0-30
-  const dayIndex = (new Date().getDate() - 1) % dailyTips.length;
   const tip = dailyTips[dayIndex];
   const config = categoryConfig[tip.category];
 

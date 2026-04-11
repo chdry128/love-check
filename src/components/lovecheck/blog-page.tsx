@@ -35,7 +35,7 @@ function staggerChildVariants(reduced: boolean) {
     hidden: reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
     visible: reduced
       ? { opacity: 1, y: 0, transition: { duration: 0 } }
-      : { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+      : { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 }
 
@@ -54,7 +54,7 @@ const categoryColors: Record<string, string> = {
 export function BlogPage() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px 0px" });
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
   const openBlog = useLoveCheckStore((s) => s.openBlog);
   const goHome = useLoveCheckStore((s) => s.goHome);
 

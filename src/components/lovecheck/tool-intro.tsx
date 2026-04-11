@@ -31,7 +31,7 @@ interface ToolIntroProps {
 }
 
 // Map tool slugs to their icons and color themes
-const toolThemes: Record<string, { icon: LucideIcon; gradient: string; ringColor: string; bgGlow: string }> = {
+const toolThemes: Record<string, { icon: LucideIcon; gradient: string; ringColor: string; bgGlow: string; glowAccent: string }> = {
   "relationship-risk-radar": {
     icon: Radar,
     gradient: "from-rose-50 to-orange-50 dark:from-rose-950/60 dark:to-orange-950/40",
@@ -121,7 +121,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] as const },
   },
 };
 

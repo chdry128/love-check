@@ -197,7 +197,7 @@ function StatCard({
 export function SocialProof({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px 0px" });
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
 
   return (
     <section

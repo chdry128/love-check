@@ -62,6 +62,13 @@ const toolNames: Record<string, string> = {
   "red-flag-scanner": "Red Flags",
 };
 
+const confidenceToPercent: Record<string, number> = {
+  low: 35,
+  moderate: 60,
+  "fairly-high": 80,
+  high: 95,
+};
+
 function formatDate(iso: string): string {
   const date = new Date(iso);
   const now = new Date();
@@ -260,7 +267,7 @@ export function HistorySheet({ open, onOpenChange, onStartTool }: HistorySheetPr
                                 <div
                                   className="h-full rounded-full bg-primary/60"
                                   style={{
-                                    width: `${Math.min((entry.result.dominantPattern.confidence / 100) * 100, 100)}%`,
+                                    width: `${confidenceToPercent[entry.result.dominantPattern.confidence] ?? 0}%`,
                                   }}
                                 />
                               </div>

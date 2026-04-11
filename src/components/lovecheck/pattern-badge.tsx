@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import type { PatternId } from "@/types";
 
 interface PatternBadgeProps {
-  patternId: PatternId;
+  patternId: PatternId | string;
   className?: string;
 }
 
-const patternConfig: Record<PatternId, { label: string; className: string }> = {
+const patternConfig: Partial<Record<PatternId, { label: string; className: string }>> = {
   "hot-cold-loop": {
     label: "Hot & Cold Loop",
     className: "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/50 dark:text-orange-300 dark:border-orange-800",
@@ -35,17 +35,38 @@ const patternConfig: Record<PatternId, { label: string; className: string }> = {
   },
 };
 
+const fallbackConfig = {
+  label: "Relationship Pattern",
+  className:
+    "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-900/60 dark:text-slate-300 dark:border-slate-700",
+};
+
+function formatPatternLabel(patternId: string): string {
+  return patternId
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export function PatternBadge({ patternId, className }: PatternBadgeProps) {
-  const config = patternConfig[patternId];
+  const config = patternConfig[patternId as PatternId];
+  const safeConfig = config
+    ? config
+    : {
+        ...fallbackConfig,
+        label: formatPatternLabel(patternId) || fallbackConfig.label,
+      };
+
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wide",
-        config.className,
+        safeConfig.className,
         className
       )}
     >
-      {config.label}
+      {safeConfig.label}
     </span>
   );
 }
