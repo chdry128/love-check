@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   MessageCircle,
@@ -260,6 +261,13 @@ const dailyTips: DailyTipData[] = [
 
 export function DailyTip() {
   const reduced = useReducedMotion();
+  const [formattedDate, setFormattedDate] = useState("");
+
+  useEffect(() => {
+    setFormattedDate(
+      new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })
+    );
+  }, []);
 
   // Deterministic selection: day of month (1-31), index 0-30
   const dayIndex = (new Date().getDate() - 1) % dailyTips.length;
@@ -275,7 +283,7 @@ export function DailyTip() {
         <Sun className="h-4 w-4 text-amber-500 dark:text-amber-400" />
         <h2 className="text-base font-semibold">Daily Relationship Tip</h2>
         <span className="text-[11px] text-muted-foreground">
-          {new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+          {formattedDate}
         </span>
       </div>
 

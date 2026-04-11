@@ -27,6 +27,7 @@ interface HeartData {
   swayRange: number; // px 10-40
   opacity: number;  // 0.15-0.4
   hue: number;      // rose hue shift 0-30
+  initialRotate: number; // initial rotation -10 to 10
 }
 
 function generateHearts(count: number): HeartData[] {
@@ -41,6 +42,7 @@ function generateHearts(count: number): HeartData[] {
       swayRange: 10 + Math.random() * 30,
       opacity: 0.15 + Math.random() * 0.25,
       hue: Math.random() * 30,
+      initialRotate: -10 + Math.random() * 20,
     });
   }
   return hearts;
@@ -77,8 +79,8 @@ export function FloatingHearts({
           className="absolute bottom-0 text-rose-300 dark:text-rose-400"
           style={{
             left: `${heart.x}%`,
-            width: heart.size,
-            height: heart.size,
+            width: `${heart.size}px`,
+            height: `${heart.size}px`,
             opacity: heart.opacity,
             filter: `hue-rotate(${heart.hue}deg)`,
           }}
@@ -86,7 +88,7 @@ export function FloatingHearts({
             y: "100%",
             x: 0,
             opacity: 0,
-            rotate: -10 + Math.random() * 20,
+            rotate: heart.initialRotate,
             scale: 0.8,
           }}
           animate={{
