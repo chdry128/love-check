@@ -333,8 +333,8 @@ interface HomepageProps {
 const tools = [
   {
     slug: "relationship-risk-radar" as ToolSlug,
-    name: "Relationship Risk Radar",
-    tagline: "See your relationship patterns clearly — without judgment.",
+    name: "Check Your Relationship Health",
+    tagline: "Quick quiz to see if your relationship is healthy or has problems.",
     icon: Radar,
     color: "text-rose-600 dark:text-rose-400",
     bgColor: "bg-rose-50 dark:bg-rose-950/30",
@@ -345,8 +345,8 @@ const tools = [
   },
   {
     slug: "attachment-style-lens" as ToolSlug,
-    name: "Attachment Style Lens",
-    tagline: "Understand your emotional patterns — and how they shape love.",
+    name: "What's Your Love Style",
+    tagline: "Find out how you act in relationships and what you need from your partner.",
     icon: Heart,
     color: "text-violet-600 dark:text-violet-400",
     bgColor: "bg-violet-50 dark:bg-violet-950/30",
@@ -357,8 +357,8 @@ const tools = [
   },
   {
     slug: "communication-pattern-check" as ToolSlug,
-    name: "Communication Pattern Check",
-    tagline: "Decode the way you and your partner actually talk.",
+    name: "How Do You Talk Together",
+    tagline: "See how you and your partner talk to each other and if it's working.",
     icon: MessagesSquare,
     color: "text-amber-600 dark:text-amber-400",
     bgColor: "bg-amber-50 dark:bg-amber-950/30",
@@ -369,8 +369,8 @@ const tools = [
   },
   {
     slug: "texting-energy-match" as ToolSlug,
-    name: "Texting Energy Match",
-    tagline: "Is your texting vibe actually aligned — or is one person doing all the work?",
+    name: "Do Your Texts Match",
+    tagline: "Check if you both text the same way or if one person is doing all the work.",
     icon: MessageCircle,
     color: "text-teal-600 dark:text-teal-400",
     bgColor: "bg-teal-50 dark:bg-teal-950/30",
@@ -381,8 +381,8 @@ const tools = [
   },
   {
     slug: "love-bombing-detector" as ToolSlug,
-    name: "Love Bombing Detector",
-    tagline: "Distinguish genuine enthusiasm from intensity that becomes control.",
+    name: "Is It Real Love Or Fake",
+    tagline: "Tell the difference between real love and when someone is being too intense.",
     icon: Shield,
     color: "text-orange-600 dark:text-orange-400",
     bgColor: "bg-orange-50 dark:bg-orange-950/30",
@@ -393,8 +393,8 @@ const tools = [
   },
   {
     slug: "future-alignment-checker" as ToolSlug,
-    name: "Future Alignment Checker",
-    tagline: "Are your values, timelines, and visions actually pointing in the same direction?",
+    name: "Do You Want The Same Future",
+    tagline: "Find out if you both want the same things in life and have the same goals.",
     icon: Target,
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
@@ -405,8 +405,8 @@ const tools = [
   },
   {
     slug: "flirty-reply-coach" as ToolSlug,
-    name: "Flirty Reply Coach",
-    tagline: "Craft the perfect reply — playful, confident, and authentically you.",
+    name: "Perfect Reply Writer",
+    tagline: "Get help writing the perfect text message to send back to your crush.",
     icon: Wand2,
     color: "text-pink-600 dark:text-pink-400",
     bgColor: "bg-pink-50 dark:bg-pink-950/30",
@@ -417,8 +417,8 @@ const tools = [
   },
   {
     slug: "compatibility-compass" as ToolSlug,
-    name: "Compatibility Compass",
-    tagline: "Find out if your values, goals, and rhythms actually align.",
+    name: "Are You Two Compatible",
+    tagline: "See if you and your partner actually match well together.",
     icon: Compass,
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
@@ -429,8 +429,8 @@ const tools = [
   },
   {
     slug: "red-flag-scanner" as ToolSlug,
-    name: "Red Flag Scanner",
-    tagline: "A quiet, honest look at the warning signs you might be overlooking.",
+    name: "Spot Red Flags in Dating",
+    tagline: "Learn the warning signs of a bad relationship before you get hurt.",
     icon: ShieldAlert,
     color: "text-red-600 dark:text-red-400",
     bgColor: "bg-red-50 dark:bg-red-950/30",
@@ -443,34 +443,34 @@ const tools = [
 
 const faqItems = [
   {
-    question: "Is LoveCheck a therapy tool?",
+    question: "Is this like a real therapy?",
     answer:
-      "No. LoveCheck identifies relationship patterns — not diagnoses. It's designed as a self-reflection tool, not a substitute for professional therapy, counseling, or medical advice.",
+      "No. This is just a quiz to help you think about your relationship. It's not therapy and can't replace talking to a real therapist if you need one.",
   },
   {
-    question: "Do you store my answers?",
+    question: "Do you save my answers?",
     answer:
-      "No. Your answers stay entirely in your browser and are never sent to our servers. When you close the tab, they're gone. We don't use cookies, tracking pixels, or analytics.",
+      "No. Everything stays on your phone or computer. We don't save anything or sell your info. When you close the tab, your answers are gone.",
   },
   {
-    question: "How accurate are the results?",
+    question: "How correct are the results?",
     answer:
-      "Our engine uses pattern detection with weighted signals and confidence scoring. Results are most reliable when you answer honestly and thoughtfully. The confidence level shown indicates how strongly the detected pattern matches your answers.",
+      "The results are pretty accurate if you answer honestly. The more honest you are, the better the results. Think of it as like a mirror for your relationship.",
   },
   {
-    question: "Can I retake the assessment?",
+    question: "Can I take the quiz again?",
     answer:
-      "Yes! Every time you start a new session, you begin fresh. We encourage retaking it periodically as your relationship evolves — you may notice different patterns over time.",
+      "Yes! You can take any quiz as many times as you want. Your answers might change over time as your relationship changes.",
   },
   {
-    question: 'What does \"adaptive\" mean?',
+    question: "Why are the questions different for me?",
     answer:
-      "Our questions adapt based on your situation. The first routing question determines which branch of questions you'll see, so everyone's experience is unique.",
+      "The quiz changes based on your answers. So your quiz might be different from your friend's quiz. That's on purpose!",
   },
   {
-    question: "Is this based on real research?",
+    question: "Is this based on real science?",
     answer:
-      "Yes. Our pattern detection engine draws on established frameworks from attachment theory, couples therapy research, and relationship science. However, it's designed for self-reflection — not clinical assessment.",
+      "Yes! But it's not a medical test. We used real research, but this quiz is just to help you understand your relationship better, not to diagnose anything.",
   },
 ];
 
@@ -478,65 +478,65 @@ const faqItems = [
 const valueProps = [
   {
     icon: Brain,
-    title: "Pattern Intelligence",
+    title: "Get Real Answers",
     description:
-      "Go beyond gut feelings. Our adaptive engine identifies relationship patterns backed by research — not guesswork.",
+      "No guess work. Our quizzes are based on real research about relationships.",
   },
   {
     icon: Eye,
-    title: "Private by Design",
+    title: "100% Private",
     description:
-      "No accounts, no tracking, no data storage. Your answers stay in your browser and disappear when you close the tab.",
+      "We never save your answers. Everything stays on your phone or computer. No trackers.",
   },
   {
     icon: Lock,
-    title: "Non-Clinical & Safe",
+    title: "Not Therapy",
     description:
-      "We identify patterns, not disorders. No clinical language, no diagnoses — just honest, compassionate insights.",
+      "This is a quiz, not medical advice. It helps you understand your relationship better.",
   },
   {
     icon: Zap,
-    title: "Adaptive & Personal",
+    title: "Your Own Quiz",
     description:
-      "Questions adapt based on your answers. Everyone's path is different — because every relationship is different.",
+      "The questions change based on your answers. So your quiz is unique to you.",
   },
 ];
 
 const patternExamples = [
   {
-    name: "Hot & Cold Loop",
+    name: "Hot & Cold",
     description:
-      "When closeness and distance alternate unpredictably, creating chronic uncertainty.",
+      "One moment they're really into you, the next moment they text back late. Super confusing.",
     color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   },
   {
-    name: "Stonewall Cycle",
+    name: "One Person Tries Harder",
     description:
-      "When one person withdraws and the other pursues, creating a painful and exhausting loop.",
+      "You're the one always asking them out or texting first. They never put in the effort.",
     color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300",
   },
   {
-    name: "Breadcrumbing Risk",
+    name: "Just Enough Attention",
     description:
-      "When someone sends just enough attention to keep you hooked — without real investment.",
+      "They text just enough to keep you interested but never actually commit to you.",
     color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300",
   },
   {
-    name: "Low-Clarity Connection",
+    name: "Nobody Knows What's Going On",
     description:
-      "When direction and expectations remain ambiguous, making it hard to feel secure.",
+      "Neither of you know if this is serious or casual. The future is really unclear.",
     color: "bg-slate-100 text-slate-600 dark:bg-slate-800/30 dark:text-slate-300",
   },
   {
-    name: "Communication Withdrawal",
+    name: "You Don't Talk About Real Stuff",
     description:
-      "When important conversations get progressively avoided, eroding connection over time.",
+      "You avoid talking about important things and never have real conversations.",
     color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   },
   {
-    name: "Fast Intensity Risk",
+    name: "Too Much Too Fast",
     description:
-      "When early intensity accelerates too quickly — making it hard to see clearly.",
+      "Everything moves super fast at first, making it hard to think clearly.",
     color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
   },
 ];
@@ -547,65 +547,65 @@ const howItWorksSteps = [
     icon: ClipboardList,
     title: "Answer Questions",
     description:
-      "Honest, thoughtful questions that adapt to your situation — no right or wrong answers, just your truth.",
+      "Just be honest. Answer simple questions about your relationship. No right or wrong answers.",
   },
   {
     number: "02",
     icon: Cpu,
-    title: "Engine Analyzes Patterns",
+    title: "We Check Your Answers",
     description:
-      "Our pattern engine cross-references your answers against researched relationship dynamics in real time.",
+      "Our quiz looks at your answers and matches them with patterns from real relationships.",
   },
   {
     number: "03",
     icon: Lightbulb,
-    title: "Get Your Insights",
+    title: "Get Your Results",
     description:
-      "Receive a clear, compassionate breakdown of the patterns at play — with suggestions, not prescriptions.",
+      "Find out what's really going on in your relationship. Get honest, simple advice.",
   },
 ];
 
 const testimonials = [
   {
     quote:
-      "It helped me see things I was actively avoiding. Not in a harsh way — more like a gentle mirror. I finally understood why I kept repeating the same cycle.",
+      "This helped me see things I was ignoring. Not mean about it, just real. I finally get why the same things keep happening to me.",
     initials: "A",
-    label: "Someone rebuilding after a difficult relationship",
+    label: "Person working through a past relationship",
   },
   {
     quote:
-      "I went in skeptical but came out with real clarity. The questions were surprisingly deep — it felt like talking to someone who actually gets it.",
+      "I went in thinking it was just a dumb quiz. But the questions were actually deep and the answers made sense. Felt like talking to someone who gets it.",
     initials: "J",
-    label: "Someone navigating early-stage uncertainty",
+    label: "Someone figuring out if they like their crush",
   },
   {
     quote:
-      "This didn't tell me what to do. It showed me what was actually happening. And honestly, that's exactly what I needed to hear.",
+      "It didn't tell me what to do. It just showed me what's actually happening. That's exactly what I needed.",
     initials: "M",
-    label: "Someone questioning long-term compatibility",
+    label: "Person wondering if their relationship will last",
   },
 ];
 
 const blogPreviews = [
   {
     slug: "why-most-relationship-advice-fails",
-    title: "Why Most Relationship Advice Fails (And What Works Instead)",
+    title: "Why Bad Relationship Advice Doesn't Work",
     excerpt:
-      "Generic advice doesn't account for the unique patterns at play in your connection. Here's why pattern-based understanding changes everything.",
-    tag: "Insights",
+      "Most advice is too general. Real help needs to look at YOUR relationship and what's actually happening.",
+    tag: "Tips",
   },
   {
     slug: "love-bombing-vs-real-enthusiasm",
-    title: "Love Bombing vs Real Enthusiasm: How to Tell the Difference",
+    title: "Love Bombing vs Real Love – How to Tell The Difference",
     excerpt:
-      "Both feel intense at first. But one fades into consistency, the other fades into control. Learn the signs.",
+      "Love bombing feels amazing at first, but it changes later. Here's how to spot it before you get hurt.",
     tag: "Safety",
   },
   {
     slug: "how-to-read-texting-dynamic",
-    title: "How to Read Your Texting Dynamic (Without Overthinking It)",
+    title: "What Your Texts Say About Your Relationship",
     excerpt:
-      "Your texts say more than you think — but probably less than you fear. Here's how to read the real signals.",
+      "Your texting style tells you a lot about your relationship. Here's what to look for.",
     tag: "Communication",
   },
 ];
@@ -649,7 +649,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
       {/* ── Welcome Banner ─────────────────────────────── */}
       <WelcomeBanner onStartTool={onStartTool} />
 
-      {/* ── Hero Section ──────────────────────────────────── */}
+      {/* ── Hero Section (Simplified for mobile) ──────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-rose-50/60 via-transparent to-transparent dark:from-rose-950/20 dark:via-transparent dark:to-transparent" />
         <div className="absolute inset-0 bg-grain" />
@@ -674,7 +674,7 @@ export function Homepage({ onStartTool }: HomepageProps) {
         {/* Floating hearts background */}
         <FloatingHearts intensity="medium" />
 
-        <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 sm:px-6 sm:pt-24 sm:pb-16">
+        <div className="relative mx-auto max-w-4xl px-4 pb-8 pt-12 sm:px-6 sm:pt-16 sm:pb-12">
           <AnimatedSection>
             <div className="mx-auto max-w-2xl text-center">
               {/* Animated ECG Heartbeat Line */}
@@ -701,25 +701,23 @@ export function Homepage({ onStartTool }: HomepageProps) {
 
               <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
                 <Sparkles className="h-3 w-3" />
-                Relationship Intelligence Platform
+                Free Love & Relationship Quizzes
               </div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                See your relationship{" "}
-                <span className="text-gradient-warm">patterns</span> clearly
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+                Understand your{" "}
+                <span className="text-gradient-warm">relationship</span> better
               </h1>
-              <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
-                Answer a few honest questions and our adaptive engine maps out the
-                patterns at play — without judgment, without clinical language, just
-                clarity.
+              <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                Take our free quizzes to check your relationship, spot red flags, and understand what's really happening in your love life.
               </p>
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="mt-6 sm:mt-8 flex flex-col items-center justify-center gap-2 sm:gap-3">
                 <Button
                   size="lg"
-                  className="gap-2 px-8 text-base rounded-xl h-12 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 transition-shadow duration-300"
+                  className="gap-2 px-6 sm:px-8 text-sm sm:text-base rounded-xl h-11 sm:h-12 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 transition-shadow duration-300 w-full sm:w-auto"
                   onClick={() => onStartTool("relationship-risk-radar")}
                 >
                   <Radar className="h-4 w-4" />
-                  Try Risk Radar — Free
+                  Start Quiz – Free
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <span className="text-xs text-muted-foreground">
@@ -727,8 +725,8 @@ export function Homepage({ onStartTool }: HomepageProps) {
                 </span>
               </div>
 
-              {/* Trust indicators */}
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground/60">
+              {/* Trust indicators - simplified for mobile */}
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10px] sm:text-[11px] text-muted-foreground/60">
                 <span className="flex items-center gap-1">
                   <Lock className="h-3 w-3" />
                   100% Private
@@ -736,12 +734,12 @@ export function Homepage({ onStartTool }: HomepageProps) {
                 <span className="hidden sm:inline text-muted-foreground/30">·</span>
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="h-3 w-3" />
-                  Research-Based
+                  Real Science
                 </span>
                 <span className="hidden sm:inline text-muted-foreground/30">·</span>
                 <span className="flex items-center gap-1">
                   <Zap className="h-3 w-3" />
-                  AI-Powered
+                  Instant Results
                 </span>
               </div>
             </div>
@@ -749,45 +747,134 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </div>
       </section>
 
-      {/* ── Featured Tool ────────────────────────────────── */}
+      {/* ── ALL TOOLS GRID (MOVED TO TOP) ───────────────────────────── */}
+      <section id="tools" className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-16">
+        <AnimatedSection className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold">All Our Quizzes</h2>
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary">
+              9 quizzes
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            Take any quiz to learn more about your relationship.
+          </p>
+        </AnimatedSection>
+
+        {/* Category filter tabs - improved for mobile */}
+        <div className="mb-6 flex flex-wrap gap-1.5 sm:gap-2">
+          {toolCategories.map((cat) => {
+            const count = cat === "All" ? tools.length : tools.filter((t) => t.category === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  "px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap",
+                  activeCategory === cat
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+              >
+                {cat}
+                <span className={cn(
+                  "ml-1.5 text-[9px] sm:text-[10px]",
+                  activeCategory === cat ? "text-primary-foreground/70" : "text-muted-foreground/50"
+                )}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Enhanced mobile-friendly grid layout */}
+        <AnimatedGrid className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredTools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <AnimatedGridItem key={tool.slug}>
+                <Card
+                  className={cn(
+                    "group cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 h-full",
+                    tool.borderColor
+                  )}
+                  onClick={() => handleToolClick(tool)}
+                >
+                  <CardContent className="p-4 sm:p-6 h-full flex flex-col">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div
+                        className={cn(
+                          "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110",
+                          tool.bgColor
+                        )}
+                      >
+                        <Icon className={cn("h-6 w-6", tool.color)} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm sm:text-base font-bold truncate">
+                            {tool.name}
+                          </h3>
+                          {tool.comingSoon && (
+                            <span className="shrink-0 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                              Soon
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-3 flex-grow">
+                      {tool.tagline}
+                    </p>
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground pt-3 border-t border-border/50">
+                      <span className="px-2 py-1 rounded-full bg-muted/50 text-xs">{tool.category}</span>
+                      <span className="text-xs font-medium">{tool.time}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimatedGridItem>
+            );
+          })}
+        </AnimatedGrid>
+      </section>
+
+      {/* ── Featured Tool (moved down) ────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           {/* Gradient border wrapper */}
           <div className="rounded-xl bg-gradient-to-r from-rose-300/50 via-pink-300/40 to-rose-200/50 p-[1.5px] dark:from-rose-700/40 dark:via-pink-700/30 dark:to-rose-600/40">
             <Card className="border-0 bg-gradient-to-br from-rose-50/90 to-background overflow-hidden dark:from-rose-950/30 dark:to-background rounded-[10px]">
-              <CardContent className="p-6 sm:p-8">
+              <CardContent className="p-4 sm:p-8">
                 <div className="flex flex-col sm:flex-row gap-6">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose-100 dark:bg-rose-900/40">
                     <Radar className="h-7 w-7 text-rose-600 dark:text-rose-400" />
                   </div>
                   <div className="flex-1 space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                      <h2 className="text-xl font-bold">Relationship Risk Radar</h2>
+                      <h2 className="text-lg sm:text-xl font-bold">Check Your Relationship Health</h2>
                       <span className="relative inline-flex w-fit items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
                         {/* Pulsing dot */}
                         <span className="absolute -top-px -left-px flex h-2 w-2">
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                         </span>
-                        <span className="ml-2.5">Available Now</span>
+                        <span className="ml-2.5">Most Popular</span>
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
-                      Our flagship tool adapts to your situation with smart routing
-                      questions. Whether you&apos;re starting something new, reflecting on
-                      the past, or trying to understand where things stand — the
-                      Risk Radar meets you where you are.
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-lg">
+                      Take a quick quiz to see if your relationship is healthy or has problems. Get instant results that make sense.
                     </p>
-                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2">
                       <Button
-                        className="gap-2 rounded-lg"
+                        className="gap-2 rounded-lg text-sm"
                         onClick={() => onStartTool("relationship-risk-radar")}
                       >
-                        Start Now
+                        Take The Quiz
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
                       <span className="text-xs text-muted-foreground">
-                        6–8 questions &middot; ~3–5 min
+                        ~5 min
                       </span>
                     </div>
                   </div>
@@ -798,41 +885,41 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedSection>
       </section>
 
-      {/* ── Daily Mood Check-in ──────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Daily Mood Check-in (Hidden on mobile) ──────────────────────────── */}
+      <section className="hidden md:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <MoodCheckin />
         </AnimatedSection>
       </section>
 
-      {/* ── Love Language Quick Quiz ────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Love Language Quick Quiz (Hidden on mobile) ────────── */}
+      <section className="hidden md:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <LoveLanguageQuiz onStartTool={onStartTool} />
         </AnimatedSection>
       </section>
 
-      {/* ── Daily Relationship Tip ─────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Daily Relationship Tip (Hidden on mobile) ─────────── */}
+      <section className="hidden md:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <DailyTip />
         </AnimatedSection>
       </section>
 
-      {/* ── Relationship Wellness Score ──────────────────── */}
-      <section className="mx-auto max-w-md px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Relationship Wellness Score (Hidden on mobile) ──────── */}
+      <section className="hidden md:block mx-auto max-w-md px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <WellnessScore />
         </AnimatedSection>
       </section>
 
-      {/* ── How It Works ─────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── How It Works (Hidden on mobile) ─────────────────────────────────── */}
+      <section className="hidden sm:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <div className="mb-8 text-center">
-            <h2 className="text-xl font-bold">How It Works</h2>
+            <h2 className="text-xl font-bold">How It Works – Just 3 Steps</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Three simple steps to understanding your relationship patterns.
+              Take our quiz and understand your relationship better.
             </p>
           </div>
         </AnimatedSection>
@@ -866,104 +953,12 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedGrid>
       </section>
 
-      {/* ── All Tools Grid ───────────────────────────────── */}
-      <section id="tools" className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
-        <AnimatedSection className="mb-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold">All Tools</h2>
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
-              9 active
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Each tool focuses on a different dimension of your relationships.
-          </p>
-        </AnimatedSection>
-
-        {/* Category filter tabs */}
-        <div className="mb-6 flex flex-wrap gap-1.5">
-          {toolCategories.map((cat) => {
-            const count = cat === "All" ? tools.length : tools.filter((t) => t.category === cat).length;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200",
-                  activeCategory === cat
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-              >
-                {cat}
-                <span className={cn(
-                  "ml-1.5 text-[10px]",
-                  activeCategory === cat ? "text-primary-foreground/70" : "text-muted-foreground/50"
-                )}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <AnimatedGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredTools.map((tool) => {
-            const Icon = tool.icon;
-            return (
-              <AnimatedGridItem key={tool.slug}>
-                <Card
-                  className={cn(
-                    "group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
-                    tool.borderColor
-                  )}
-                  onClick={() => handleToolClick(tool)}
-                >
-                  <CardContent className="p-4 sm:p-5">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={cn(
-                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105",
-                          tool.bgColor
-                        )}
-                      >
-                        <Icon className={cn("h-5 w-5", tool.color)} />
-                      </div>
-                      <div className="flex-1 min-w-0 space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-semibold truncate">
-                            {tool.name}
-                          </h3>
-                          {tool.comingSoon && (
-                            <span className="shrink-0 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                              Soon
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          {tool.tagline}
-                        </p>
-                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                          <span>{tool.category}</span>
-                          <span>&middot;</span>
-                          <span>{tool.time}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </AnimatedGridItem>
-            );
-          })}
-        </AnimatedGrid>
-      </section>
-
-      {/* ── Value Proposition ────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Value Proposition (Hidden on mobile) ────────────────────────– */}
+      <section className="hidden lg:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6 text-center">
-          <h2 className="text-xl font-bold">Why LoveCheck is different</h2>
+          <h2 className="text-xl font-bold">Why You'll Love This Quiz</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Not a quiz. Not therapy. Just honest pattern recognition.
+            Simple, private, and based on what really works in relationships.
           </p>
         </AnimatedSection>
 
@@ -991,12 +986,12 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedGrid>
       </section>
 
-      {/* ── Pattern Examples ─────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Pattern Examples (Hidden on mobile) ─────────────────────────── */}
+      <section className="hidden lg:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
-          <h2 className="text-xl font-bold">Patterns we identify</h2>
+          <h2 className="text-xl font-bold">What Problems We Can Spot</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Our engine looks for recurring relationship dynamics — not labels.
+            These are the real relationship issues we help you see clearly.
           </p>
         </AnimatedSection>
 
@@ -1021,24 +1016,26 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedGrid>
       </section>
 
-      {/* ── Social Proof ──────────────────────────────── */}
-      <AnimatedSection>
-        <SocialProof />
-      </AnimatedSection>
+      {/* ── Social Proof ──────────────────────────────– */}
+      <div className="hidden sm:block">
+        <AnimatedSection>
+          <SocialProof />
+        </AnimatedSection>
+      </div>
 
-      {/* ── Conversation Starters ──────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Conversation Starters (Hidden on mobile) ──────────────────────── */}
+      <section className="hidden md:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection>
           <IcebreakerGenerator onStartTool={onStartTool} />
         </AnimatedSection>
       </section>
 
-      {/* ── Testimonials ────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Testimonials (Hidden on mobile) ────────────────────────── */}
+      <section className="hidden lg:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6 text-center">
-          <h2 className="text-xl font-bold">What people are saying</h2>
+          <h2 className="text-xl font-bold">What Real People Think</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Real reflections from people who used LoveCheck to see more clearly.
+            See what others learned from taking our quizzes.
           </p>
         </AnimatedSection>
 
@@ -1076,15 +1073,15 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedGrid>
       </section>
 
-      {/* ── FAQ ────────────────────────────────────────── */}
-      <section id="faq" className="mx-auto max-w-3xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── FAQ (Hidden on mobile) ────────────────────────── */}
+      <section id="faq" className="hidden sm:block mx-auto max-w-3xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <HelpCircle className="h-5 w-5 text-rose-500" />
-            <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
+            <h2 className="text-xl font-bold">Questions You Might Have</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Honest answers to the things people wonder about.
+            We answer the questions people usually ask.
           </p>
         </AnimatedSection>
 
@@ -1110,17 +1107,17 @@ export function Homepage({ onStartTool }: HomepageProps) {
         </AnimatedSection>
       </section>
 
-      {/* ── Blog Preview ─────────────────────────────────── */}
-      <section id="journal" className="mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── Blog Preview (Hidden on mobile) ─────────────────────────────── */}
+      <section id="journal" className="hidden md:block mx-auto max-w-4xl px-4 sm:px-6 pb-12 sm:pb-16">
         <AnimatedSection className="mb-6">
           <h2
             className="text-xl font-bold cursor-pointer hover:text-primary transition-colors"
             onClick={() => setView("blog")}
           >
-            From the Journal
+            Tips & Articles
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Perspectives on patterns, growth, and making sense of connections.
+            Real advice to help you understand relationships better.
           </p>
         </AnimatedSection>
 

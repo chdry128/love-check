@@ -30,8 +30,8 @@ function getSystemTheme(): "light" | "dark" {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  enableSystem = true,
+  defaultTheme = "dark",
+  enableSystem = false,
   attribute = "class",
 }: ThemeProviderProps) {
   const [theme, setThemeState] = React.useState<Theme>(defaultTheme);

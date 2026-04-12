@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -17,6 +18,8 @@ import { useLoveCheckStore } from "@/lib/store";
 import { loadTool } from "@/lib/engine";
 import { saveToHistory } from "@/lib/history";
 import { analytics } from "@/lib/analytics";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ToolSlug, FinalResult } from "@/types";
 
@@ -141,6 +144,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <JsonLd data={websiteSchema()} />
+      <JsonLd data={organizationSchema()} />
+
       {/* Scroll Progress Bar */}
       <div className="scroll-progress" aria-hidden="true">
         <div className="scroll-progress-bar" ref={scrollProgressRef} />
@@ -166,6 +172,22 @@ export default function Home() {
               transition={{ duration: 0.25, ease: "easeInOut" }}
             >
               <Homepage onStartTool={handleStartTool} />
+
+                  <section className="mx-auto max-w-4xl px-4 pb-10 pt-2 sm:px-6">
+                    <h2 className="text-sm font-semibold tracking-wide text-muted-foreground">Explore LoveCheck</h2>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <Link href="/tools" className="rounded-full border px-3 py-1.5 hover:bg-muted">Relationship Tools</Link>
+                      <Link href="/quizzes" className="rounded-full border px-3 py-1.5 hover:bg-muted">Relationship Quizzes</Link>
+                      <Link href="/relationship-tests" className="rounded-full border px-3 py-1.5 hover:bg-muted">Relationship Tests</Link>
+                      <Link href="/texting-tools" className="rounded-full border px-3 py-1.5 hover:bg-muted">Texting Tools</Link>
+                      <Link href="/red-flags" className="rounded-full border px-3 py-1.5 hover:bg-muted">Red Flag Checker Tools</Link>
+                      <Link href="/green-flags" className="rounded-full border px-3 py-1.5 hover:bg-muted">Green Flag Tools</Link>
+                      <Link href="/compatibility" className="rounded-full border px-3 py-1.5 hover:bg-muted">Compatibility Tests</Link>
+                      <Link href="/blog" className="rounded-full border px-3 py-1.5 hover:bg-muted">Relationship Advice Blog</Link>
+                      <Link href="/disclaimer" className="rounded-full border px-3 py-1.5 hover:bg-muted">Disclaimer</Link>
+                    </div>
+                  </section>
+
             </motion.div>
           )}
 

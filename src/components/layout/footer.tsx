@@ -179,10 +179,22 @@ export function Footer({ className, onOpenJournal }: FooterProps) {
                 </a>
               </li>
               <li>
+                <a href="/tools" className="hover:text-foreground transition-colors inline-flex items-center gap-1 group">
+                  SEO Tools Hub
+                  <ArrowUpRight className="h-2.5 w-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </li>
+              <li>
                 <button onClick={onOpenJournal} className="hover:text-foreground transition-colors inline-flex items-center gap-1 group">
-                  From the Journal
+                  Blog Home
                   <ArrowUpRight className="h-2.5 w-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
+              </li>
+              <li>
+                <a href="/blog" className="hover:text-foreground transition-colors inline-flex items-center gap-1 group">
+                  Relationship Advice Blog
+                  <ArrowUpRight className="h-2.5 w-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
               </li>
               <li>
                 <a href="#patterns" className="hover:text-foreground transition-colors inline-flex items-center gap-1 group">
@@ -221,6 +233,15 @@ export function Footer({ className, onOpenJournal }: FooterProps) {
               <li className="flex items-center gap-1.5">
                 <span className="h-1 w-1 rounded-full bg-emerald-500 shrink-0" />
                 Results are never shared
+              </li>
+              <li>
+                <a href="/privacy-policy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
+              </li>
+              <li>
+                <a href="/disclaimer" className="hover:text-foreground transition-colors">Disclaimer</a>
               </li>
             </ul>
           </div>

@@ -15,33 +15,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LoveCheck — See Your Relationship Patterns Clearly",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://lovecheck.app"),
+  title: "LoveCheck - Relationship Tests, Red Flag Checker & Love Tools",
   description:
-    "LoveCheck is a relationship intelligence platform that helps you understand patterns, recognize strengths, and make more confident decisions about your connections — without judgment.",
+    "LoveCheck offers free relationship tests, red flag checkers, compatibility quizzes, texting analyzers, and love tools for practical dating clarity.",
   keywords: [
+    "relationship tests",
+    "red flag checker",
+    "relationship quiz",
     "relationship advice",
-    "relationship patterns",
-    "love quiz",
-    "relationship health",
-    "emotional intelligence",
-    "dating advice",
-    "communication patterns",
-    "relationship radar",
+    "dating quiz",
+    "compatibility test",
+    "texting analyzer",
+    "attachment style quiz",
+    "love language test",
   ],
   authors: [{ name: "LoveCheck" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "LoveCheck — See Your Relationship Patterns Clearly",
+    title: "LoveCheck - Relationship Tests, Red Flag Checker & Love Tools",
     description:
-      "Understand your relationship patterns, recognize strengths, and make more confident decisions. Premium, private, and judgment-free.",
+      "Use free relationship tests, compatibility quizzes, and red flag tools to understand your dating patterns with practical clarity.",
     type: "website",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "LoveCheck",
-    description: "See your relationship patterns clearly — without judgment.",
+    title: "LoveCheck - Relationship Tests & Red Flag Checker",
+    description: "Free relationship tools, quizzes, and compatibility tests for dating clarity.",
   },
 };
 
@@ -57,8 +60,8 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
         >
           {children}
         </ThemeProvider>
