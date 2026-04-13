@@ -84,6 +84,7 @@ export default function RootLayout({
         <Script
           src="https://pl29143392.profitablecpmratenetwork.com/db/d3/88/dbd388fa4858924d834fd2edd4cda8fc.js"
         />
+        <script src="https://quge5.com/88/tag.min.js" data-zone="229365" async data-cfasync="false"></script>
       </body>
     </html>
   );
