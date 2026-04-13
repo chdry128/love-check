@@ -47,6 +47,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
       <article className="space-y-5">
         <header className="space-y-3">
+          <div className="ad-banner">
+            <a href="https://www.profitablecpmratenetwork.com/u1giby0jw?key=470e1e7d6942888dff155b3a7b564cc7" target="_blank" rel="noopener noreferrer">
+              <img src="/path-to-ad-image.jpg" alt="Advertisement" />
+            </a>
+          </div>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
           <p className="text-muted-foreground">{post.intro}</p>
           <p className="text-xs text-muted-foreground">Last updated: {post.lastUpdated} • Reviewed by LoveCheck Editorial Team</p>

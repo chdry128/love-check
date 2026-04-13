@@ -188,6 +188,12 @@ export default function Home() {
                     </div>
                   </section>
 
+                  <div className="ad-banner">
+                    <a href="https://www.profitablecpmratenetwork.com/u1giby0jw?key=470e1e7d6942888dff155b3a7b564cc7" target="_blank" rel="noopener noreferrer">
+                      <img src="/path-to-ad-image.jpg" alt="Advertisement" />
+                    </a>
+                  </div>
+
             </motion.div>
           )}
 
