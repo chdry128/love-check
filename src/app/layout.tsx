@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -80,6 +81,9 @@ export default function RootLayout({
             />
           </a>
         </div>
+        <Script
+          src="https://pl29143392.profitablecpmratenetwork.com/db/d3/88/dbd388fa4858924d834fd2edd4cda8fc.js"
+        />
       </body>
     </html>
   );
